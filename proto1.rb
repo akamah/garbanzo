@@ -53,27 +53,32 @@ module Garbanzo
     end
   end
 
+  class Nop; end
 
-  class Rule
+
+  class Grammar
     attr_accessor :rules
-    attr_accessor :start
+    attr_accessor :start_rule
     
     def initialize(rules = {}, start = :sentence)
       @rules = rules
+      @start_rule = start
     end
 
     def start
-      return rules[start]
+      return rules[start_rule]
     end
   end
 
+  class Rule; end
+  
   class ParseError < StandardError; end
   
   # 連続
   class Sequence < Rule
     attr_accessor :children
 
-    def initialize(children, &block)
+    def initialize(*children)
       @children = children
     end
 
@@ -89,22 +94,36 @@ module Garbanzo
   class Choice < Rule
     attr_accessor :children
 
-    def initialize(children)
+    def initialize(*children)
       @children = children        
     end
 
     def parse(string)
-      for c in children
-
+      for c in children[0..-2]
+        begin
+          return c.parse(string)
+        rescue ParseError => e
+        end
       end
-  end
 
+      children[-1].parse(string)
+    end
+  end
+  
   # 終端記号。ある文字列。
   class String < Rule
     attr_accessor :string
 
     def initialize(string)
       @string = string
+    end
+
+    def parse(source)
+      if source.start_with?(string)
+        return string, source[string.length .. -1]                       
+      else
+        raise ParseError, "expected #{string}"
+      end
     end
   end
 
@@ -121,26 +140,27 @@ module Garbanzo
   class Function < Rule
     attr_accessor :function
 
-    def initialize(function)
+    def initialize(&function)
       @function = function
+    end
+
+    def parse(source)
+      function.call(source)
     end
   end
 
-  # 構文の拡張
-  class Extend < Rule
-  end
   
   class Evaluator
-    def interpret(program)
+    def evaluate(program)
       case program
-      when Num
+      when Num, Nop
         program
       when Add
-        Num.new(interpret(program.left).num + interpret(program.right).num)
+        Num.new(evaluate(program.left).num + evaluate(program.right).num)
       when Mult
-        Num.new(interpret(program.left).num * interpret(program.right).num)
+        Num.new(evaluate(program.left).num * evaluate(program.right).num)
       when Print
-        result = interpret(program.value)
+        result = evaluate(program.value)
         p result
         result
       else
@@ -150,19 +170,60 @@ module Garbanzo
   end
 
   class Parser
-    attr_accessor :grammer
+    attr_accessor :grammar
+
+    def initialize()
+      @grammar = Grammar.new
+      install_grammar_extension
+    end
     
     # 文字列を読み込み、ひとつの単位で実行する。
     def parse(source)
-      self.parse_rule(grammer.start, source)
+      self.parse_rule(grammar.start, source)
     end
 
     def parse_rule(rule, source)
       case rule
-      when Sequence
-      when Choice
-      when String
-      when Extend
+      when Sequence, Choice, String, Function
+        rule.parse(source)
+      when Call
+        if r = grammar[rule.rule_name]
+          parse_rule(r, source)
+        else
+          raise "rule: #{rule.rule_name} not found"
+        end
+      end
+    end
+
+    def install_grammar_extension
+      grammar.rules[:sentence] = Choice.new(
+        Sequence.new(String.new("%{"),
+                     Function.new { |source|
+                       p source
+                       idx = source.index('%}')
+                       if idx
+                         to_eval = source[0..idx-1]
+                         self.instance_eval(to_eval, "(grammar_extension)")
+                         [Nop.new, source[idx..-1]]
+                       else
+                         raise ParseError, "closing `%}' not found"
+                       end
+                     },
+                     String.new("%}")))
+
+    end
+
+    class Interpreter
+      def initialize
+        @evaluator = Evaluator.new
+        @parser    = Parser.new
+      end
+
+      def execute(src)
+        while src != ""
+          prog, src = @parser.parse(src)
+          @evaluator.evaluate(prog)
+        end
       end
     end
   end
@@ -173,6 +234,9 @@ if __FILE__ == $0
   include Garbanzo
   prog = Print.new(Add.new(Num.new(4), Num.new(2)))
   ev = Evaluator.new
+  pa = Parser.new
 
-  ev.interpret(prog)
+  pa.parse("%{p 3%}")
+
+  ev.evaluate(prog)
 end

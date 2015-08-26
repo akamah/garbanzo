@@ -8,7 +8,7 @@ class TC_Proto1 < Test::Unit::TestCase
     s1 = Sequence.new(String.new("mado"),
                       String.new("homu"),
                       String.new("saya"))
-    assert_equal(["saya", "kyou"], s1.parse("madohomusayakyou"))
+    assert_equal("kyou", s1.parse("madohomusayakyou")[1])
     assert_raise(ParseError) {
       s1.parse("madohomumami")
     }
@@ -18,9 +18,9 @@ class TC_Proto1 < Test::Unit::TestCase
     s2 = Choice.new(String.new("mado"),
                       String.new("homu"),
                       String.new("saya"))
-    assert_equal(["mado", "ka"], s2.parse("madoka"))
-    assert_equal(["homu", "ra"], s2.parse("homura"))
-    assert_equal(["saya", "ka"], s2.parse("sayaka"))
+    assert_equal("ka", s2.parse("madoka")[1])
+    assert_equal("ra", s2.parse("homura")[1])
+    assert_equal("ka", s2.parse("sayaka")[1])
     assert_raise(ParseError) {
       s2.parse("mami")
     }

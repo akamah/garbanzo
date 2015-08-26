@@ -53,6 +53,82 @@ module Garbanzo
     end
   end
 
+
+  class Rule
+    attr_accessor :rules
+    attr_accessor :start
+    
+    def initialize(rules = {}, start = :sentence)
+      @rules = rules
+    end
+
+    def start
+      return rules[start]
+    end
+  end
+
+  class ParseError < StandardError; end
+  
+  # 連続
+  class Sequence < Rule
+    attr_accessor :children
+
+    def initialize(children, &block)
+      @children = children
+    end
+
+    def parse(string)
+      children.reduce([nil, string]) do |accum, c|
+        rest = accum[1]
+        c.parse(rest)
+      end
+    end
+  end
+
+  # 選択
+  class Choice < Rule
+    attr_accessor :children
+
+    def initialize(children)
+      @children = children        
+    end
+
+    def parse(string)
+      for c in children
+
+      end
+  end
+
+  # 終端記号。ある文字列。
+  class String < Rule
+    attr_accessor :string
+
+    def initialize(string)
+      @string = string
+    end
+  end
+
+  # 他のルールを呼び出す
+  class Call < Rule
+    attr_accessor :rule_name
+    
+    def initialize(rule_name)
+      @rule_name = rule_name
+    end
+  end
+
+  # 関数で処理する。
+  class Function < Rule
+    attr_accessor :function
+
+    def initialize(function)
+      @function = function
+    end
+  end
+
+  # 構文の拡張
+  class Extend < Rule
+  end
   
   class Evaluator
     def interpret(program)
@@ -69,6 +145,24 @@ module Garbanzo
         result
       else
         error "argument is not a program"
+      end
+    end
+  end
+
+  class Parser
+    attr_accessor :grammer
+    
+    # 文字列を読み込み、ひとつの単位で実行する。
+    def parse(source)
+      self.parse_rule(grammer.start, source)
+    end
+
+    def parse_rule(rule, source)
+      case rule
+      when Sequence
+      when Choice
+      when String
+      when Extend
       end
     end
   end

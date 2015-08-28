@@ -31,4 +31,12 @@ class TC_Proto1 < Test::Unit::TestCase
       s2.parse("mami")
     }
   end
+
+  def test_open_class
+    s1 = ["mado", "homu", "saya"].sequence { |m, h, s|
+      return "OK"
+    }
+
+    assert_equal(["OK", ""], s1.parse("madohomusaya"))
+  end
 end

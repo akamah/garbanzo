@@ -87,7 +87,11 @@ module Garbanzo
   end
 
   # ルール、パーサコンビネータで言う所のParser
-  class Rule; end
+  class Rule
+    def to_rule
+      return self
+    end
+  end
 
   # 構文解析に失敗した時は、例外を投げて伝えることにする。
   class ParseError < StandardError; end
@@ -99,7 +103,7 @@ module Garbanzo
 
     def initialize(*children, &func)
       @children = children
-      @func     = func || lambda { |*args| args }
+      @func     = func
     end
 
     def parse(string)
@@ -108,7 +112,8 @@ module Garbanzo
         [accum[0] << e1, r1]
       end
 
-      return func.call(*es), rest
+      es = func.call(*es) if func != nil
+      return es, rest
     end
   end
 
@@ -170,6 +175,35 @@ module Garbanzo
       function.call(source)
     end
   end
+
+
+  # オープンクラス。クラスのみんなには、内緒だよ！
+  class ::Array
+    def sequence(&func)
+      Sequence.new(*self.map(&:to_rule), &func)
+    end
+
+    def choice(&func)
+      Choice.new(*self.map(&:to_rule), &func)
+    end
+
+    def to_rule
+      raise "Array#to_rule is ambiguous operation"
+    end
+  end
+
+  class ::String
+    def to_rule
+      Garbanzo::String.new(self)
+    end
+  end
+
+  class ::Symbol
+    def to_rule
+      Garbanzo::Call.new(self)
+    end
+  end
+  
 
   # 構文解析を行い、意味を持ったオブジェクトを返す。
   class Parser

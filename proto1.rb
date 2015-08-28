@@ -91,6 +91,14 @@ module Garbanzo
     def to_rule
       return self
     end
+
+    def >>(other)
+      Sequence.new(self, other.to_rule)
+    end
+
+    def |(other)
+      Choice.new(self, other.to_rule)
+    end
   end
 
   # 構文解析に失敗した時は、例外を投げて伝えることにする。

@@ -1,13 +1,38 @@
 %{
 grammar.rules[:whitespace] = ["\n", " "].choice;
 grammar.rules[:sentence].children << Call.new(:whitespace);
-grammar.rules[:number] = lambda {|s|
-  if md = s.match(/^(\d)+/)
-    num = Garbanzo::Num.new(md[1].to_i)
-    return num, s[s.end(0)..-1]
+%}
+
+%{
+grammar.rules[:number] = Function.new {|s|
+  if md = s.match(/^\d+/)
+    num = Garbanzo::Num.new(md[0].to_i)
+    [num, s[md.end(0)..-1]]
   else
     raise ParseError, "expected number"
   end
 }
 %}
-3
+
+%{
+grammar.rules[:sentence].children << ["print", "(", :expression, ")"].sequence { |_, _, n, _|
+  Print.new(n)
+}
+%}
+
+%{
+grammar.rules[:expression] = [
+  [:number, :expression_tail].sequence { |num, tail|
+    Add.new(num, tail)		       
+  }
+].choice
+
+grammar.rules[:expression_tail] = [
+  ["+", :expression, :expression_tail].sequence {|_, e, t|
+    Add.new(e, t)
+  },
+  [""].sequence {|_| Num.new(0)}
+].choice
+%}
+
+print(42+31)

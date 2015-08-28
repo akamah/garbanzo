@@ -226,7 +226,7 @@ module Garbanzo
       when Function
         rule.function.call(source)
       when Call
-        if r = grammar[rule.rule_name]
+        if r = grammar.rules[rule.rule_name]
           parse_rule(r, source)
         else
           raise "rule: #{rule.rule_name} not found"
@@ -264,8 +264,7 @@ module Garbanzo
     def execute(src)
       while src != ""
         prog, src = @parser.parse(src)
-        p prog
-        p src
+        puts "program: #{prog}"
         @evaluator.evaluate(prog)
       end
     end

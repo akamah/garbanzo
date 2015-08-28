@@ -113,16 +113,6 @@ module Garbanzo
       @children = children
       @func     = func
     end
-
-    def parse(string)
-      es, rest = children.reduce([[], string]) do |accum, c|
-        e1, r1 = c.parse(accum[1])
-        [accum[0] << e1, r1]
-      end
-
-      es = func.call(*es) if func != nil
-      return es, rest
-    end
   end
 
   # 選択
@@ -132,17 +122,6 @@ module Garbanzo
     def initialize(*children)
       @children = children        
     end
-
-    def parse(string)
-      for c in children[0..-2]
-        begin
-          return c.parse(string)
-        rescue ParseError
-        end
-      end
-
-      children[-1].parse(string)
-    end
   end
 
   # 終端記号。ある文字列。
@@ -151,14 +130,6 @@ module Garbanzo
 
     def initialize(string)
       @string = string
-    end
-
-    def parse(source)
-      if source.start_with?(string)
-        return Unit.new, source[string.length .. -1]                       
-      else
-        raise ParseError, "expected #{string}"
-      end
     end
   end
 
@@ -177,10 +148,6 @@ module Garbanzo
 
     def initialize(&function)
       @function = function
-    end
-
-    def parse(source)
-      function.call(source)
     end
   end
 
@@ -221,8 +188,8 @@ module Garbanzo
   class Parser
     attr_accessor :grammar
 
-    def initialize()
-      @grammar = Grammar.new
+    def initialize(grammar = Grammar.new)
+      @grammar = grammar
       install_grammar_extension
     end
     
@@ -233,8 +200,31 @@ module Garbanzo
 
     def parse_rule(rule, source)
       case rule
-      when Sequence, Choice, String, Function
-        rule.parse(source)
+      when Sequence
+        es, rest = rule.children.reduce([[], source]) do |accum, c|
+          e1, r1 = parse_rule(c, accum[1])
+          [accum[0] << e1, r1]
+        end
+
+        es = rule.func.call(*es) if rule.func != nil
+        return es, rest
+      when Choice
+        for c in rule.children[0..-2]
+          begin
+            return parse_rule(c, source)
+          rescue ParseError
+          end
+        end
+
+        parse_rule(rule.children[-1], source)
+      when String
+        if source.start_with?(rule.string)
+          return Unit.new, source[rule.string.length .. -1]                       
+        else
+          raise ParseError, "expected #{rule.string}"
+        end
+      when Function
+        rule.function.call(source)
       when Call
         if r = grammar[rule.rule_name]
           parse_rule(r, source)

@@ -66,7 +66,7 @@ module Garbanzo
         p result
         result
       else
-        error "argument is not a program"
+        raise "argument is not a program"
       end
     end
   end
@@ -258,8 +258,9 @@ module Garbanzo
                          raise ParseError, "closing `%}' not found"
                        end
                      },
-                     String.new("%}")))
-
+                     String.new("%}")) {
+          Unit.new
+        })
     end
   end
   
@@ -273,10 +274,9 @@ module Garbanzo
     def execute(src)
       while src != ""
         prog, src = @parser.parse(src)
-        @evaluator.evaluate(prog)
-
         p prog
         p src
+        @evaluator.evaluate(prog)
       end
     end
   end
@@ -287,12 +287,7 @@ if __FILE__ == $0
   include Garbanzo
   int = Interpreter.new
 
-  int.execute <<EOS 
-%{
-grammar.rules[:sentence].children << String.new("\n");
-%}
-
-
-
-EOS
+  File.open("source.garb", "rb") { |f|
+    int.execute(f.read)
+  }
 end

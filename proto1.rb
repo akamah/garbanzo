@@ -11,7 +11,7 @@ module Garbanzo
   # 言語の内部表現としての整数
   class Num
     attr_reader :num
-    
+
     def initialize(num)
       @num = num
     end
@@ -95,16 +95,20 @@ module Garbanzo
   # 連続
   class Sequence < Rule
     attr_accessor :children
+    attr_accessor :func
 
-    def initialize(*children)
+    def initialize(*children, &func)
       @children = children
+      @func     = func || lambda { |*args| args }
     end
 
     def parse(string)
-      children.reduce([nil, string]) do |accum, c|
-        rest = accum[1]
-        c.parse(rest)
+      es, rest = children.reduce([[], string]) do |accum, c|
+        e1, r1 = c.parse(accum[1])
+        [accum[0] << e1, r1]
       end
+
+      return func.call(*es), rest
     end
   end
 

@@ -12,6 +12,12 @@ class TC_Proto1 < Test::Unit::TestCase
     assert_raise(ParseError) {
       s1.parse("madohomumami")
     }
+
+    s2 = Sequence.new(String.new("mado"), String.new("homu")) { |*args|
+      args.length
+    }
+
+    assert_equal([2, ""], s2.parse("madohomu"))
   end
 
   def test_choice

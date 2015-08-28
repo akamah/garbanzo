@@ -129,14 +129,14 @@ module Garbanzo
       for c in children[0..-2]
         begin
           return c.parse(string)
-        rescue ParseError => e
+        rescue ParseError
         end
       end
 
       children[-1].parse(string)
     end
   end
-  
+
   # 終端記号。ある文字列。
   class String < Rule
     attr_accessor :string
@@ -204,7 +204,11 @@ module Garbanzo
     end
   end
   
-
+  class ::Proc
+    def to_rule
+      Garbanzo::Function.new(&self)
+    end
+  end
   # 構文解析を行い、意味を持ったオブジェクトを返す。
   class Parser
     attr_accessor :grammar
@@ -250,6 +254,7 @@ module Garbanzo
 
     end
   end
+  
   # EvaluatorとParserをカプセルしたもの。
   class Interpreter
     def initialize

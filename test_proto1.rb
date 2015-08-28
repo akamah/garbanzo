@@ -34,9 +34,14 @@ class TC_Proto1 < Test::Unit::TestCase
 
   def test_open_class
     s1 = ["mado", "homu", "saya"].sequence { |m, h, s|
-      return "OK"
+      "OK"
     }
+    s2 = ["mado", "mami"].choice
 
+    s3 = lambda { |source| return true, source }.to_rule
+    
     assert_equal(["OK", ""], s1.parse("madohomusaya"))
+    assert_equal("saya", s2.parse("mamisaya")[1])
+    assert_equal([true, "hoge"], s3.parse("hoge"))
   end
 end

@@ -8,65 +8,68 @@
 
 
 module Garbanzo
-  # 言語の内部表現としての整数
-  class Num
-    attr_reader :num
+  # 内部表現
+  module Repr
+    # 言語の内部表現としての整数
+    class Num
+      attr_reader :num
 
-    def initialize(num)
-      @num = num
+      def initialize(num)
+        @num = num
+      end
     end
-  end
 
-  # 言語の内部表現としての足し算  
-  class Add
-    attr_reader :left
-    attr_reader :right
+    # 言語の内部表現としての足し算  
+    class Add
+      attr_reader :left
+      attr_reader :right
 
-    def initialize(left, right)
-      @left  = left
-      @right = right
+      def initialize(left, right)
+        @left  = left
+        @right = right
+      end
     end
-  end
 
-  # 言語の内部表現としての掛け算
-  class Mult
-    attr_reader :left
-    attr_reader :right
+    # 言語の内部表現としての掛け算
+    class Mult
+      attr_reader :left
+      attr_reader :right
 
-    def initialize(left, right)
-      @left  = left
-      @right = right
+      def initialize(left, right)
+        @left  = left
+        @right = right
+      end
     end
-  end
 
-  # print式を意味する内部表現
-  class Print
-    attr_reader :value
+    # print式を意味する内部表現
+    class Print
+      attr_reader :value
 
-    def initialize(value)
-      @value = value
+      def initialize(value)
+        @value = value
+      end
     end
-  end
 
-  # いわゆるNOP
-  class Unit; end
-
-  # 評価するやつ。変数とか文脈とか何も考えていないので単純
-  class Evaluator
-    def evaluate(program)
-      case program
-      when Num, Unit
-        program
-      when Add
-        Num.new(evaluate(program.left).num + evaluate(program.right).num)
-      when Mult
-        Num.new(evaluate(program.left).num * evaluate(program.right).num)
-      when Print
-        result = evaluate(program.value)
-        p result
-        result
-      else
-        raise "argument is not a program"
+    # いわゆるNOP
+    class Unit; end
+    
+    # 評価するやつ。変数とか文脈とか何も考えていないので単純
+    class Evaluator
+      def evaluate(program)
+        case program
+        when Num, Unit
+          program
+        when Add
+          Num.new(evaluate(program.left).num + evaluate(program.right).num)
+        when Mult
+          Num.new(evaluate(program.left).num * evaluate(program.right).num)
+        when Print
+          result = evaluate(program.value)
+          p result
+          result
+        else
+          raise "argument is not a program"
+        end
       end
     end
   end
@@ -222,13 +225,13 @@ module Garbanzo
         parse_rule(rule.children[-1], source)
       when Rule::String
         if source.start_with?(rule.string)
-          return Unit.new, source[rule.string.length .. -1]                       
+          return Repr::Unit.new, source[rule.string.length .. -1]                       
         else
           raise Rule::ParseError, "expected #{rule.string}"
         end
       when Rule::Function
         rule.function.call(source)
-      when Call
+      when Rule::Call
         if r = grammar.rules[rule.rule_name]
           parse_rule(r, source)
         else
@@ -240,25 +243,25 @@ module Garbanzo
     # 構文拡張のやつです。
     def install_grammar_extension
       grammar.rules[:sentence] = Rule::Choice.new(
-       ["%{",
-        Rule::Function.new { |source|
-          idx = source.index('%}')
-          if idx
-            to_eval = source[0..idx-1]
-            self.instance_eval(to_eval, "(grammar_extension)")
-            [Unit.new, source[idx..-1]]
-          else
-            raise ParseError, "closing `%}' not found"
-          end
-        },
-        "%}"].sequence)
+        ["%{",
+         Rule::Function.new { |source|
+           idx = source.index('%}')
+           if idx
+             to_eval = source[0..idx-1]
+             self.instance_eval(to_eval, "(grammar_extension)")
+             [Repr::Unit.new, source[idx..-1]]
+           else
+             raise ParseError, "closing `%}' not found"
+           end
+         },
+         "%}"].sequence { Repr::Unit.new })
     end
   end
   
   # EvaluatorとParserをカプセルしたもの。
   class Interpreter
     def initialize
-      @evaluator = Evaluator.new
+      @evaluator = Repr::Evaluator.new
       @parser    = Parser.new
     end
 

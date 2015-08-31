@@ -9,85 +9,46 @@
 
 module Garbanzo
   # 内部表現
+  def self.define_record_class(mod, classname, *attrs, **opts)
+    attr_list = attrs.map {|x| ":" + x.to_s }.join(', ')
+    attr_def = attrs.length > 0 ? "attr_accessor " + attr_list : ""
+    arguments = attrs.join(', ')
+    assignment = attrs.map {|x| "@" + x + " = " + x }.join('; ')
+    
+    str = <<"EOS"
+class #{classname} < #{opts[:extend] || "Object"}
+  #{attr_def}
+  def initialize(#{arguments})
+    #{assignment}
+  end
+end
+EOS
+    if $DEBUG
+      puts str
+      p opts
+    end
+    
+    mod.module_eval(str, classname)
+  end
+  
   module Repr
-    # 言語の内部表現としての整数
-    class Num
-      attr_reader :num
+    Garbanzo.define_record_class(self, "Num", "num") # 言語の内部表現としての整数
+    Garbanzo.define_record_class(self, "String", "value")  # 内部表現としての文字列
 
-      def initialize(num)
-        @num = num
-      end
-    end
+    Garbanzo.define_record_class(self, "Add", "left", "right") # 言語の内部表現としての足し算
+    Garbanzo.define_record_class(self, "Mult", "left", "right") # 言語の内部表現としての掛け算
+    Garbanzo.define_record_class(self, "Print", "value") # print式を意味する内部表現
+    Garbanzo.define_record_class(self, "Unit")  # いわゆるNOP
+    Garbanzo.define_record_class(self, "Store", "table")  # データストアオブジェクト
 
-    # 言語の内部表現としての足し算  
-    class Add
-      attr_reader :left
-      attr_reader :right
-
-      def initialize(left, right)
-        @left  = left
-        @right = right
-      end
-    end
-
-    # 言語の内部表現としての掛け算
-    class Mult
-      attr_reader :left
-      attr_reader :right
-
-      def initialize(left, right)
-        @left  = left
-        @right = right
-      end
-    end
-
-    # print式を意味する内部表現
-    class Print
-      attr_reader :value
-
-      def initialize(value)
-        @value = value
-      end
-    end
-
-    # いわゆるNOP
-    class Unit; end
-
-    # データストアオブジェクト。
+    # この辺はあったら便利だと思うので。
     class Store
-      attr_reader :table
-
-      def initialize(table)
-        @table = table
-      end
-
-      def []=(key, value)
-        table.[]=(key, value)
-      end
-
-      def [](key)
-        table.[](key)
-      end
+      def []=(key, value);  table.[]=(key, value); end
+      def [](key);          table.[](key); end
     end
-
-    # 内部表現としての文字列
-    class String
-      attr_reader :value
-
-      def initialize(value)
-        @value = value
-      end
-
-      def length
-        value.length
-      end
-    end
-
-    class Assign
-    end
-
-    class Load
-    end
+    
+    Garbanzo.define_record_class(self, "Set", "object", "key", "value")  # データストアへの代入を表す
+    Garbanzo.define_record_class(self, "Get", "object", "key")  # データストアからの読み出しを表す
 
     
     # 評価するやつ。変数とか文脈とか何も考えていないので単純
@@ -144,7 +105,7 @@ module Garbanzo
 
     # 構文解析に失敗した時は、例外を投げて伝えることにする。
     class ParseError < StandardError; end
-    
+
     # 連続
     class Sequence < Rule
       attr_accessor :children
@@ -164,7 +125,7 @@ module Garbanzo
         @children = children        
       end
     end
-
+    
     # 終端記号。ある文字列。
     class String < Rule
       attr_accessor :string
@@ -195,38 +156,25 @@ module Garbanzo
 
     # オープンクラス。クラスのみんなには、内緒だよ！
     class ::Array
-      def sequence(&func)
-        Sequence.new(*self.map(&:to_rule), &func)
-      end
-
-      def choice(&func)
-        Choice.new(*self.map(&:to_rule), &func)
-      end
-
-      def to_rule
-        raise "Array#to_rule is ambiguous operation"
-      end
+      def sequence(&func); Sequence.new(*self.map(&:to_rule), &func); end
+      def choice(&func);   Choice.new(*self.map(&:to_rule), &func); end
+      def to_rule; raise "Array#to_rule is ambiguous operation"; end
     end
 
     class ::String
-      def to_rule
-        Garbanzo::Rule::String.new(self)
-      end
+      def to_rule; Garbanzo::Rule::String.new(self); end
     end
 
     class ::Symbol
-      def to_rule
-        Garbanzo::Rule::Call.new(self)
-      end
+      def to_rule; Garbanzo::Rule::Call.new(self); end
     end
     
     class ::Proc
-      def to_rule
-        Garbanzo::Rule::Function.new(&self)
-      end
+      def to_rule; Garbanzo::Rule::Function.new(&self); end
     end
-
   end
+
+  
   # 構文解析を行い、意味を持ったオブジェクトを返す。
   class Parser
     attr_accessor :grammar

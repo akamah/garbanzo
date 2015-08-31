@@ -13,10 +13,10 @@ module Garbanzo
     attr_list = attrs.map {|x| ":" + x.to_s }.join(', ')
     attr_def = attrs.length > 0 ? "attr_accessor " + attr_list : ""
     arguments = attrs.join(', ')
-    assignment = attrs.map {|x| "@" + x + " = " + x }.join('; ')
+    assignment = attrs.map {|x| "@#{x} = #{x}" }.join('; ')
 
-    hash_def = attrs.map {|x| x + ".hash" }.join(' ^ ')
-    eql_def  = attrs.map {|x| x + ".eql?(other)" }.join(' && ')
+    hash_def = attrs.map   {|x| "#{x}.hash" }.join(' ^ ')
+    eql_def  = attrs.map   {|x| "#{x}.eql?(other.#{x})" }.join(' && ')
     str = <<"EOS"
 class #{classname} < #{opts[:extend] || "Object"}
   #{attr_def}
@@ -30,6 +30,10 @@ class #{classname} < #{opts[:extend] || "Object"}
 
   def eql?(other)
     #{eql_def}
+  end
+
+  def ==(other)
+    eql?(other)
   end
 end
 EOS
@@ -77,10 +81,12 @@ EOS
         when Set
           obj, key, value = [program.object, program.key, program.value]
 
-          raise "SET: object is not a store #{obj}" if obj.is_a? Store
+          raise "SET: object is not a store #{obj}" unless obj.is_a? Store
           obj.table[key] = value
         when Get
           obj, key = [program.object, program.key]
+          raise "SET: object is not a store #{obj}" unless obj.is_a? Store
+          
           obj.table[key]
         else
           raise "EVALUATE: argument is not a program"

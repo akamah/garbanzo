@@ -48,4 +48,27 @@ class TC_Proto1 < Test::Unit::TestCase
     assert_equal("saya", s2.parse("mamisaya")[1])
     assert_equal([true, "hoge"], s3.parse("hoge"))
   end
+
+  def test_equal
+    ev = Repr::Evaluator.new
+
+    assert_equal(true, Repr::Num.new(3) == Repr::Num.new(3))
+    assert_equal(Repr::Num.new(3), Repr::Num.new(3))
+    assert_equal(Repr::Num.new(4), ev.evaluate(Repr::Add.new(Repr::Num.new(1),
+                                                             Repr::Num.new(3))))
+    assert_not_equal(Repr::Bool.new(true), Repr::Bool.new(false))
+
+    assert_equal(Repr::Bool.new(true),
+                 ev.evaluate(Repr::Equal.new(
+                              Repr::String.new("homu"),
+                              Repr::String.new("homu"))))
+
+    ds = Repr::Store.new({})
+    key = Repr::String.new("saya")
+    val = Repr::Num.new("38")
+
+    ev.evaluate(Repr::Set.new(ds, key, val))
+    assert_equal(val, ev.evaluate(Repr::Get.new(ds, key)))
+                 
+  end
 end

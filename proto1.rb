@@ -86,103 +86,106 @@ module Garbanzo
     end
   end
 
-  # ルール、パーサコンビネータで言う所のParser
-  class Rule
-    def to_rule
-      return self
+  module Rule
+    # ルール、パーサコンビネータで言う所のParser
+    class Rule
+      def to_rule
+        return self
+      end
+
+      def >>(other)
+        Sequence.new(self, other.to_rule)
+      end
+
+      def |(other)
+        Choice.new(self, other.to_rule)
+      end
     end
 
-    def >>(other)
-      Sequence.new(self, other.to_rule)
-    end
-
-    def |(other)
-      Choice.new(self, other.to_rule)
-    end
-  end
-
-  # 構文解析に失敗した時は、例外を投げて伝えることにする。
-  class ParseError < StandardError; end
-  
-  # 連続
-  class Sequence < Rule
-    attr_accessor :children
-    attr_accessor :func
-
-    def initialize(*children, &func)
-      @children = children
-      @func     = func
-    end
-  end
-
-  # 選択
-  class Choice < Rule
-    attr_accessor :children
-
-    def initialize(*children)
-      @children = children        
-    end
-  end
-
-  # 終端記号。ある文字列。
-  class String < Rule
-    attr_accessor :string
-
-    def initialize(string)
-      @string = string
-    end
-  end
-
-  # 他のルールを呼び出す
-  class Call < Rule
-    attr_accessor :rule_name
+    # 構文解析に失敗した時は、例外を投げて伝えることにする。
+    class ParseError < StandardError; end
     
-    def initialize(rule_name)
-      @rule_name = rule_name
-    end
-  end
+    # 連続
+    class Sequence < Rule
+      attr_accessor :children
+      attr_accessor :func
 
-  # 関数で処理する。
-  class Function < Rule
-    attr_accessor :function
-
-    def initialize(&function)
-      @function = function
-    end
-  end
-
-
-  # オープンクラス。クラスのみんなには、内緒だよ！
-  class ::Array
-    def sequence(&func)
-      Sequence.new(*self.map(&:to_rule), &func)
+      def initialize(*children, &func)
+        @children = children
+        @func     = func
+      end
     end
 
-    def choice(&func)
-      Choice.new(*self.map(&:to_rule), &func)
+    # 選択
+    class Choice < Rule
+      attr_accessor :children
+
+      def initialize(*children)
+        @children = children        
+      end
     end
 
-    def to_rule
-      raise "Array#to_rule is ambiguous operation"
-    end
-  end
+    # 終端記号。ある文字列。
+    class String < Rule
+      attr_accessor :string
 
-  class ::String
-    def to_rule
-      Garbanzo::String.new(self)
+      def initialize(string)
+        @string = string
+      end
     end
-  end
 
-  class ::Symbol
-    def to_rule
-      Garbanzo::Call.new(self)
+    # 他のルールを呼び出す
+    class Call < Rule
+      attr_accessor :rule_name
+      
+      def initialize(rule_name)
+        @rule_name = rule_name
+      end
     end
-  end
-  
-  class ::Proc
-    def to_rule
-      Garbanzo::Function.new(&self)
+
+    # 関数で処理する。
+    class Function < Rule
+      attr_accessor :function
+
+      def initialize(&function)
+        @function = function
+      end
     end
+
+
+    # オープンクラス。クラスのみんなには、内緒だよ！
+    class ::Array
+      def sequence(&func)
+        Sequence.new(*self.map(&:to_rule), &func)
+      end
+
+      def choice(&func)
+        Choice.new(*self.map(&:to_rule), &func)
+      end
+
+      def to_rule
+        raise "Array#to_rule is ambiguous operation"
+      end
+    end
+
+    class ::String
+      def to_rule
+        Garbanzo::Rule::String.new(self)
+      end
+    end
+
+    class ::Symbol
+      def to_rule
+        Garbanzo::Rule::Call.new(self)
+      end
+    end
+    
+    class ::Proc
+      def to_rule
+        Garbanzo::Rule::Function.new(&self)
+      end
+    end
+
   end
   # 構文解析を行い、意味を持ったオブジェクトを返す。
   class Parser
@@ -200,7 +203,7 @@ module Garbanzo
 
     def parse_rule(rule, source)
       case rule
-      when Sequence
+      when Rule::Sequence
         es, rest = rule.children.reduce([[], source]) do |accum, c|
           e1, r1 = parse_rule(c, accum[1])
           [accum[0] << e1, r1]
@@ -208,22 +211,22 @@ module Garbanzo
 
         es = rule.func.call(*es) if rule.func != nil
         return es, rest
-      when Choice
+      when Rule::Choice
         for c in rule.children[0..-2]
           begin
             return parse_rule(c, source)
-          rescue ParseError
+          rescue Rule::ParseError
           end
         end
 
         parse_rule(rule.children[-1], source)
-      when String
+      when Rule::String
         if source.start_with?(rule.string)
           return Unit.new, source[rule.string.length .. -1]                       
         else
-          raise ParseError, "expected #{rule.string}"
+          raise Rule::ParseError, "expected #{rule.string}"
         end
-      when Function
+      when Rule::Function
         rule.function.call(source)
       when Call
         if r = grammar.rules[rule.rule_name]
@@ -236,21 +239,19 @@ module Garbanzo
 
     # 構文拡張のやつです。
     def install_grammar_extension
-      grammar.rules[:sentence] = Choice.new(
-        Sequence.new(String.new("%{"),
-                     Function.new { |source|
-                       idx = source.index('%}')
-                       if idx
-                         to_eval = source[0..idx-1]
-                         self.instance_eval(to_eval, "(grammar_extension)")
-                         [Unit.new, source[idx..-1]]
-                       else
-                         raise ParseError, "closing `%}' not found"
-                       end
-                     },
-                     String.new("%}")) {
-          Unit.new
-        })
+      grammar.rules[:sentence] = Rule::Choice.new(
+       ["%{",
+        Rule::Function.new { |source|
+          idx = source.index('%}')
+          if idx
+            to_eval = source[0..idx-1]
+            self.instance_eval(to_eval, "(grammar_extension)")
+            [Unit.new, source[idx..-1]]
+          else
+            raise ParseError, "closing `%}' not found"
+          end
+        },
+        "%}"].sequence)
     end
   end
   

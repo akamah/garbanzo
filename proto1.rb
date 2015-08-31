@@ -9,21 +9,25 @@
 
 module Garbanzo
   # 内部表現
-  def self.define_record_class(mod, classname, *attrs)
+  def self.define_record_class(mod, classname, *attrs, **opts)
     attr_list = attrs.map {|x| ":" + x.to_s }.join(', ')
     attr_def = attrs.length > 0 ? "attr_accessor " + attr_list : ""
     arguments = attrs.join(', ')
     assignment = attrs.map {|x| "@" + x + " = " + x }.join('; ')
     
     str = <<"EOS"
-class #{classname}
+class #{classname} < #{opts[:extend] || "Object"}
   #{attr_def}
   def initialize(#{arguments})
     #{assignment}
   end
 end
 EOS
-    puts str
+    if $DEBUG
+      puts str
+      p opts
+    end
+    
     mod.module_eval(str, classname)
   end
   
@@ -42,7 +46,6 @@ EOS
       def []=(key, value);  table.[]=(key, value); end
       def [](key);          table.[](key); end
     end
-
     
     Garbanzo.define_record_class(self, "Set", "object", "key", "value")  # データストアへの代入を表す
     Garbanzo.define_record_class(self, "Get", "object", "key")  # データストアからの読み出しを表す
@@ -102,7 +105,7 @@ EOS
 
     # 構文解析に失敗した時は、例外を投げて伝えることにする。
     class ParseError < StandardError; end
-    
+
     # 連続
     class Sequence < Rule
       attr_accessor :children
@@ -122,7 +125,7 @@ EOS
         @children = children        
       end
     end
-
+    
     # 終端記号。ある文字列。
     class String < Rule
       attr_accessor :string
@@ -153,38 +156,25 @@ EOS
 
     # オープンクラス。クラスのみんなには、内緒だよ！
     class ::Array
-      def sequence(&func)
-        Sequence.new(*self.map(&:to_rule), &func)
-      end
-
-      def choice(&func)
-        Choice.new(*self.map(&:to_rule), &func)
-      end
-
-      def to_rule
-        raise "Array#to_rule is ambiguous operation"
-      end
+      def sequence(&func); Sequence.new(*self.map(&:to_rule), &func); end
+      def choice(&func);   Choice.new(*self.map(&:to_rule), &func); end
+      def to_rule; raise "Array#to_rule is ambiguous operation"; end
     end
 
     class ::String
-      def to_rule
-        Garbanzo::Rule::String.new(self)
-      end
+      def to_rule; Garbanzo::Rule::String.new(self); end
     end
 
     class ::Symbol
-      def to_rule
-        Garbanzo::Rule::Call.new(self)
-      end
+      def to_rule; Garbanzo::Rule::Call.new(self); end
     end
     
     class ::Proc
-      def to_rule
-        Garbanzo::Rule::Function.new(&self)
-      end
+      def to_rule; Garbanzo::Rule::Function.new(&self); end
     end
-
   end
+
+  
   # 構文解析を行い、意味を持ったオブジェクトを返す。
   class Parser
     attr_accessor :grammar

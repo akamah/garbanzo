@@ -176,6 +176,14 @@ EOS
       end
     end
 
+    # オプショナル
+    class Optional < Rule
+      attr_accessor :rule
+
+      def initialize(rule)
+        @rule = rule
+      end
+    end
 
     # オープンクラス。クラスのみんなには、内緒だよ！
     class ::Array
@@ -245,7 +253,15 @@ EOS
         else
           raise "rule: #{rule.rule_name} not found"
         end
-      end
+      when Rule::Optional
+        begin
+          parse_rule(rule.rule, source)
+        rescue Rule::ParseError
+          [nil, source]
+        end
+      else
+        raise "PARSE_RULE: error, not a rule #{rule}"
+      end      
     end
 
     # 構文拡張のやつです。

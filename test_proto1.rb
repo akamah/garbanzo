@@ -69,6 +69,10 @@ class TC_Proto1 < Test::Unit::TestCase
 
     ev.evaluate(Repr::Set.new(ds, key, val))
     assert_equal(val, ev.evaluate(Repr::Get.new(ds, key)))
-                 
+  end
+
+  def test_optional
+    s1 = build_parser(Rule::Optional.new(Rule::String.new("homu")))
+    assert_equal([nil, "mado"], s1.parse("mado"))
   end
 end

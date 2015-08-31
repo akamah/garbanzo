@@ -52,6 +52,43 @@ module Garbanzo
 
     # いわゆるNOP
     class Unit; end
+
+    # データストアオブジェクト。
+    class Store
+      attr_reader :table
+
+      def initialize(table)
+        @table = table
+      end
+
+      def []=(key, value)
+        table.[]=(key, value)
+      end
+
+      def [](key)
+        table.[](key)
+      end
+    end
+
+    # 内部表現としての文字列
+    class String
+      attr_reader :value
+
+      def initialize(value)
+        @value = value
+      end
+
+      def length
+        value.length
+      end
+    end
+
+    class Assign
+    end
+
+    class Load
+    end
+
     
     # 評価するやつ。変数とか文脈とか何も考えていないので単純
     class Evaluator

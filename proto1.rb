@@ -60,36 +60,50 @@ EOS
 
     Garbanzo.define_record_class(self, "Set", "object", "key", "value")  # データストアへの代入を表す
     Garbanzo.define_record_class(self, "Get", "object", "key")  # データストアからの読み出しを表す
+    Garbanzo.define_record_class(self, "While", "condition", "body") # ループ命令
 
     
     # 評価するやつ。変数とか文脈とか何も考えていないので単純
     class Evaluator
       def evaluate(program)
         case program
-        when Num, Unit, Store, Bool
+        when Num, Unit, Store, Bool, String
           program
         when Add
           Num.new(evaluate(program.left).num + evaluate(program.right).num)
         when Mult
           Num.new(evaluate(program.left).num * evaluate(program.right).num)
         when Equal
-          Bool.new(program.left.eql?(program.right))
+          Bool.new(evaluate(program.left).eql?(evaluate(program.right)))
         when Print
           result = evaluate(program.value)
           p result
           result
         when Set
-          obj, key, value = [program.object, program.key, program.value]
+          obj = evaluate(program.object)
+          key = evaluate(program.key)
+          val = evaluate(program.value)
 
           raise "SET: object is not a store #{obj}" unless obj.is_a? Store
-          obj.table[key] = value
+          obj.table[key] = val
         when Get
-          obj, key = [program.object, program.key]
-          raise "SET: object is not a store #{obj}" unless obj.is_a? Store
+          obj = evaluate(program.object)
+          key = evaluate(program.key)
           
+          raise "GET: object is not a store #{obj}" unless obj.is_a? Store
           obj.table[key]
+        when While
+          cond, body = [program.condition, program.body]
+          falseObj   = Bool.new(false)
+          result = Unit.new
+          
+          while evaluate(cond) != falseObj
+            result = evaluate(body)
+          end
+          
+          result
         else
-          raise "EVALUATE: argument is not a program"
+          raise "EVALUATE: argument is not a program: #{program}"
         end
       end
     end

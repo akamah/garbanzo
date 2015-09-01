@@ -9,9 +9,19 @@ grammar.rules[:number] = Rule::Function.new {|s|
     num = Repr::Num.new(md[0].to_i)
     [num, s[md.end(0)..-1]]
   else
-    raise Rules::ParseError, "expected number"
+    raise Rule::ParseError, "expected number"
   end
 }
+
+grammar.rules[:identifier] = Rule::Function.new {|s|
+  if md = s.match(/^[[:alpha:]]+/)
+    str = Repr::String.new(md[0])
+    [str, s[md.end(0)..-1]]
+  else
+    raise Rule::ParseError, "expected identifier, source = #{s}"
+  end
+}
+
 %}
 
 %{
@@ -19,20 +29,51 @@ grammar.rules[:sentence].children << ["print", "(", :expression, ")"].sequence {
   Repr::Print.new(n)
 }
 %}
-
 %{
-grammar.rules[:expression] = [
-  [:number, :expression_tail].sequence { |num, tail|
-    Repr::Add.new(num, tail)		       
-  }
-].choice
-
-grammar.rules[:expression_tail] = [
-  ["+", :expression, :expression_tail].sequence {|_, e, t|
-    Repr::Add.new(e, t)
-  },
-  [""].sequence {|_| Repr::Num.new(0)}
-].choice
+grammar.rules[:variable] = [:identifier].sequence { |id|
+  Repr::Get.new(Repr::Unit.new, id)
+}
 %}
 
-print(42+31)
+%{
+grammar.rules[:term] = [:number, :variable].choice
+%}
+
+%{
+grammar.rules[:expression] = Rule::Choice.new(
+  Rule::Bind.new(Rule::Call.new(:term)) { |n|
+    expression_rest = lambda {|lefts|
+    Rule::Optional.new(Rule::Bind.new([Rule::String.new('+'),
+                                       Rule::Call.new(:term)].sequence {|_, n| n }) { |n|
+                         expression_rest.call(Repr::Add.new(lefts, n))
+  		       }, lefts)
+
+    }
+    
+    expression_rest.call(n)
+  })
+%}
+
+%{
+grammar.rules[:condition] = [[:expression, "==", :expression].sequence {|l, _, r|
+                               Repr::Equal.new(l, r)
+                             }, [:expression, "!=", :expression].sequence {|l, _, r|
+                               Repr::NotEqual.new(l, r)
+                             }].choice
+%}
+
+%{
+grammar.rules[:sentence].children << [:identifier, "=", :expression].sequence { |id, _, x|
+  Repr::Set.new(Repr::Unit.new, id, x)
+}				
+%}
+
+%{
+grammar.rules[:sentence].children << ["while", :whitespace, :condition, :whitespace, :sentence].sequence {|_, _, cond, _, body|
+  Repr::While.new(cond, body)
+}
+%}
+
+i=0
+while i!=100 i=i+1
+print(i)

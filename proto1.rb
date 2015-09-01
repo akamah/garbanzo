@@ -16,7 +16,7 @@ module Garbanzo
     assignment = attrs.map {|x| "@#{x} = #{x}" }.join('; ')
 
     hash_def = attrs.map   {|x| "#{x}.hash" }.join(' ^ ')
-    eql_def  = attrs.map   {|x| "#{x}.eql?(other.#{x})" }.join(' && ')
+    eql_def  = (["class"] + attrs).map   {|x| "self.#{x}.eql?(other.#{x})" }.join(' && ')
     str = <<"EOS"
 class #{classname} < #{opts[:extend] || "Object"}
   #{attr_def}

@@ -75,4 +75,25 @@ class TC_Proto1 < Test::Unit::TestCase
     s1 = build_parser(Rule::Optional.new(Rule::String.new("homu")))
     assert_equal([nil, "mado"], s1.parse("mado"))
   end
+
+  include Repr
+  
+  def test_while_repr
+    ev = Repr::Evaluator.new
+    
+    sum  = String.new("sum")
+    a    = String.new("a")
+    env  = Store.new({ sum => Num.new(0), a => Num.new(0) })
+
+    # cond: (10 == a) == false
+    cond = Equal.new(Equal.new(Num.new(10), Get.new(env, a)), Bool.new(false))
+    body = Equal.new(Set.new(env, sum,
+                             Add.new(Get.new(env, sum), Get.new(env, a))),
+                     Set.new(env, a,
+                             Add.new(Num.new(1), Get.new(env, a))))
+    expr = While.new(cond, body)
+    ev.evaluate(expr)
+    
+    assert_equal(Num.new(45), ev.evaluate(Get.new(env, sum)))
+  end
 end

@@ -17,6 +17,7 @@ module Garbanzo
 
     hash_def = attrs.map   {|x| "#{x}.hash" }.join(' ^ ')
     eql_def  = (["class"] + attrs).map   {|x| "self.#{x}.eql?(other.#{x})" }.join(' && ')
+
     str = <<"EOS"
 class #{classname} < #{opts[:extend] || "Object"}
   #{attr_def}
@@ -53,6 +54,7 @@ EOS
     Garbanzo.define_record_class(self, "Add", "left", "right") # 言語の内部表現としての足し算
     Garbanzo.define_record_class(self, "Mult", "left", "right") # 言語の内部表現としての掛け算
     Garbanzo.define_record_class(self, "Equal", "left", "right") # 同じかどうかを判定
+    Garbanzo.define_record_class(self, "NotEqual", "left", "right") # 違うかどうかを判定
     
     Garbanzo.define_record_class(self, "Print", "value") # print式を意味する内部表現
     Garbanzo.define_record_class(self, "Unit")  # いわゆるNOP
@@ -65,9 +67,13 @@ EOS
     
     # 評価するやつ。変数とか文脈とか何も考えていないので単純
     class Evaluator
+      def initialize
+        @dot = Store.new({})
+      end
+      
       def evaluate(program)
         case program
-        when Num, Unit, Store, Bool, String
+        when Num, Store, Bool, String
           program
         when Add
           Num.new(evaluate(program.left).num + evaluate(program.right).num)
@@ -75,6 +81,8 @@ EOS
           Num.new(evaluate(program.left).num * evaluate(program.right).num)
         when Equal
           Bool.new(evaluate(program.left).eql?(evaluate(program.right)))
+        when NotEqual
+          Bool.new(!evaluate(program.left).eql?(evaluate(program.right)))
         when Print
           result = evaluate(program.value)
           p result
@@ -102,6 +110,8 @@ EOS
           end
           
           result
+        when Unit
+          @dot
         else
           raise "EVALUATE: argument is not a program: #{program}"
         end
@@ -181,6 +191,17 @@ EOS
       end
     end
 
+    # ルールを結合する
+    class Bind < Rule
+      attr_accessor :rule
+      attr_accessor :func
+
+      def initialize(rule, &func)
+        @rule = rule
+        @func = func        
+      end
+    end
+    
     # 関数で処理する。
     class Function < Rule
       attr_accessor :function
@@ -193,9 +214,11 @@ EOS
     # オプショナル
     class Optional < Rule
       attr_accessor :rule
+      attr_accessor :default
 
-      def initialize(rule)
+      def initialize(rule, default = nil)
         @rule = rule
+        @default = default
       end
     end
 
@@ -255,9 +278,9 @@ EOS
         parse_rule(rule.children[-1], source)
       when Rule::String
         if source.start_with?(rule.string)
-          return Repr::Unit.new, source[rule.string.length .. -1]                       
+          return Repr::String.new(rule.string), source[rule.string.length .. -1]                       
         else
-          raise Rule::ParseError, "expected #{rule.string}"
+          raise Rule::ParseError, "expected #{rule.string}, source = #{source}"
         end
       when Rule::Function
         rule.function.call(source)
@@ -271,8 +294,11 @@ EOS
         begin
           parse_rule(rule.rule, source)
         rescue Rule::ParseError
-          [nil, source]
+          [rule.default, source]
         end
+      when Rule::Bind
+        x, rest = parse_rule(rule.rule, source)
+        parse_rule(rule.func.call(x), rest)
       else
         raise "PARSE_RULE: error, not a rule #{rule}"
       end      
@@ -289,7 +315,7 @@ EOS
              self.instance_eval(to_eval, "(grammar_extension)")
              [Repr::Unit.new, source[idx..-1]]
            else
-             raise ParseError, "closing `%}' not found"
+             raise Rule::ParseError, "closing `%}' not found"
            end
          },
          "%}"].sequence { Repr::Unit.new })

@@ -135,6 +135,9 @@ EOS
   end
 
   module Rule
+    # 構文解析に失敗した時は、例外を投げて伝えることにする。
+    class ParseError < StandardError; end
+
     # ルール、パーサコンビネータで言う所のParser
     class Rule
       def to_rule
@@ -150,9 +153,28 @@ EOS
       end
     end
 
-    # 構文解析に失敗した時は、例外を投げて伝えることにする。
-    class ParseError < StandardError; end
+    # 無条件に成功するパーサ
+    class Success
+      attr_accessor :value
 
+      def initialize(value)
+        @value = value        
+      end
+    end
+
+    # 無条件に失敗するパーサ
+    class Fail
+      attr_accessor :message
+
+      def initialize(message = "failure")
+        @message = message
+      end
+    end
+    
+    # 任意の文字にマッチするパーサ
+    class Any
+    end
+    
     # 連続
     class Sequence < Rule
       attr_accessor :children

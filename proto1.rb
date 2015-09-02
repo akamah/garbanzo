@@ -85,7 +85,7 @@ EOS
           Bool.new(!evaluate(program.left).eql?(evaluate(program.right)))
         when Print
           result = evaluate(program.value)
-          p result
+          puts show(result)
           result
         when Set
           obj = evaluate(program.object)
@@ -114,6 +114,39 @@ EOS
           @dot
         else
           raise "EVALUATE: argument is not a program: #{program}"
+        end
+      end
+
+      def show(p)
+        case p
+        when Num
+          p.num.to_s
+        when Bool
+          p.value.to_s
+        when String
+          p.value.inspect
+        when Store
+          p.table.to_s
+        when Add
+          "(#{show(p.left)} + #{show(p.right)})"
+        when Mult
+          "(#{show(p.left)} * #{show(p.right)})"
+        when Equal
+          "(#{show(p.left)} == #{show(p.right)})"
+        when NotEqual
+          "(#{show(p.left)} != #{show(p.right)})"
+        when Print
+          "print(#{show(p.value)})"
+        when Set
+          "#{show(p.object)}.#{show(p.key)} = #{show(p.value)}"
+        when Get
+          "#{show(p.object)}.#{show(p.key)}"
+        when While
+          "while #{show(p.condition)} {\n  #{show(p.body)}\n}"
+        when Unit
+          "()"
+        else
+          raise "SHOW: argument is not a repr: #{p}"
         end
       end
     end
@@ -354,7 +387,7 @@ EOS
     def execute(src)
       while src != ""
         prog, src = @parser.parse(src)
-        puts "program: #{prog}"
+        puts "program: #{@evaluator.show(prog)}"
         @evaluator.evaluate(prog)
       end
     end

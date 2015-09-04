@@ -52,7 +52,7 @@ module Garbanzo
       end
     end
     
-    # 任意の文字にマッチするパーサ
+    # 任意の1文字にマッチするパーサ
     class Any
     end
     

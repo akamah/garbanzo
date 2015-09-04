@@ -19,6 +19,16 @@ module Garbanzo
 
     def parse_rule(rule, source)
       case rule
+      when Success
+        [rule.value, source]
+      when Fail
+        raise Rule::ParseError, rule.message
+      when Any
+        if source.size > 0
+          [source[0], source[1, -1]]
+        else
+          raise Rule::ParseError, "any: empty input string"
+        end
       when Rule::Sequence
         es, rest = rule.children.reduce([[], source]) do |accum, c|
           e1, r1 = parse_rule(c, accum[1])

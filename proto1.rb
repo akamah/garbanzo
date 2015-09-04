@@ -63,12 +63,49 @@ EOS
     Garbanzo.define_record_class(self, "Set", "object", "key", "value")  # データストアへの代入を表す
     Garbanzo.define_record_class(self, "Get", "object", "key")  # データストアからの読み出しを表す
     Garbanzo.define_record_class(self, "While", "condition", "body") # ループ命令
-
+    Garbanzo.define_record_class(self, "Begin", "body") # 逐次実行命令
+    
     
     # 評価するやつ。変数とか文脈とか何も考えていないので単純
     class Evaluator
       def initialize
         @dot = Store.new({})
+      end
+
+      HEAD = String.new("head")
+      REST = String.new("rest")
+
+      def null
+        Store.new({})
+      end
+        
+      def list_node?(obj)
+        obj.class == Store && obj.table.include?(HEAD) && obj.table.include?(REST)
+      end
+
+      def head(obj)
+        list_node?(obj) ? obj.table[HEAD] : Unit.new
+      end
+
+      def rest(obj)
+        list_node?(obj) ? obj.table[REST] : Unit.new
+      end
+      
+      def each_linear_list(lst)
+        while list_node?(lst)
+          yield head(lst)
+          lst = rest(lst)
+        end
+      end
+
+      def make_list(*objs)
+        l = null
+        objs.reduce(l) { |lst, obj|
+          lst.table[HEAD] = obj
+          lst.table[REST] = null
+          lst.table[REST]
+        }
+        l
       end
       
       def evaluate(program)
@@ -110,6 +147,10 @@ EOS
           end
           
           result
+#        when Begin
+#          each_linear_list(program.body) { |child|
+#            evaluate(child)
+#          }
         when Unit
           @dot
         else
@@ -142,7 +183,9 @@ EOS
         when Get
           "#{show(p.object)}.#{show(p.key)}"
         when While
-          "while #{show(p.condition)} {\n  #{show(p.body)}\n}"
+          "while #{show(p.condition)} #{show(p.body)}"
+        when Begin
+          "{\n" + show(p.body).gsub(/^/, '  ') + "}"
         when Unit
           "()"
         else

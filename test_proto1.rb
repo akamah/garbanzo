@@ -96,4 +96,28 @@ class TC_Proto1 < Test::Unit::TestCase
     
     assert_equal(Num.new(45), ev.evaluate(Get.new(env, sum)))
   end
+
+  def test_list_miscs
+    ev = Repr::Evaluator.new
+    
+    hoge = ev.make_list(String.new("mado"),
+                        String.new("homu"),
+                        String.new("saya"))
+    expected = Store.new({ String.new("head") => String.new("mado"),
+                           String.new("rest") => Store.new({ String.new("head") => String.new("homu"),
+                                                             String.new("rest") => Store.new({ String.new("head") => String.new("saya"),
+                                                                                               String.new("rest") => Store.new({})})})})
+    assert_equal(expected, hoge)
+    assert_equal(String.new("mado"), ev.head(hoge))
+
+    elms = []
+    ev.each_linear_list(hoge) { |x|
+      elms << x
+    }
+
+    assert_equal([String.new("mado"),
+                  String.new("homu"),
+                  String.new("saya")],
+                 elms)
+  end
 end

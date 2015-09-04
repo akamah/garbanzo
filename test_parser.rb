@@ -6,7 +6,7 @@ class TC_Parser < Test::Unit::TestCase
   include Garbanzo
   
   def build_parser(rule)
-    Parser.new(Rule::Grammar.new({ start: rule }, start = :start))
+    Parser.new(Rule::Grammar.new({ start: rule }, :start))
   end
   
   def test_sequence

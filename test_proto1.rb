@@ -7,6 +7,17 @@ class TC_Proto1 < Test::Unit::TestCase
   include Garbanzo
   include Repr
 
+  def test_wrapper
+    assert_equal(Num.new(1), 1.to_repr)
+    assert_equal(String.new("hoge"), "hoge".to_repr)
+    assert_equal(Store.new({ "num".to_repr => Num.new(1),
+                             "str".to_repr => String.new("hoge"),
+                             "true".to_repr => Bool.new(true) }),
+                 Store.new({ "num".to_repr => 1.to_repr,
+                             "str".to_repr => "hoge".to_repr,
+                             "true".to_repr => true.to_repr }))
+  end
+  
   def test_equal
     ev = Evaluator.new
 

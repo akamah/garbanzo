@@ -6,16 +6,29 @@ module Garbanzo
   module Repr
     # 内部表現のオブジェクトを適当に定義してくれるメソッド。
     def self.define_repr_class(mod, classname, *attrs, **opts)
-      attr_list = attrs.map {|x| ":" + x.to_s }.join(', ')
-      attr_def = attrs.length > 0 ? "attr_accessor " + attr_list : ""
-      arguments = attrs.join(', ')
+      attr_list  = attrs.map {|x| ":" + x.to_s }.join(', ')
+      attr_def   = attrs.length > 0 ? "attr_accessor " + attr_list : ""
+      arguments  = attrs.join(', ')
       assignment = attrs.map {|x| "@#{x} = #{x}" }.join('; ')
 
-      hash_def = attrs.map   {|x| "#{x}.hash" }.join(' ^ ')
-      eql_def  = (["class"] + attrs).map   {|x| "self.#{x}.eql?(other.#{x})" }.join(' && ')
+      hash_def   = attrs.map   {|x| "#{x}.hash" }.join(' ^ ')
+      eql_def    = (["class"] + attrs).map {|x| "self.#{x}.eql?(other.#{x})" }.join(' && ')
 
+#       to_repr    = ""
+#       if opts.include?(:wrapper)
+#         raise "attribute should be precisely 1 with wrapper class" if attrs.size != 1
+#         wraps = opts[:wrapper] 
+#         to_repr = <<"WRAPPER"
+# class ::#{wraps}
+#   def to_repr
+#     return Garbanzo::Repr::#{classname}.new(self)
+#   end
+# end
+# WRAPPER
+#       end
+      
       str = <<"EOS"
-class #{classname} < #{opts[:extend] || "Object"}
+class #{classname}
   #{attr_def}
   def initialize(#{arguments})
     #{assignment}
@@ -31,6 +44,10 @@ class #{classname} < #{opts[:extend] || "Object"}
 
   def ==(other)
     eql?(other)
+  end
+
+  def to_repr
+    self
   end
 end
 EOS
@@ -59,5 +76,27 @@ EOS
     define_repr_class(self, "Get", "object", "key")  # データストアからの読み出しを表す
     define_repr_class(self, "While", "condition", "body") # ループ命令
     define_repr_class(self, "Begin", "body") # 逐次実行命令
+
+    class ::Integer
+      def to_repr; Garbanzo::Repr::Num.new(self); end
+    end
+
+    class ::String
+      def to_repr; Garbanzo::Repr::String.new(self); end
+    end
+
+    class ::Hash
+      def to_repr
+        Garbanzo::Repr::Store.new(self.map {|k, v| [k, v.to_repr] }.to_h)
+      end
+    end
+
+    class ::TrueClass
+      def to_repr; Garbanzo::Repr::Bool.new(true); end
+    end
+
+    class ::FalseClass
+      def to_repr; Garbanzo::Repr::Bool.new(false); end
+    end
   end
 end

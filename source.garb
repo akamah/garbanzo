@@ -43,10 +43,10 @@ grammar.rules[:term] = [:number, :variable].choice
 grammar.rules[:expression] = Rule::Choice.new(
   Rule::Bind.new(Rule::Call.new(:term)) { |n|
     expression_rest = lambda {|lefts|
-    Rule::Optional.new(Rule::Bind.new([Rule::String.new('+'),
-                                       Rule::Call.new(:term)].sequence {|_, n| n }) { |n|
-                         expression_rest.call(Repr::Add.new(lefts, n))
-  		       }, lefts)
+    Rule::optional(Rule::Bind.new([Rule::String.new('+'),
+	 	                  Rule::Call.new(:term)].sequence {|_, n| n }) { |n|
+                                     expression_rest.call(Repr::Add.new(lefts, n))
+  	 	                  }, lefts)
 
     }
     
@@ -76,4 +76,4 @@ grammar.rules[:sentence].children << ["while", :whitespace, :condition, :whitesp
 
 i=0
 while i!=100 i=i+1
-print(i)
+print(i+100+1000)

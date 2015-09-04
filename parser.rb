@@ -62,12 +62,6 @@ module Garbanzo
         else
           raise "rule: #{rule.rule_name} not found"
         end
-      when Optional
-        begin
-          parse_rule(rule.rule, source)
-        rescue ParseError
-          [rule.default, source]
-        end
       when Bind
         x, rest = parse_rule(rule.rule, source)
         parse_rule(rule.func.call(x), rest)

@@ -114,17 +114,6 @@ module Garbanzo
       end
     end
 
-    # オプショナル
-    class Optional < Rule
-      attr_accessor :rule
-      attr_accessor :default
-
-      def initialize(rule, default = nil)
-        @rule = rule
-        @default = default
-      end
-    end
-
     # オープンクラス。クラスのみんなには、内緒だよ！
     class ::Array
       def sequence(&func); Sequence.new(*self.map(&:to_rule), &func); end

@@ -98,20 +98,18 @@ class TC_Proto1 < Test::Unit::TestCase
   end
 
   def test_list_miscs
-    ev = Repr::Evaluator.new
-    
-    hoge = ev.make_list(String.new("mado"),
-                        String.new("homu"),
-                        String.new("saya"))
+    hoge = Lib::make_list(String.new("mado"),
+                          String.new("homu"),
+                          String.new("saya"))
     expected = Store.new({ String.new("head") => String.new("mado"),
                            String.new("rest") => Store.new({ String.new("head") => String.new("homu"),
                                                              String.new("rest") => Store.new({ String.new("head") => String.new("saya"),
                                                                                                String.new("rest") => Store.new({})})})})
     assert_equal(expected, hoge)
-    assert_equal(String.new("mado"), ev.head(hoge))
+    assert_equal(String.new("mado"), Lib::head(hoge))
 
     elms = []
-    ev.each_linear_list(hoge) { |x|
+    Lib::each_linear_list(hoge) { |x|
       elms << x
     }
 
@@ -124,9 +122,9 @@ class TC_Proto1 < Test::Unit::TestCase
   def test_begin
     ev = Repr::Evaluator.new
 
-    command = Begin.new(ev.make_list(Set.new(Unit.new, String.new("a"), Num.new(3)),
-                                     Set.new(Unit.new, String.new("a"), Add.new(Num.new(2),
-                                                                      Get.new(Unit.new, String.new("a"))))))
+    command = Begin.new(Lib::make_list(Set.new(Unit.new, String.new("a"), Num.new(3)),
+                                       Set.new(Unit.new, String.new("a"), Add.new(Num.new(2),
+                                                                                  Get.new(Unit.new, String.new("a"))))))
 
     ev.evaluate(command)
     assert_equal(Num.new(5), ev.evaluate(Get.new(Unit.new, String.new("a"))), ev.show(command))

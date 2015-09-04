@@ -74,6 +74,17 @@ grammar.rules[:sentence].children << ["while", :whitespace, :condition, :whitesp
 }
 %}
 
+%{
+grammar.rules[:sentence].children << ["{", Rule::many(Call.new(:sentence)), "}"].sequence { |_, lst, _|
+  Repr::Begin.new(Lib::make_list(*lst))
+}
+%}
+
 i=0
-while i!=100 i=i+1
-print(i+100+1000)
+a=0
+
+while i!=100 {
+  i=i+1
+  a=a+i
+}
+print(a)

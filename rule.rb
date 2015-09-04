@@ -35,7 +35,7 @@ module Garbanzo
     end
 
     # 無条件に成功するパーサ
-    class Success
+    class Success < Rule
       attr_accessor :value
 
       def initialize(value)
@@ -44,7 +44,7 @@ module Garbanzo
     end
 
     # 無条件に失敗するパーサ
-    class Fail
+    class Fail < Rule
       attr_accessor :message
 
       def initialize(message = "failure")
@@ -53,7 +53,7 @@ module Garbanzo
     end
     
     # 任意の1文字にマッチするパーサ
-    class Any
+    class Any < Rule
     end
     
     # 連続
@@ -144,7 +144,7 @@ module Garbanzo
       def to_rule; Garbanzo::Rule::Function.new(&self); end
     end
 
-    def optional(rule, default = nil)
+    def self.optional(rule, default = nil)
       rule | Success.new(default)
     end
   end

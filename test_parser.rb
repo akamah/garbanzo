@@ -51,7 +51,7 @@ class TC_Parser < Test::Unit::TestCase
   end
 
   def test_optional
-    s1 = build_parser(Rule::Optional.new(Rule::String.new("homu")))
+    s1 = build_parser(Rule::optional("homu".to_rule, nil))
     assert_equal([nil, "mado"], s1.parse("mado"))
   end
 end

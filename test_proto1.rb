@@ -50,7 +50,7 @@ class TC_Proto1 < Test::Unit::TestCase
   end
 
   def test_equal
-    ev = Repr::Evaluator.new
+    ev = Evaluator.new
 
     assert_equal(true, Repr::Num.new(3) == Repr::Num.new(3))
     assert_equal(Repr::Num.new(3), Repr::Num.new(3))
@@ -79,7 +79,7 @@ class TC_Proto1 < Test::Unit::TestCase
   include Repr
   
   def test_while_repr
-    ev = Repr::Evaluator.new
+    ev = Evaluator.new
     
     sum  = String.new("sum")
     a    = String.new("a")
@@ -120,7 +120,7 @@ class TC_Proto1 < Test::Unit::TestCase
   end
 
   def test_begin
-    ev = Repr::Evaluator.new
+    ev = Evaluator.new
 
     command = Begin.new(Lib::make_list(Set.new(Unit.new, String.new("a"), Num.new(3)),
                                        Set.new(Unit.new, String.new("a"), Add.new(Num.new(2),

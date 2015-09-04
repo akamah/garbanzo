@@ -55,7 +55,7 @@ EOS
     Garbanzo.define_record_class(self, "Mult", "left", "right") # 言語の内部表現としての掛け算
     Garbanzo.define_record_class(self, "Equal", "left", "right") # 同じかどうかを判定
     Garbanzo.define_record_class(self, "NotEqual", "left", "right") # 違うかどうかを判定
-    
+
     Garbanzo.define_record_class(self, "Print", "value") # print式を意味する内部表現
     Garbanzo.define_record_class(self, "Unit")  # いわゆるNOP
     Garbanzo.define_record_class(self, "Store", "table")  # データストアオブジェクト
@@ -195,22 +195,23 @@ EOS
     end
   end
 
-  # 構文。つまり、名前をつけたルールの集合を持つもの。
-  class Grammar
-    attr_accessor :rules
-    attr_accessor :start_rule
-    
-    def initialize(rules = {}, start = :sentence)
-      @rules = rules
-      @start_rule = start
-    end
-
-    def start
-      return rules[start_rule]
-    end
-  end
 
   module Rule
+    # 構文。つまり、名前をつけたルールの集合を持つもの。
+    class Grammar
+      attr_accessor :rules
+      attr_accessor :start_rule
+      
+      def initialize(rules = {}, start = :sentence)
+        @rules = rules
+        @start_rule = start
+      end
+
+      def start
+        return rules[start_rule]
+      end
+    end
+    
     # 構文解析に失敗した時は、例外を投げて伝えることにする。
     class ParseError < StandardError; end
 
@@ -345,7 +346,7 @@ EOS
   class Parser
     attr_accessor :grammar
 
-    def initialize(grammar = Grammar.new)
+    def initialize(grammar = Rule::Grammar.new)
       @grammar = grammar
       install_grammar_extension
     end

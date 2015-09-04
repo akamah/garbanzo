@@ -120,4 +120,16 @@ class TC_Proto1 < Test::Unit::TestCase
                   String.new("saya")],
                  elms)
   end
+
+  def test_begin
+    ev = Repr::Evaluator.new
+
+    command = Begin.new(ev.make_list(Set.new(Unit.new, String.new("a"), Num.new(3)),
+                                     Set.new(Unit.new, String.new("a"), Add.new(Num.new(2),
+                                                                      Get.new(Unit.new, String.new("a"))))))
+
+    ev.evaluate(command)
+    assert_equal(Num.new(5), ev.evaluate(Get.new(Unit.new, String.new("a"))), ev.show(command))
+  end
 end
+

@@ -147,10 +147,10 @@ EOS
           end
           
           result
-#        when Begin
-#          each_linear_list(program.body) { |child|
-#            evaluate(child)
-#          }
+        when Begin
+          each_linear_list(program.body) { |child|
+            evaluate(child)
+          }
         when Unit
           @dot
         else

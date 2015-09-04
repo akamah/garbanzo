@@ -109,7 +109,7 @@ class TC_Proto1 < Test::Unit::TestCase
     assert_equal(String.new("mado"), Lib::head(hoge))
 
     elms = []
-    Lib::each_linear_list(hoge) { |x|
+    Lib::each_list(hoge) { |x|
       elms << x
     }
 

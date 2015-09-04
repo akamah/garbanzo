@@ -88,7 +88,7 @@ EOS
       list_node?(obj) ? obj.table[REST] : Unit.new
     end
     
-    def self.each_linear_list(lst)
+    def self.each_list(lst)
       while list_node?(lst)
         yield head(lst)
         lst = rest(lst)
@@ -299,7 +299,7 @@ EOS
         
         result
       when Begin
-        Lib::each_linear_list(program.body) { |child|
+        Lib::each_list(program.body) { |child|
           evaluate(child)
         }
       when Unit

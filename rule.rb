@@ -136,5 +136,14 @@ module Garbanzo
     def self.optional(rule, default = nil)
       rule | Success.new(default)
     end
+
+    def self.many(rule)
+      many_rec = lambda {|accum|
+        optional(Bind.new(rule) { |result|
+                   many_rec.call(accum + [result])
+                 }, accum)
+      }
+      many_rec.call([])
+    end
   end
 end

@@ -9,16 +9,18 @@
 
 module Garbanzo
   # 内部表現
-  def self.define_record_class(mod, classname, *attrs, **opts)
-    attr_list = attrs.map {|x| ":" + x.to_s }.join(', ')
-    attr_def = attrs.length > 0 ? "attr_accessor " + attr_list : ""
-    arguments = attrs.join(', ')
-    assignment = attrs.map {|x| "@#{x} = #{x}" }.join('; ')
+  module Repr
+    # 内部表現のオブジェクトを適当に定義してくれるメソッド。
+    def self.define_repr_class(mod, classname, *attrs, **opts)
+      attr_list = attrs.map {|x| ":" + x.to_s }.join(', ')
+      attr_def = attrs.length > 0 ? "attr_accessor " + attr_list : ""
+      arguments = attrs.join(', ')
+      assignment = attrs.map {|x| "@#{x} = #{x}" }.join('; ')
 
-    hash_def = attrs.map   {|x| "#{x}.hash" }.join(' ^ ')
-    eql_def  = (["class"] + attrs).map   {|x| "self.#{x}.eql?(other.#{x})" }.join(' && ')
+      hash_def = attrs.map   {|x| "#{x}.hash" }.join(' ^ ')
+      eql_def  = (["class"] + attrs).map   {|x| "self.#{x}.eql?(other.#{x})" }.join(' && ')
 
-    str = <<"EOS"
+      str = <<"EOS"
 class #{classname} < #{opts[:extend] || "Object"}
   #{attr_def}
   def initialize(#{arguments})
@@ -38,32 +40,31 @@ class #{classname} < #{opts[:extend] || "Object"}
   end
 end
 EOS
-    if $DEBUG
-      puts str
-      p opts
+      if $DEBUG
+        puts str
+        p opts
+      end
+      
+      mod.module_eval(str, classname)
     end
     
-    mod.module_eval(str, classname)
-  end
-  
-  module Repr
-    Garbanzo.define_record_class(self, "Num", "num") # 言語の内部表現としての整数
-    Garbanzo.define_record_class(self, "String", "value")  # 内部表現としての文字列
-    Garbanzo.define_record_class(self, "Bool", "value")  # 内部表現としての文字列
+    define_repr_class(self, "Num", "num") # 言語の内部表現としての整数
+    define_repr_class(self, "String", "value")  # 内部表現としての文字列
+    define_repr_class(self, "Bool", "value")  # 内部表現としての文字列
 
-    Garbanzo.define_record_class(self, "Add", "left", "right") # 言語の内部表現としての足し算
-    Garbanzo.define_record_class(self, "Mult", "left", "right") # 言語の内部表現としての掛け算
-    Garbanzo.define_record_class(self, "Equal", "left", "right") # 同じかどうかを判定
-    Garbanzo.define_record_class(self, "NotEqual", "left", "right") # 違うかどうかを判定
+    define_repr_class(self, "Add", "left", "right") # 言語の内部表現としての足し算
+    define_repr_class(self, "Mult", "left", "right") # 言語の内部表現としての掛け算
+    define_repr_class(self, "Equal", "left", "right") # 同じかどうかを判定
+    define_repr_class(self, "NotEqual", "left", "right") # 違うかどうかを判定
 
-    Garbanzo.define_record_class(self, "Print", "value") # print式を意味する内部表現
-    Garbanzo.define_record_class(self, "Unit")  # いわゆるNOP
-    Garbanzo.define_record_class(self, "Store", "table")  # データストアオブジェクト
+    define_repr_class(self, "Print", "value") # print式を意味する内部表現
+    define_repr_class(self, "Unit")  # いわゆるNOP
+    define_repr_class(self, "Store", "table")  # データストアオブジェクト
 
-    Garbanzo.define_record_class(self, "Set", "object", "key", "value")  # データストアへの代入を表す
-    Garbanzo.define_record_class(self, "Get", "object", "key")  # データストアからの読み出しを表す
-    Garbanzo.define_record_class(self, "While", "condition", "body") # ループ命令
-    Garbanzo.define_record_class(self, "Begin", "body") # 逐次実行命令
+    define_repr_class(self, "Set", "object", "key", "value")  # データストアへの代入を表す
+    define_repr_class(self, "Get", "object", "key")  # データストアからの読み出しを表す
+    define_repr_class(self, "While", "condition", "body") # ループ命令
+    define_repr_class(self, "Begin", "body") # 逐次実行命令
     
     
     # 評価するやつ。変数とか文脈とか何も考えていないので単純

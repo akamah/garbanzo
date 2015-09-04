@@ -143,5 +143,9 @@ module Garbanzo
     class ::Proc
       def to_rule; Garbanzo::Rule::Function.new(&self); end
     end
+
+    def optional(rule, default = nil)
+      rule | Success.new(default)
+    end
   end
 end

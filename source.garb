@@ -6,7 +6,6 @@ grammar.rules[:sentence].children << Rule::whitespaces
 grammar.rules[:number] = Rule::many_one(Rule::one_of("0123456789")).map {|as|
   as.map(&:value).join.to_i.to_repr
 }
-
 grammar.rules[:identifier] = Rule::many_one(Rule::one_of("abcdefghijklmnopqrstuvwxyz")).map {|as|
   as.map(&:value).join.to_repr
 }
@@ -17,14 +16,26 @@ grammar.rules[:sentence].children << ["print", "(", :expression, ")"].sequence {
   Repr::Print.new(n)
 }
 #}
+
 #{
-grammar.rules[:variable] = [:identifier].sequence { |id|
-  Repr::Get.new(Repr::Dot.new, id)
+grammar.rules[:variable]  = [:identifier].sequence {|str|
+  Repr::Get.new(Repr::Dot.new, str)
 }
+grammar.rules[:primitive] = [:number, :variable].choice
 #}
 
 #{
-grammar.rules[:term] = [:number, :variable].choice
+grammar.rules[:primitive].children <<
+  "[]".to_rule.map { Repr::Store.new({}) }
+#}
+
+#{
+grammar.rules[:term] = 
+  [:primitive, Rule::many(Rule::String.new("/") >> :identifier)].sequence { |a, idents|
+  idents.reduce(a) { |body, key|
+    Repr::Get.new(body, key)
+  }
+}
 #}
 
 #{
@@ -51,9 +62,15 @@ grammar.rules[:condition] = [[:expression, "==", :expression].sequence {|l, _, r
 #}
 
 #{
-grammar.rules[:sentence].children << [:identifier, "=", :expression].sequence { |id, _, x|
-  Repr::Set.new(Repr::Dot.new, id, x)
-}				
+grammar.rules[:sentence].children <<
+  [:expression, "=", :expression].sequence {|object, _, expr|
+  case object
+  when Repr::Get
+    Repr::Set.new(object.object, object.key, expr)
+  else
+    Repr::Set.new(Repr::Dot.new, object, expr)
+  end
+}
 #}
 
 #{
@@ -68,10 +85,6 @@ grammar.rules[:sentence].children << ["{", Rule::many(Call.new(:sentence)), "}"]
 }
 #}
 
-#{
-grammar.rules[:term].children <<
-  "[]".to_rule.map { Repr::Store.new({}) }
-#}
 
 i=0
 a=0
@@ -86,4 +99,6 @@ while i!=10 {
 }
 
 store=[]
-print(store)
+store/hoge=[]
+store/hoge/hige=42
+print(store/hoge/hige)

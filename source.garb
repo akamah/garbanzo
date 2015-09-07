@@ -19,7 +19,7 @@ grammar.rules[:sentence].children << ["print", "(", :expression, ")"].sequence {
 #}
 #{
 grammar.rules[:variable] = [:identifier].sequence { |id|
-  Repr::Get.new(Repr::Unit.new, id)
+  Repr::Get.new(Repr::Dot.new, id)
 }
 #}
 
@@ -52,7 +52,7 @@ grammar.rules[:condition] = [[:expression, "==", :expression].sequence {|l, _, r
 
 #{
 grammar.rules[:sentence].children << [:identifier, "=", :expression].sequence { |id, _, x|
-  Repr::Set.new(Repr::Unit.new, id, x)
+  Repr::Set.new(Repr::Dot.new, id, x)
 }				
 #}
 

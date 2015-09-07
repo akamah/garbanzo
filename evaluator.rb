@@ -44,7 +44,7 @@ module Garbanzo
       when While
         cond, body = [program.condition, program.body]
         falseObj   = Bool.new(false)
-        result = Unit.new
+        result = Bool.new(true)
         
         while evaluate(cond) != falseObj
           result = evaluate(body)
@@ -55,7 +55,7 @@ module Garbanzo
         Lib::each_list(program.body) { |child|
           evaluate(child)
         }
-      when Unit
+      when Dot
         @dot
       else
         raise "EVALUATE: argument is not a program: #{program}"
@@ -92,8 +92,8 @@ module Garbanzo
         "while #{show(p.condition)} #{show(p.body)}"
       when Begin
         "{\n" + show(p.body).gsub(/^/, '  ') + "}"
-      when Unit
-        "()"
+      when Dot
+        "."
       else
         raise "SHOW: argument is not a repr: #{p}"
       end

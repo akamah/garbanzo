@@ -39,12 +39,12 @@ module Garbanzo
            if idx
              to_eval = source[0..idx-1]
              @parser.instance_eval(to_eval, "(grammar_extension)")
-             [Repr::Unit.new, source[idx..-1]]
+             [Repr::Bool.new(false), source[idx..-1]]
            else
              raise Rule::ParseError, "closing `#}' not found"
            end
          },
-         '#}'].sequence { Repr::Unit.new })
+         '#}'].sequence { Repr::Bool.new(false) })
     end
   end
 end

@@ -17,11 +17,11 @@ module Garbanzo
     end
 
     def self.head(obj)
-      list_node?(obj) ? obj.table[HEAD] : Unit.new
+      list_node?(obj) ? obj.table[HEAD] : Bool.new(false)
     end
 
     def self.rest(obj)
-      list_node?(obj) ? obj.table[REST] : Unit.new
+      list_node?(obj) ? obj.table[REST] : Bool.new(false)
     end
     
     def self.each_list(lst)

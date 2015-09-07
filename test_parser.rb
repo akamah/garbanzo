@@ -54,4 +54,13 @@ class TC_Parser < Test::Unit::TestCase
     s1 = build_parser(Rule::optional("homu".to_rule, nil))
     assert_equal([nil, "mado"], s1.parse("mado"))
   end
+
+  def test_one_of
+    s1 = build_parser(Rule::many_one(Rule::one_of("1234567890")))
+    assert_equal([%w(1 4 2 8 5 7).map{|x| x.to_repr}, "hoge"], s1.parse("142857hoge"))
+    assert_raise(Rule::ParseError) {
+      s1.parse("hoge")
+    }
+  end
 end
+

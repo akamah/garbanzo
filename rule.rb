@@ -145,5 +145,16 @@ module Garbanzo
       }
       many_rec.call([])
     end
+
+    def self.many_one(rule)
+      [rule, many(rule)].sequence {|r, rs|
+        [r] + rs
+      }
+    end
+
+    # 与えられた文字列中のある一文字にマッチする
+    def self.one_of(chars)
+      chars.split('').choice
+    end
   end
 end

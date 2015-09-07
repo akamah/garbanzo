@@ -26,7 +26,9 @@ module Garbanzo
       end
 
       def >>(other)
-        Sequence.new(self, other.to_rule)
+        Sequence.new(self, other.to_rule) { |a, b|
+          b
+        }
       end
 
       def |(other)

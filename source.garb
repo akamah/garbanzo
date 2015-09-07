@@ -39,18 +39,12 @@ grammar.rules[:term] =
 #}
 
 #{
-grammar.rules[:expression] = Rule::Choice.new(
-  Rule::Bind.new(Rule::Call.new(:term)) { |n|
-    expression_rest = lambda {|lefts|
-      Rule::optional(Rule::Bind.new([Rule::String.new('+'),
-	 	                     Rule::Call.new(:term)].sequence {|_, n| n }) { |n|
-                       expression_rest.call(Repr::Add.new(lefts, n))
-  	 	     }, lefts)
-
-    }
-    
-    expression_rest.call(n)
-  })
+grammar.rules[:expression] =
+  [:term, Rule::many(Rule::String.new('+') >> :term)].sequence { |num, adds|
+  adds.reduce(num) { |expr, adder|
+    Repr::Add.new(expr, adder)
+  }
+}
 #}
 
 #{
@@ -101,4 +95,4 @@ while i!=10 {
 store=[]
 store/hoge=[]
 store/hoge/hige=42
-print(store/hoge/hige)
+print(store/hoge)

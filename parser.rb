@@ -1,7 +1,7 @@
 # coding: utf-8
 
+require './repr.rb'
 require './rule.rb'
-
 
 module Garbanzo
 # 構文解析を行い、意味を持ったオブジェクトを返す。

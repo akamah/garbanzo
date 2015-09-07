@@ -171,6 +171,16 @@ module Garbanzo
       many_one(whitespace).map { " ".to_repr }
     end
 
-    
+    def self.split_by_spaces(rule, *rules)
+      rules.reduce([rule]) { | accum, r|
+        accum + [whitespaces, r]
+      }.sequence.map {|results|
+        a = []
+        results.each_with_index {|item, idx|
+          a << item if idx % 2 == 0
+        }
+        a
+      }
+    end
   end
 end

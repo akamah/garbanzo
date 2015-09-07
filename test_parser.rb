@@ -62,5 +62,10 @@ class TC_Parser < Test::Unit::TestCase
       s1.parse("hoge")
     }
   end
+
+  def test_split_by_spaces
+    s1 = build_parser(Rule::split_by_spaces("mado".to_rule, "homu".to_rule))
+    assert_equal([%w(mado homu).map(&:to_repr), "saya"], s1.parse("mado homusaya"))
+  end
 end
 

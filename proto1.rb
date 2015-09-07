@@ -33,18 +33,18 @@ module Garbanzo
     # 構文拡張のやつです。
     def install_grammar_extension
       @parser.grammar.rules[:sentence] = Rule::Choice.new(
-        ["%{",
+        ['#{',
          Rule::Function.new { |source|
-           idx = source.index('%}')
+           idx = source.index('#}')
            if idx
              to_eval = source[0..idx-1]
              @parser.instance_eval(to_eval, "(grammar_extension)")
              [Repr::Unit.new, source[idx..-1]]
            else
-             raise Rule::ParseError, "closing `%}' not found"
+             raise Rule::ParseError, "closing `#}' not found"
            end
          },
-         "%}"].sequence { Repr::Unit.new })
+         '#}'].sequence { Repr::Unit.new })
     end
   end
 end

@@ -1,9 +1,9 @@
-%{
+#{
 grammar.rules[:whitespace] = ["\n", " "].choice;
 grammar.rules[:sentence].children << Rule::Call.new(:whitespace);
-%}
+#}
 
-%{
+#{
 grammar.rules[:number] = Rule::Function.new {|s|
   if md = s.match(/^\d+/)
     num = Repr::Num.new(md[0].to_i)
@@ -22,24 +22,24 @@ grammar.rules[:identifier] = Rule::Function.new {|s|
   end
 }
 
-%}
+#}
 
-%{
+#{
 grammar.rules[:sentence].children << ["print", "(", :expression, ")"].sequence { |_, _, n, _|
   Repr::Print.new(n)
 }
-%}
-%{
+#}
+#{
 grammar.rules[:variable] = [:identifier].sequence { |id|
   Repr::Get.new(Repr::Unit.new, id)
 }
-%}
+#}
 
-%{
+#{
 grammar.rules[:term] = [:number, :variable].choice
-%}
+#}
 
-%{
+#{
 grammar.rules[:expression] = Rule::Choice.new(
   Rule::Bind.new(Rule::Call.new(:term)) { |n|
     expression_rest = lambda {|lefts|
@@ -52,33 +52,33 @@ grammar.rules[:expression] = Rule::Choice.new(
     
     expression_rest.call(n)
   })
-%}
+#}
 
-%{
+#{
 grammar.rules[:condition] = [[:expression, "==", :expression].sequence {|l, _, r|
                                Repr::Equal.new(l, r)
                              }, [:expression, "!=", :expression].sequence {|l, _, r|
                                Repr::NotEqual.new(l, r)
                              }].choice
-%}
+#}
 
-%{
+#{
 grammar.rules[:sentence].children << [:identifier, "=", :expression].sequence { |id, _, x|
   Repr::Set.new(Repr::Unit.new, id, x)
 }				
-%}
+#}
 
-%{
+#{
 grammar.rules[:sentence].children << ["while", :whitespace, :condition, :whitespace, :sentence].sequence {|_, _, cond, _, body|
   Repr::While.new(cond, body)
 }
-%}
+#}
 
-%{
+#{
 grammar.rules[:sentence].children << ["{", Rule::many(Call.new(:sentence)), "}"].sequence { |_, lst, _|
   Repr::Begin.new(Lib::make_list(*lst))
 }
-%}
+#}
 
 i=0
 a=0

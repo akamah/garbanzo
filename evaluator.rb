@@ -71,7 +71,9 @@ module Garbanzo
       when String
         p.value.inspect
       when Store
-        p.table.to_s
+        "{" + p.table.map {|k, v|
+          show(k) + ":\n" + show(v).gsub(/^/, '  ')
+        }.to_a.join("\n") + "}"
       when Add
         "(#{show(p.left)} + #{show(p.right)})"
       when Mult

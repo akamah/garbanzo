@@ -85,9 +85,9 @@ module Garbanzo
       when Print
         "print(#{show(p.value)})"
       when Set
-        "#{show(p.object)}.#{show(p.key)} = #{show(p.value)}"
+        "#{show(p.object)}/#{show(p.key)} = #{show(p.value)}"
       when Get
-        "#{show(p.object)}.#{show(p.key)}"
+        "#{show(p.object)}/#{show(p.key)}"
       when While
         "while #{show(p.condition)} #{show(p.body)}"
       when Begin

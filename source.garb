@@ -1,6 +1,5 @@
 #{
-grammar.rules[:whitespace] = ["\n", " "].choice;
-grammar.rules[:sentence].children << Rule::Call.new(:whitespace);
+grammar.rules[:sentence].children << Rule::whitespaces
 #}
 
 #{
@@ -43,10 +42,10 @@ grammar.rules[:term] = [:number, :variable].choice
 grammar.rules[:expression] = Rule::Choice.new(
   Rule::Bind.new(Rule::Call.new(:term)) { |n|
     expression_rest = lambda {|lefts|
-    Rule::optional(Rule::Bind.new([Rule::String.new('+'),
-	 	                  Rule::Call.new(:term)].sequence {|_, n| n }) { |n|
-                                     expression_rest.call(Repr::Add.new(lefts, n))
-  	 	                  }, lefts)
+      Rule::optional(Rule::Bind.new([Rule::String.new('+'),
+	 	                     Rule::Call.new(:term)].sequence {|_, n| n }) { |n|
+                       expression_rest.call(Repr::Add.new(lefts, n))
+  	 	     }, lefts)
 
     }
     
@@ -69,7 +68,7 @@ grammar.rules[:sentence].children << [:identifier, "=", :expression].sequence { 
 #}
 
 #{
-grammar.rules[:sentence].children << ["while", :whitespace, :condition, :whitespace, :sentence].sequence {|_, _, cond, _, body|
+grammar.rules[:sentence].children << ["while", Rule::whitespaces, :condition, Rule::whitespaces, :sentence].sequence {|_, _, cond, _, body|
   Repr::While.new(cond, body)
 }
 #}
@@ -85,10 +84,10 @@ a=0
 b=1
 
 while i!=10 {
-  i=i+1
-  tmp=b
-  b=a+b
-  a=tmp
-  print(a)
-}
+        i=i+1
+        tmp=b
+        b=a+b
+        a=tmp
+        print(a)
+      }
 

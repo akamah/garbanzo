@@ -32,6 +32,12 @@ module Garbanzo
       def |(other)
         Choice.new(self, other.to_rule)
       end
+
+      def map(&f)
+        Bind.new(self) { |result|
+          Success.new(f.call(result))
+        }
+      end
     end
 
     # 無条件に成功するパーサ
@@ -156,5 +162,15 @@ module Garbanzo
     def self.one_of(chars)
       chars.split('').choice
     end
+
+    def self.whitespace
+      one_of(" \n\r\t")
+    end
+
+    def self.whitespaces
+      many_one(whitespace).map { " ".to_repr }
+    end
+
+    
   end
 end

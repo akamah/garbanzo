@@ -14,8 +14,10 @@ module Garbanzo
 
     def evaluate(program)
       case program
-      when Num, Store, Bool, String
+      when Num, Bool, String
         program
+      when Store
+        Repr::Store.new(program.table.map {|k, v| [k, evaluate(v)] }.to_h)
       when Add
         Num.new(evaluate(program.left).num + evaluate(program.right).num)
       when Mult

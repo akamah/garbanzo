@@ -92,5 +92,14 @@ class TC_Proto1 < Test::Unit::TestCase
     ev.evaluate(command)
     assert_equal(Num.new(5), ev.evaluate(Get.new(Dot.new, String.new("a"))), ev.show(command))
   end
+
+  def test_function
+    ev = Evaluator.new
+
+    func = Function.new(Store.new({}), Add.new(Get.new(Dot.new, String.new("a")), Num.new(10)))
+    call = Call.new(func, Store.new({String.new('a') => Num.new(32)}))
+
+    assert_equal(Num.new(42), ev.evaluate(call))
+  end
 end
 

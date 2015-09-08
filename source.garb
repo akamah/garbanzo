@@ -39,12 +39,23 @@ grammar.rules[:term] =
 #}
 
 #{
-grammar.rules[:expression] =
+grammar.rules[:addition] = 
   [:term, Rule::many(Rule::String.new('+') >> :term)].sequence { |num, adds|
   adds.reduce(num) { |expr, adder|
     Repr::Add.new(expr, adder)
   }
 }
+#}
+
+#{
+grammar.rules[:function] =
+  ["^", :sentence].sequence {|_, body|
+    Repr::Function.new(nil, body)
+  }
+#}
+
+#{
+grammar.rules[:expression] = [:addition, :function].choice
 #}
 
 #{
@@ -75,10 +86,11 @@ grammar.rules[:sentence].children << ["while", Rule::whitespaces, :condition, Ru
 
 #{
 grammar.rules[:sentence].children << ["{", Rule::many(Call.new(:sentence)), "}"].sequence { |_, lst, _|
-  newenv = Repr::Store.new({ "..".to_repr => Repr::Dot.new })
-  enter  = Repr::SetEnv.new(newenv)
+  newstore = Repr::Set.new(Repr::Dot.new, "nextEnv".to_repr, Repr::Store.new({}))				  
+  newenv = Repr::Set.new(Repr::Get.new(Repr::Dot.new, "nextEnv".to_repr), "..".to_repr, Repr::Dot.new)
+  enter  = Repr::SetEnv.new(Repr::Get.new(Repr::Dot.new, "nextEnv".to_repr))
   leave  = Repr::SetEnv.new(Repr::Get.new(Repr::Dot.new, "..".to_repr))
-  Repr::Begin.new(Lib::make_list(enter, *lst, leave))
+  Repr::Begin.new(Lib::make_list(newstore, newenv, enter, *lst, leave))
 }
 #}
 
@@ -99,3 +111,6 @@ store=[]
 store/hoge=[]
 store/hoge/hige=42
 print(store/hoge)
+
+f=^print(a+b+c)
+

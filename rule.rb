@@ -173,6 +173,12 @@ module Garbanzo
       many_one(whitespace).map { " ".to_repr }
     end
 
+    def self.separate_by(rule, separator)
+      optional([rule, many(separator >> rule)].sequence { |a, rest|
+                 [a] + rest
+               }, [])
+    end
+    
     def self.split_by_spaces(rule, *rules)
       rules.reduce([rule]) { | accum, r|
         accum + [whitespaces, r]

@@ -78,6 +78,10 @@ EOS
 
     define_repr_class(self, "Dot")  # 現在の環境を取得
     define_repr_class(self, "SetEnv", "env") # 拡張
+
+    define_repr_class(self, "Function", "env", "body") # 関数
+    define_repr_class(self, "Call", "func", "args") # 呼び出し
+    
     
     class ::Integer
       def to_repr; Garbanzo::Repr::Num.new(self); end

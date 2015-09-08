@@ -17,7 +17,7 @@ module Garbanzo
       when Num, Bool, String
         program
       when Store
-        Repr::Store.new(program.table.map {|k, v| [k, evaluate(v)] }.to_h)
+        program
       when Add
         Num.new(evaluate(program.left).num + evaluate(program.right).num)
       when Mult
@@ -41,7 +41,7 @@ module Garbanzo
         obj = evaluate(program.object)
         key = evaluate(program.key)
         
-        raise "GET: object is not a store #{obj}" unless obj.is_a? Store
+        raise "GET: object #{obj.inspect} is not a store #{program.inspect}" unless obj.is_a? Store
         obj.table[key]
       when While
         cond, body = [program.condition, program.body]
@@ -61,6 +61,23 @@ module Garbanzo
         @dot
       when SetEnv
         @dot = evaluate(program.env)
+      when Function
+        program
+      when Call
+        f = evaluate(program.func)
+        a = evaluate(program.args)
+        
+        raise "EVALUATE: callee is not a function: #{program.func}" unless f.is_a? Function
+        raise "EVALUATE: arguments is not a data store: #{program.args}" unless a.is_a? Store
+
+        oldenv = @dot
+        a.table["..".to_repr] = f.env # 環境を拡張
+
+        @dot = a
+        result = evaluate(f.body)
+        @dot = oldenv
+
+        result
       else
         raise "EVALUATE: argument is not a program: #{program}"
       end

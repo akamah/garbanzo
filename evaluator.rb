@@ -57,6 +57,8 @@ module Garbanzo
         }
       when Dot
         @dot
+      when SetEnv
+        @dot = evaluate(program.env)
       else
         raise "EVALUATE: argument is not a program: #{program}"
       end
@@ -94,6 +96,8 @@ module Garbanzo
         "{\n" + show(p.body).gsub(/^/, '  ') + "}"
       when Dot
         "."
+      when SetEnv
+        "setenv #{show(p.env)}"
       else
         raise "SHOW: argument is not a repr: #{p}"
       end

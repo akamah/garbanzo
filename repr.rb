@@ -69,7 +69,6 @@ EOS
     define_repr_class(self, "NotEqual", "left", "right") # 違うかどうかを判定
 
     define_repr_class(self, "Print", "value") # print式を意味する内部表現
-    define_repr_class(self, "Dot")  # 現在の環境を取得
     define_repr_class(self, "Store", "table")  # データストアオブジェクト
 
     define_repr_class(self, "Set", "object", "key", "value")  # データストアへの代入を表す
@@ -77,6 +76,9 @@ EOS
     define_repr_class(self, "While", "condition", "body") # ループ命令
     define_repr_class(self, "Begin", "body") # 逐次実行命令
 
+    define_repr_class(self, "Dot")  # 現在の環境を取得
+    define_repr_class(self, "SetEnv", "env") # 拡張
+    
     class ::Integer
       def to_repr; Garbanzo::Repr::Num.new(self); end
     end

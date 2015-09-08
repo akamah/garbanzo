@@ -12,7 +12,7 @@ grammar.rules[:identifier] = Rule::many_one(Rule::one_of("abcdefghijklmnopqrstuv
 #}
 
 #{
-grammar.rules[:sentence].children << ["print", "(", :expression, ")"].sequence { |_, _, n, _|
+grammar.rules[:sentence].children << ["print", " ", :expression].sequence { |_, _, n|
   Repr::Print.new(n)
 }
 #}
@@ -104,13 +104,13 @@ while i!=10 {
   tmp=../b
   ../b=../a+../b
   ../a=tmp
-  print(../a)
+  print ../a
 }
 
 store=[]
 store/hoge=[]
 store/hoge/hige=42
-print(store/hoge)
+print store/hoge
 
-f=^print(a+b+c)
+f=^print a+b+c
 

@@ -41,28 +41,6 @@ module Garbanzo
     end
 
     module Private
-      # 無条件に成功するパーサ
-      class Success < Rule
-        attr_accessor :value
-
-        def initialize(value)
-          @value = value        
-        end
-      end
-
-      # 無条件に失敗するパーサ
-      class Fail < Rule
-        attr_accessor :message
-
-        def initialize(message = "failure")
-          @message = message
-        end
-      end
-      
-      # 任意の1文字にマッチするパーサ
-      class Any < Rule
-      end
-      
       # 連続
       class Sequence < Rule
         attr_accessor :children
@@ -144,15 +122,21 @@ module Garbanzo
     # リファクタリングして、Successなどのクラスを除去したい。
     # そのために、一旦既存のクラスをメソッドに置き換えることとした。
     def self.success(result)
-      Private::Success.new(result)
+      function {|s| [result, s] }
     end
 
     def self.fail(message = "failure")
-      Private::Fail.new(message)
+      function {|s| throw ParseError, message }
     end
 
     def self.any
-      Private::Any.new
+      function {|s|
+        if source.size > 0
+          [source[0], source[1, -1]]
+        else
+          raise ParseError, "any: empty input string"
+        end
+      }        
     end
 
     def self.sequence(*children, &func)

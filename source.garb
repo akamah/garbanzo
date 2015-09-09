@@ -37,7 +37,7 @@ grammar.rules[:call] = [:primitive, "(", :expression, ")"].sequence {|func, _, a
 
 #{
 grammar.rules[:term] = 
-  [:call, Rule::many(Rule::String.new("/") >> :identifier)].sequence { |a, idents|
+  [:call, Rule::many(Rule::string("/") >> :identifier)].sequence { |a, idents|
   idents.reduce(a) { |body, key|
     Repr::Get.new(body, key)
   }
@@ -46,7 +46,7 @@ grammar.rules[:term] =
 
 #{
 grammar.rules[:addition] = 
-  [:term, Rule::many(Rule::String.new('+') >> :term)].sequence { |num, adds|
+  [:term, Rule::many(Rule::string('+') >> :term)].sequence { |num, adds|
   adds.reduce(num) { |expr, adder|
     Repr::Add.new(expr, adder)
   }

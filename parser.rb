@@ -7,6 +7,7 @@ module Garbanzo
 # 構文解析を行い、意味を持ったオブジェクトを返す。
   class Parser
     include Rule
+    include Rule::Private
     
     attr_accessor :grammar
 

@@ -32,9 +32,9 @@ module Garbanzo
     
     # 構文拡張のやつです。
     def install_grammar_extension
-      @parser.grammar.rules[:sentence] = Rule::Choice.new(
+      @parser.grammar.rules[:sentence] = Rule::choice(
         ['#{',
-         Rule::Function.new { |source|
+         Rule::function { |source|
            idx = source.index('#}')
            if idx
              to_eval = source[0..idx-1]

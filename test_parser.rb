@@ -10,15 +10,15 @@ class TC_Parser < Test::Unit::TestCase
   end
   
   def test_sequence
-    s1 = build_parser(Rule::Sequence.new(Rule::String.new("mado"),
-                                         Rule::String.new("homu"),
-                                         Rule::String.new("saya")))
+    s1 = build_parser(Rule::sequence(Rule::string("mado"),
+                                     Rule::string("homu"),
+                                     Rule::string("saya")))
     assert_equal("kyou", s1.parse("madohomusayakyou")[1])
     assert_raise(Rule::ParseError) {
       s1.parse("madohomumami")
     }
 
-    s2 = build_parser(Rule::Sequence.new(Rule::String.new("mado"), Rule::String.new("homu")) { |*args|
+    s2 = build_parser(Rule::sequence(Rule::string("mado"), Rule::string("homu")) { |*args|
                         args.length
                       })
 
@@ -26,9 +26,9 @@ class TC_Parser < Test::Unit::TestCase
   end
 
   def test_choice
-    s2 = build_parser(Rule::Choice.new(Rule::String.new("mado"),
-                                       Rule::String.new("homu"),
-                                       Rule::String.new("saya")))
+    s2 = build_parser(Rule::choice(Rule::string("mado"),
+                                   Rule::string("homu"),
+                                   Rule::string("saya")))
     assert_equal("ka", s2.parse("madoka")[1])
     assert_equal("ra", s2.parse("homura")[1])
     assert_equal("ka", s2.parse("sayaka")[1])

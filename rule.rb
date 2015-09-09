@@ -26,166 +26,166 @@ module Garbanzo
       end
 
       def >>(other)
-        Sequence.new(self, other.to_rule) { |a, b|
-          b
-        }
+        Garbanzo::Rule::sequence(self, other.to_rule) { |a, b| b }
       end
 
       def |(other)
-        Choice.new(self, other.to_rule)
+        Garbanzo::Rule::choice(self, other.to_rule)
       end
 
       def map(&f)
-        Bind.new(self) { |result|
-          Success.new(f.call(result))
+        Garbanzo::Rule::bind(self) { |result|
+          Garbanzo::Rule::success(f.call(result))
         }
       end
     end
 
-    # 無条件に成功するパーサ
-    class Success < Rule
-      attr_accessor :value
+    module Private
+      # 無条件に成功するパーサ
+      class Success < Rule
+        attr_accessor :value
 
-      def initialize(value)
-        @value = value        
+        def initialize(value)
+          @value = value        
+        end
       end
-    end
 
-    # 無条件に失敗するパーサ
-    class Fail < Rule
-      attr_accessor :message
+      # 無条件に失敗するパーサ
+      class Fail < Rule
+        attr_accessor :message
 
-      def initialize(message = "failure")
-        @message = message
+        def initialize(message = "failure")
+          @message = message
+        end
       end
-    end
-    
-    # 任意の1文字にマッチするパーサ
-    class Any < Rule
-    end
-    
-    # 連続
-    class Sequence < Rule
-      attr_accessor :children
-      attr_accessor :func
-
-      def initialize(*children, &func)
-        @children = children
-        @func     = func
-      end
-    end
-
-    # 選択
-    class Choice < Rule
-      attr_accessor :children
-
-      def initialize(*children)
-        @children = children        
-      end
-    end
-    
-    # 終端記号。ある文字列。
-    class String < Rule
-      attr_accessor :string
-
-      def initialize(string)
-        @string = string
-      end
-    end
-
-    # 他のルールを呼び出す
-    class Call < Rule
-      attr_accessor :rule_name
       
-      def initialize(rule_name)
-        @rule_name = rule_name
+      # 任意の1文字にマッチするパーサ
+      class Any < Rule
       end
-    end
+      
+      # 連続
+      class Sequence < Rule
+        attr_accessor :children
+        attr_accessor :func
 
-    # ルールを結合する
-    class Bind < Rule
-      attr_accessor :rule
-      attr_accessor :func
-
-      def initialize(rule, &func)
-        @rule = rule
-        @func = func        
+        def initialize(*children, &func)
+          @children = children
+          @func     = func
+        end
       end
-    end
-    
-    # 関数で処理する。
-    class Function < Rule
-      attr_accessor :function
 
-      def initialize(&function)
-        @function = function
+      # 選択
+      class Choice < Rule
+        attr_accessor :children
+
+        def initialize(*children)
+          @children = children        
+        end
+      end
+      
+      # 終端記号。ある文字列。
+      class String < Rule
+        attr_accessor :string
+
+        def initialize(string)
+          @string = string
+        end
+      end
+
+      # 他のルールを呼び出す
+      class Call < Rule
+        attr_accessor :rule_name
+        
+        def initialize(rule_name)
+          @rule_name = rule_name
+        end
+      end
+
+      # ルールを結合する
+      class Bind < Rule
+        attr_accessor :rule
+        attr_accessor :func
+
+        def initialize(rule, &func)
+          @rule = rule
+          @func = func        
+        end
+      end
+      
+      # 関数で処理する。
+      class Function < Rule
+        attr_accessor :function
+
+        def initialize(&function)
+          @function = function
+        end
       end
     end
 
     # オープンクラス。クラスのみんなには、内緒だよ！
     class ::Array
-      def sequence(&func); Sequence.new(*self.map(&:to_rule), &func); end
-      def choice(&func);   Choice.new(*self.map(&:to_rule), &func); end
+      def sequence(&func); Garbanzo::Rule::sequence(*self.map(&:to_rule), &func); end
+      def choice(&func);   Garbanzo::Rule::choice(*self.map(&:to_rule), &func); end
       def to_rule; raise "Array#to_rule is ambiguous operation"; end
     end
 
     class ::String
-      def to_rule; Garbanzo::Rule::String.new(self); end
+      def to_rule; Garbanzo::Rule::string(self); end
     end
 
     class ::Symbol
-      def to_rule; Garbanzo::Rule::Call.new(self); end
+      def to_rule; Garbanzo::Rule::call(self); end
     end
     
     class ::Proc
-      def to_rule; Garbanzo::Rule::Function.new(&self); end
+      def to_rule; Garbanzo::Rule::function(&self); end
     end
 
     # リファクタリングして、Successなどのクラスを除去したい。
     # そのために、一旦既存のクラスをメソッドに置き換えることとした。
     def self.success(result)
-      Success.new(result)
+      Private::Success.new(result)
     end
 
     def self.fail(message = "failure")
-      Fail.new(message)
+      Private::Fail.new(message)
     end
 
     def self.any
-      Any.new
+      Private::Any.new
     end
 
     def self.sequence(*children, &func)
-      Sequence.new(*children, &func)
+      Private::Sequence.new(*children, &func)
     end
 
     def self.choice(*children)
-      Choice.new(*children)
+      Private::Choice.new(*children)
     end
 
     def self.string(str)
-      String.new(str)
+      Private::String.new(str)
     end
 
     def self.call(rule_name)
-      Call.new(rule_name)
+      Private::Call.new(rule_name)
     end
 
     def self.bind(rule, &func)
-      Bind.new(rule, &func)
+      Private::Bind.new(rule, &func)
     end
 
     def self.function(&func)
-      Function.new(&func)
+      Private::Function.new(&func)
     end
     
     def self.optional(rule, default = nil)
-      rule | Success.new(default)
+      rule | success(default)
     end
 
     def self.many(rule)
       many_rec = lambda {|accum|
-        optional(Bind.new(rule) { |result|
+        optional(bind(rule) { |result|
                    many_rec.call(accum + [result])
                  }, accum)
       }

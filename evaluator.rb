@@ -42,7 +42,9 @@ module Garbanzo
         key = evaluate(program.key)
         
         raise "GET: object #{obj.inspect} is not a store #{program.inspect}" unless obj.is_a? Store
-        obj.table[key]
+        result = obj.table[key]
+        raise "GET: undefined key #{obj.inspect} for #{key.inspect}" unless result
+        result
       when While
         cond, body = [program.condition, program.body]
         falseObj   = Bool.new(false)
@@ -122,7 +124,7 @@ module Garbanzo
       when Call
         "#{show(p.func)}(#{show(p.args)})"
       else
-        raise "SHOW: argument is not a repr: #{p}"
+        raise "SHOW: argument is not a repr: #{p.inspect}"
       end
     end
   end

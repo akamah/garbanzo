@@ -18,9 +18,20 @@ grammar.rules[:sentence].children << ["print", " ", :expression].sequence { |_, 
 #}
 
 #{
-grammar.rules[:variable]  = [:identifier].sequence {|str|
-  Repr::Get.new(Repr::Dot.new, str)
+grammar.rules[:path] = [:identifier, Rule::many(Rule::string("/") >> :identifier)].sequence { |a, idents|
+  [a] + idents
+} | ["$", :path].sequence { |_, idents|
+  ["..".to_repr] + idents
 }
+#}
+
+#{
+grammar.rules[:variable]  = [:path].sequence {|idents|
+  idents.reduce(Repr::Dot.new) { |body, key|
+    Repr::Get.new(body, key)
+  }
+}
+
 grammar.rules[:primitive] = [:number, :variable].choice
 #}
 
@@ -35,9 +46,10 @@ grammar.rules[:call] = [:primitive, "(", :expression, ")"].sequence {|func, _, a
 } | :primitive
 #}
 
+
 #{
 grammar.rules[:term] = 
-  [:call, Rule::many(Rule::string("/") >> :identifier)].sequence { |a, idents|
+  [:call, Rule::optional(Rule::string("/") >> :path, [])].sequence { |a, idents|
   idents.reduce(a) { |body, key|
     Repr::Get.new(body, key)
   }
@@ -106,16 +118,30 @@ a=0
 b=1
 
 while i!=10 {
-  ../i=../i+1
-  tmp=../b
-  ../b=../a+../b
-  ../a=tmp
-  print ../a
+  $i=$i+1
+  tmp=$b
+  $b=$a+$b
+  $a=tmp
+  print $a
 }
 
+i=0
+sum=0
+while i!=10 {
+  $i=$i+1
+  j=0
+  while j!=10 {
+    $j=$j+1
+    $$sum=$$sum+1
+  }
+}
+
+print sum
 store=[]
 store/a=10
 store/b=20
+store/c=[]
+store/c/hoge=[]
 print store
 
 f=^{print a+b+12}

@@ -120,7 +120,7 @@ module Garbanzo
       when Function
         "^{ #{show(p.body)} }"
       when Call
-        "#{show(p.func)}(#{p.env})"
+        "#{show(p.func)}(#{show(p.args)})"
       else
         raise "SHOW: argument is not a repr: #{p}"
       end

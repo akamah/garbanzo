@@ -141,6 +141,44 @@ module Garbanzo
       def to_rule; Garbanzo::Rule::Function.new(&self); end
     end
 
+    # リファクタリングして、Successなどのクラスを除去したい。
+    # そのために、一旦既存のクラスをメソッドに置き換えることとした。
+    def self.success(result)
+      Success.new(result)
+    end
+
+    def self.fail(message = "failure")
+      Fail.new(message)
+    end
+
+    def self.any
+      Any.new
+    end
+
+    def self.sequence(*children, &func)
+      Sequence.new(*children, &func)
+    end
+
+    def self.choice(*children)
+      Choice.new(*children)
+    end
+
+    def self.string(str)
+      String.new(str)
+    end
+
+    def self.call(rule_name)
+      Call.new(rule_name)
+    end
+
+    def self.bind(rule, &func)
+      Bind.new(rule, &func)
+    end
+
+    def self.function(&func)
+      Function.new(&func)
+    end
+    
     def self.optional(rule, default = nil)
       rule | Success.new(default)
     end

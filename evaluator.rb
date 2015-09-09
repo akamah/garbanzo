@@ -117,6 +117,10 @@ module Garbanzo
         "."
       when SetEnv
         "setenv #{show(p.env)}"
+      when Function
+        "^{ #{show(p.body)} }"
+      when Call
+        "#{show(p.func)}(#{p.env})"
       else
         raise "SHOW: argument is not a repr: #{p}"
       end

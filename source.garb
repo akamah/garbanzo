@@ -30,8 +30,14 @@ grammar.rules[:primitive].children <<
 #}
 
 #{
+grammar.rules[:call] = [:primitive, "(", :expression, ")"].sequence {|func, _, arg, _|
+  Repr::Call.new(func, arg)
+} | :primitive
+#}
+
+#{
 grammar.rules[:term] = 
-  [:primitive, Rule::many(Rule::String.new("/") >> :identifier)].sequence { |a, idents|
+  [:call, Rule::many(Rule::String.new("/") >> :identifier)].sequence { |a, idents|
   idents.reduce(a) { |body, key|
     Repr::Get.new(body, key)
   }
@@ -108,9 +114,9 @@ while i!=10 {
 }
 
 store=[]
-store/hoge=[]
-store/hoge/hige=42
-print store/hoge
+store/a=10
+store/b=20
+print store
 
-f=^{print a+b+c}
-
+f=^{print a+b+12}
+print f(store)

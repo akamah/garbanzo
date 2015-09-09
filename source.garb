@@ -49,7 +49,7 @@ grammar.rules[:addition] =
 
 #{
 grammar.rules[:function] =
-  ["^", :sentence].sequence {|_, body|
+  ["^{", :sentence, "}"].sequence {|_, body, _|
     Repr::Function.new(nil, body)
   }
 #}
@@ -112,5 +112,5 @@ store/hoge=[]
 store/hoge/hige=42
 print store/hoge
 
-f=^print a+b+c
+f=^{print a+b+c}
 

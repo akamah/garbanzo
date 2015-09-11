@@ -97,7 +97,6 @@ module Garbanzo
     end
     
     def eval_store(s)
-      puts "***: evaluating store object"
       feature = s["@"]
 
       return s if feature == nil
@@ -117,7 +116,7 @@ module Garbanzo
       when "setenv";   eval_setenv(s['env'])
       when "call";     eval_call(s['func'], s['args'])
       else
-        raise "EVALUATE2: #{feature} is not a valid feature name"
+        raise "EVALUATE2: #{feature.inspect} is not a valid feature name"
       end
     end
     
@@ -155,32 +154,8 @@ module Garbanzo
         "{" + p.table.map {|k, v|
           show(k) + ":\n" + show(v).gsub(/^/, '  ')
         }.to_a.join("\n") + "}"
-      # when Add
-      #   "(#{show(p.left)} + #{show(p.right)})"
-      # when Mult
-      #   "(#{show(p.left)} * #{show(p.right)})"
-      # when Equal
-      #   "(#{show(p.left)} == #{show(p.right)})"
-      # when NotEqual
-      #   "(#{show(p.left)} != #{show(p.right)})"
-      # when Print
-      #   "print(#{show(p.value)})"
-      # when Set
-      #   "#{show(p.object)}/#{show(p.key)} = #{show(p.value)}"
-      # when Get
-      #   "#{show(p.object)}/#{show(p.key)}"
-      # when While
-      #   "while #{show(p.condition)} #{show(p.body)}"
-      # when Begin
-      #   "{\n" + show(p.body).gsub(/^/, '  ') + "}"
-      # when Dot
-      #   "."
-      # when SetEnv
-      #   "setenv #{show(p.env)}"
-      # when Function
-      #   "^{ #{show(p.body)} }"
-      # when Call
-      #   "#{show(p.func)}(#{show(p.args)})"
+      when Function
+        "^{ #{show(p.body)} }"
       else
         raise "SHOW: argument is not a repr: #{p.inspect}"
       end

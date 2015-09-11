@@ -68,6 +68,7 @@ EOS
       str = <<"EOS"
 def self.#{name.downcase}(#{arguments.join(', ')})
   s = Repr::store({})
+  s['@'] = '#{name.downcase}'.to_repr
   #{arguments.map { |arg|
     's[\''+ arg + '\'] = ' + arg
     }.join("\n")}
@@ -108,7 +109,7 @@ EOS
     define_command("While", "condition", "body") # ループ命令
     define_command("Begin", "body") # 逐次実行命令
 
-    define_command("Dot")  # 現在の環境を取得
+    define_command("GetEnv")  # 現在の環境を取得
     define_command("SetEnv", "env") # 拡張
 
     define_command("Call", "func", "args") # 呼び出し

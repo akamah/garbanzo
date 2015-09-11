@@ -24,18 +24,18 @@ class TC_Proto1 < Test::Unit::TestCase
     assert_equal(true, Num.new(3) == Num.new(3))
     assert_equal(Num.new(3), Num.new(3))
     assert_equal(Num.new(4), ev.evaluate(Repr::add(Num.new(1),
-                                             Num.new(3))))
+                                                   Num.new(3))))
     assert_not_equal(Bool.new(true), Bool.new(false))
 
     assert_equal(Bool.new(true),
                  ev.evaluate(Repr::equal(String.new("homu"),
-                                   String.new("homu"))))
+                                         String.new("homu"))))
 
     ds = Store.new({})
     key = String.new("saya")
     val = Num.new("38")
 
-    ev.evaluate(Repr::Set.new(ds, key, val))
+    ev.evaluate(Repr::set(ds, key, val))
     assert_equal(val, ev.evaluate(Repr::get(ds, key)))
   end
 
@@ -50,9 +50,9 @@ class TC_Proto1 < Test::Unit::TestCase
     # cond: (10 == a) == false
     cond = Repr::equal(Repr::equal(Num.new(10), Repr::get(env, a)), Bool.new(false))
     body = Repr::equal(Repr::set(env, sum,
-                     Repr::add(Repr::get(env, sum), Repr::get(env, a))),
-                 Repr::set(env, a,
-                     Repr::add(Num.new(1), Repr::get(env, a))))
+                                 Repr::add(Repr::get(env, sum), Repr::get(env, a))),
+                       Repr::set(env, a,
+                                 Repr::add(Num.new(1), Repr::get(env, a))))
     expr = Repr::while(cond, body)
     ev.evaluate(expr)
     
@@ -84,18 +84,18 @@ class TC_Proto1 < Test::Unit::TestCase
   def test_begin
     ev = Evaluator.new
 
-    command = Repr::begin(Lib::make_list(Repr::set(Repr::dot, String.new("a"), Num.new(3)),
-                                         Repr::set(Repr::dot, String.new("a"), Repr::add(Num.new(2),
-                                                                                         Repr::get(Repr::dot, String.new("a"))))))
+    command = Repr::begin(Lib::make_list(Repr::set(Repr::getenv, String.new("a"), Num.new(3)),
+                                         Repr::set(Repr::getenv, String.new("a"), Repr::add(Num.new(2),
+                                                                                            Repr::get(Repr::getenv, String.new("a"))))))
 
     ev.evaluate(command)
-    assert_equal(Num.new(5), ev.evaluate(Repr::get(Repr::dot, String.new("a"))), ev.show(command))
+    assert_equal(Num.new(5), ev.evaluate(Repr::get(Repr::getenv, String.new("a"))), ev.show(command))
   end
 
   def test_function
     ev = Evaluator.new
 
-    func = Repr::function(Store.new({}), Repr::add(Repr::get(Repr::dot, String.new("a")), Num.new(10)))
+    func = Repr::function(Store.new({}), Repr::add(Repr::get(Repr::getenv, String.new("a")), Num.new(10)))
     c = Repr::call(func, Store.new({String.new('a') => Num.new(32)}))
 
     assert_equal(Num.new(42), ev.evaluate(c))

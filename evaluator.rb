@@ -125,7 +125,7 @@ module Garbanzo
       case program
       when Num, Bool, String, Function
         program
-      when Store;    program # evaluate_store(program)
+      when Store;    eval_store(program)
       when Add;      eval_add(program.left, program.right)
       when Mult;     eval_mult(program.left, program.right)
       when Equal;    eval_equal(program.left, program.right)

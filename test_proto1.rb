@@ -84,9 +84,9 @@ class TC_Proto1 < Test::Unit::TestCase
   def test_begin
     ev = Evaluator.new
 
-    command = Begin.new(Lib::make_list(Repr::set(Repr::dot, String.new("a"), Num.new(3)),
-                                       Repr::set(Repr::dot, String.new("a"), Repr::add(Num.new(2),
-                                                                     Repr::get(Repr::dot, String.new("a"))))))
+    command = Repr::begin(Lib::make_list(Repr::set(Repr::dot, String.new("a"), Num.new(3)),
+                                         Repr::set(Repr::dot, String.new("a"), Repr::add(Num.new(2),
+                                                                                         Repr::get(Repr::dot, String.new("a"))))))
 
     ev.evaluate(command)
     assert_equal(Num.new(5), ev.evaluate(Repr::get(Repr::dot, String.new("a"))), ev.show(command))

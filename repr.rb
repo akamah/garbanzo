@@ -14,6 +14,7 @@ module Garbanzo
       hash_def   = attrs.map   {|x| "#{x}.hash" }.join(' ^ ')
       eql_def    = (["class"] + attrs).map {|x| "self.#{x}.eql?(other.#{x})" }.join(' && ')
 
+      factory_name = classname.downcase
 #       to_repr    = ""
 #       if opts.include?(:wrapper)
 #         raise "attribute should be precisely 1 with wrapper class" if attrs.size != 1
@@ -49,6 +50,10 @@ class #{classname}
   def to_repr
     self
   end
+end
+
+def self.#{factory_name}(#{arguments})
+  #{classname}.new(#{arguments})
 end
 EOS
       if $DEBUG
@@ -86,25 +91,25 @@ EOS
     
     
     class ::Integer
-      def to_repr; Garbanzo::Repr::Num.new(self); end
+      def to_repr; Garbanzo::Repr::num(self); end
     end
 
     class ::String
-      def to_repr; Garbanzo::Repr::String.new(self); end
+      def to_repr; Garbanzo::Repr::string(self); end
     end
 
     class ::Hash
       def to_repr
-        Garbanzo::Repr::Store.new(self.map {|k, v| [k, v.to_repr] }.to_h)
+        Garbanzo::Repr::store(self.map {|k, v| [k, v.to_repr] }.to_h)
       end
     end
 
     class ::TrueClass
-      def to_repr; Garbanzo::Repr::Bool.new(true); end
+      def to_repr; Garbanzo::Repr::bool(true); end
     end
 
     class ::FalseClass
-      def to_repr; Garbanzo::Repr::Bool.new(false); end
+      def to_repr; Garbanzo::Repr::bool(false); end
     end
   end
 end

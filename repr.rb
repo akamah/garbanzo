@@ -75,7 +75,7 @@ def self.#{name.downcase}(#{arguments.join(', ')})
   s  
 end
 EOS
-      puts str
+      puts str if $DEBUG
       self.module_eval(str, name)
     end
     

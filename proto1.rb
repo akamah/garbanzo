@@ -25,7 +25,7 @@ module Garbanzo
     def execute(src)
       while src != ""
         prog, src = @parser.parse(src)
-        puts "program: #{@evaluator.show(prog)}"
+#        puts "program: #{@evaluator.show(prog)}"
         @evaluator.evaluate(prog)
       end
     end

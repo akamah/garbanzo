@@ -5,8 +5,8 @@ require './test_parser.rb'
 
 class TC_Proto1 < Test::Unit::TestCase
   include Garbanzo
-  include Repr
-
+  include Garbanzo::Repr
+  
   def test_wrapper
     assert_equal(Num.new(1), 1.to_repr)
     assert_equal(String.new("hoge"), "hoge".to_repr)
@@ -23,21 +23,20 @@ class TC_Proto1 < Test::Unit::TestCase
 
     assert_equal(true, Num.new(3) == Num.new(3))
     assert_equal(Num.new(3), Num.new(3))
-    assert_equal(Num.new(4), ev.evaluate(Add.new(Num.new(1),
-                                                 Num.new(3))))
+    assert_equal(Num.new(4), ev.evaluate(Repr::add(Num.new(1),
+                                             Num.new(3))))
     assert_not_equal(Bool.new(true), Bool.new(false))
 
     assert_equal(Bool.new(true),
-                 ev.evaluate(Equal.new(
-                              String.new("homu"),
-                              String.new("homu"))))
+                 ev.evaluate(Repr::equal(String.new("homu"),
+                                   String.new("homu"))))
 
     ds = Store.new({})
     key = String.new("saya")
     val = Num.new("38")
 
-    ev.evaluate(Set.new(ds, key, val))
-    assert_equal(val, ev.evaluate(Get.new(ds, key)))
+    ev.evaluate(Repr::Set.new(ds, key, val))
+    assert_equal(val, ev.evaluate(Repr::get(ds, key)))
   end
 
   
@@ -49,15 +48,15 @@ class TC_Proto1 < Test::Unit::TestCase
     env  = Store.new({ sum => Num.new(0), a => Num.new(0) })
 
     # cond: (10 == a) == false
-    cond = Equal.new(Equal.new(Num.new(10), Get.new(env, a)), Bool.new(false))
-    body = Equal.new(Set.new(env, sum,
-                             Add.new(Get.new(env, sum), Get.new(env, a))),
-                     Set.new(env, a,
-                             Add.new(Num.new(1), Get.new(env, a))))
-    expr = While.new(cond, body)
+    cond = Repr::equal(Repr::equal(Num.new(10), Repr::get(env, a)), Bool.new(false))
+    body = Repr::equal(Repr::set(env, sum,
+                     Repr::add(Repr::get(env, sum), Repr::get(env, a))),
+                 Repr::set(env, a,
+                     Repr::add(Num.new(1), Repr::get(env, a))))
+    expr = Repr::while(cond, body)
     ev.evaluate(expr)
     
-    assert_equal(Num.new(45), ev.evaluate(Get.new(env, sum)))
+    assert_equal(Num.new(45), ev.evaluate(Repr::get(env, sum)))
   end
 
   def test_list_miscs
@@ -85,21 +84,20 @@ class TC_Proto1 < Test::Unit::TestCase
   def test_begin
     ev = Evaluator.new
 
-    command = Begin.new(Lib::make_list(Set.new(Dot.new, String.new("a"), Num.new(3)),
-                                       Set.new(Dot.new, String.new("a"), Add.new(Num.new(2),
-                                                                                  Get.new(Dot.new, String.new("a"))))))
+    command = Begin.new(Lib::make_list(Repr::set(Repr::dot, String.new("a"), Num.new(3)),
+                                       Repr::set(Repr::dot, String.new("a"), Repr::add(Num.new(2),
+                                                                     Repr::get(Repr::dot, String.new("a"))))))
 
     ev.evaluate(command)
-    assert_equal(Num.new(5), ev.evaluate(Get.new(Dot.new, String.new("a"))), ev.show(command))
+    assert_equal(Num.new(5), ev.evaluate(Repr::get(Repr::dot, String.new("a"))), ev.show(command))
   end
 
   def test_function
     ev = Evaluator.new
 
-    func = Function.new(Store.new({}), Add.new(Get.new(Dot.new, String.new("a")), Num.new(10)))
-    call = Call.new(func, Store.new({String.new('a') => Num.new(32)}))
+    func = Repr::function(Store.new({}), Repr::add(Repr::get(Repr::dot, String.new("a")), Num.new(10)))
+    c = Repr::call(func, Store.new({String.new('a') => Num.new(32)}))
 
-    assert_equal(Num.new(42), ev.evaluate(call))
+    assert_equal(Num.new(42), ev.evaluate(c))
   end
 end
-

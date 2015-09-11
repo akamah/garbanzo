@@ -13,7 +13,7 @@ grammar.rules[:identifier] = Rule::many_one(Rule::one_of("abcdefghijklmnopqrstuv
 
 #{
 grammar.rules[:sentence].children << ["print", " ", :expression].sequence { |_, _, n|
-  Repr::Print.new(n)
+  Repr::print(n)
 }
 #}
 
@@ -27,8 +27,8 @@ grammar.rules[:path] = [:identifier, Rule::many(Rule::string("/") >> :identifier
 
 #{
 grammar.rules[:variable]  = [:path].sequence {|idents|
-  idents.reduce(Repr::Dot.new) { |body, key|
-    Repr::Get.new(body, key)
+  idents.reduce(Repr::dot) { |body, key|
+    Repr::get(body, key)
   }
 }
 
@@ -42,7 +42,7 @@ grammar.rules[:primitive].children <<
 
 #{
 grammar.rules[:call] = [:primitive, "(", :expression, ")"].sequence {|func, _, arg, _|
-  Repr::Call.new(func, arg)
+  Repr::call(func, arg)
 } | :primitive
 #}
 
@@ -51,7 +51,7 @@ grammar.rules[:call] = [:primitive, "(", :expression, ")"].sequence {|func, _, a
 grammar.rules[:term] = 
   [:call, Rule::optional(Rule::string("/") >> :path, [])].sequence { |a, idents|
   idents.reduce(a) { |body, key|
-    Repr::Get.new(body, key)
+    Repr::get(body, key)
   }
 }
 #}
@@ -60,7 +60,7 @@ grammar.rules[:term] =
 grammar.rules[:addition] = 
   [:term, Rule::many(Rule::string('+') >> :term)].sequence { |num, adds|
   adds.reduce(num) { |expr, adder|
-    Repr::Add.new(expr, adder)
+    Repr::add(expr, adder)
   }
 }
 #}
@@ -68,7 +68,7 @@ grammar.rules[:addition] =
 #{
 grammar.rules[:function] =
   ["^{", :sentence, "}"].sequence {|_, body, _|
-    Repr::Function.new(nil, body)
+    Repr::function(nil, body)
   }
 #}
 
@@ -78,9 +78,9 @@ grammar.rules[:expression] = [:addition, :function].choice
 
 #{
 grammar.rules[:condition] = [[:expression, "==", :expression].sequence {|l, _, r|
-                               Repr::Equal.new(l, r)
+                               Repr::equal(l, r)
                              }, [:expression, "!=", :expression].sequence {|l, _, r|
-                               Repr::NotEqual.new(l, r)
+                               Repr::notequal(l, r)
                              }].choice
 #}
 

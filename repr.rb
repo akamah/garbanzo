@@ -64,6 +64,20 @@ EOS
       mod.module_eval(str, classname)
     end
 
+    def self.define_command(name, *arguments)
+      str = <<"EOS"
+def self.#{name.downcase}(#{arguments.join(', ')})
+  s = Repr::store({})
+  #{arguments.map { |arg|
+    's[\''+ arg + '\'] = ' + arg
+    }.join("\n")}
+  s  
+end
+EOS
+      puts str
+      self.module_eval(str, name)
+    end
+    
     # 主にデータを表すオブジェクト
     define_repr_class(self, "Num", "num") # 言語の内部表現としての整数
     define_repr_class(self, "String", "value")  # 内部表現としての文字列

@@ -5,7 +5,7 @@ module Garbanzo
     # 内部表現
   module Repr
     # 内部表現のオブジェクトを適当に定義してくれるメソッド。
-    def self.define_repr_class(mod, classname, *attrs, **opts)
+    def self.define_repr_class(classname, *attrs, **opts)
       attr_list  = attrs.map {|x| ":" + x.to_s }.join(', ')
       attr_def   = attrs.length > 0 ? "attr_accessor " + attr_list : ""
       arguments  = attrs.join(', ')
@@ -61,7 +61,7 @@ EOS
         p opts
       end
       
-      mod.module_eval(str, classname)
+      self.module_eval(str, classname)
     end
 
     def self.define_command(name, *arguments)
@@ -79,11 +79,11 @@ EOS
     end
     
     # 主にデータを表すオブジェクト
-    define_repr_class(self, "Num", "num") # 言語の内部表現としての整数
-    define_repr_class(self, "String", "value")  # 内部表現としての文字列
-    define_repr_class(self, "Bool", "value")  # 内部表現としての文字列
-    define_repr_class(self, "Store", "table")  # データストアオブジェクト
-    define_repr_class(self, "Function", "env", "body") # 関数
+    define_repr_class("Num", "num") # 言語の内部表現としての整数
+    define_repr_class("String", "value")  # 内部表現としての文字列
+    define_repr_class("Bool", "value")  # 内部表現としての文字列
+    define_repr_class("Store", "table")  # データストアオブジェクト
+    define_repr_class("Function", "env", "body") # 関数
 
     class Store
       def [](key)
@@ -96,22 +96,22 @@ EOS
     end
     
     # 主にプログラムを表すオブジェクト
-    define_repr_class(self, "Add", "left", "right") # 言語の内部表現としての足し算
-    define_repr_class(self, "Mult", "left", "right") # 言語の内部表現としての掛け算
-    define_repr_class(self, "Equal", "left", "right") # 同じかどうかを判定
-    define_repr_class(self, "NotEqual", "left", "right") # 違うかどうかを判定
+    define_command("Add", "left", "right") # 言語の内部表現としての足し算
+    define_command("Mult", "left", "right") # 言語の内部表現としての掛け算
+    define_command("Equal", "left", "right") # 同じかどうかを判定
+    define_command("NotEqual", "left", "right") # 違うかどうかを判定
 
-    define_repr_class(self, "Print", "value") # print式を意味する内部表現
+    define_command("Print", "value") # print式を意味する内部表現
 
-    define_repr_class(self, "Set", "object", "key", "value")  # データストアへの代入を表す
-    define_repr_class(self, "Get", "object", "key")  # データストアからの読み出しを表す
-    define_repr_class(self, "While", "condition", "body") # ループ命令
-    define_repr_class(self, "Begin", "body") # 逐次実行命令
+    define_command("Set", "object", "key", "value")  # データストアへの代入を表す
+    define_command("Get", "object", "key")  # データストアからの読み出しを表す
+    define_command("While", "condition", "body") # ループ命令
+    define_command("Begin", "body") # 逐次実行命令
 
-    define_repr_class(self, "Dot")  # 現在の環境を取得
-    define_repr_class(self, "SetEnv", "env") # 拡張
+    define_command("Dot")  # 現在の環境を取得
+    define_command("SetEnv", "env") # 拡張
 
-    define_repr_class(self, "Call", "func", "args") # 呼び出し
+    define_command("Call", "func", "args") # 呼び出し
     
     
     class ::Integer

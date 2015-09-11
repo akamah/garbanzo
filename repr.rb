@@ -58,18 +58,21 @@ EOS
       
       mod.module_eval(str, classname)
     end
-    
+
+    # 主にデータを表すオブジェクト
     define_repr_class(self, "Num", "num") # 言語の内部表現としての整数
     define_repr_class(self, "String", "value")  # 内部表現としての文字列
     define_repr_class(self, "Bool", "value")  # 内部表現としての文字列
+    define_repr_class(self, "Store", "table")  # データストアオブジェクト
+    define_repr_class(self, "Function", "env", "body") # 関数
 
+    # 主にプログラムを表すオブジェクト
     define_repr_class(self, "Add", "left", "right") # 言語の内部表現としての足し算
     define_repr_class(self, "Mult", "left", "right") # 言語の内部表現としての掛け算
     define_repr_class(self, "Equal", "left", "right") # 同じかどうかを判定
     define_repr_class(self, "NotEqual", "left", "right") # 違うかどうかを判定
 
     define_repr_class(self, "Print", "value") # print式を意味する内部表現
-    define_repr_class(self, "Store", "table")  # データストアオブジェクト
 
     define_repr_class(self, "Set", "object", "key", "value")  # データストアへの代入を表す
     define_repr_class(self, "Get", "object", "key")  # データストアからの読み出しを表す
@@ -79,7 +82,6 @@ EOS
     define_repr_class(self, "Dot")  # 現在の環境を取得
     define_repr_class(self, "SetEnv", "env") # 拡張
 
-    define_repr_class(self, "Function", "env", "body") # 関数
     define_repr_class(self, "Call", "func", "args") # 呼び出し
     
     

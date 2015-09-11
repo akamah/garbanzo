@@ -27,7 +27,7 @@ grammar.rules[:path] = [:identifier, Rule::many(Rule::string("/") >> :identifier
 
 #{
 grammar.rules[:variable]  = [:path].sequence {|idents|
-  idents.reduce(Repr::dot) { |body, key|
+  idents.reduce(Repr::getenv) { |body, key|
     Repr::get(body, key)
   }
 }
@@ -87,28 +87,23 @@ grammar.rules[:condition] = [[:expression, "==", :expression].sequence {|l, _, r
 #{
 grammar.rules[:sentence].children <<
   [:expression, "=", :expression].sequence {|object, _, expr|
-  case object
-  when Repr::Get
-    Repr::Set.new(object.object, object.key, expr)
-  else
-    Repr::Set.new(Repr::Dot.new, object, expr)
-  end
+  Repr::set(object['object'], object['key'], expr)
 }
 #}
 
 #{
 grammar.rules[:sentence].children << ["while", Rule::whitespaces, :condition, Rule::whitespaces, :sentence].sequence {|_, _, cond, _, body|
-  Repr::While.new(cond, body)
+  Repr::while(cond, body)
 }
 #}
 
 #{
 grammar.rules[:sentence].children << ["{", Rule::many(Call.new(:sentence)), "}"].sequence { |_, lst, _|
-  newstore = Repr::Set.new(Repr::Dot.new, "nextEnv".to_repr, Repr::Store.new({}))				  
-  newenv = Repr::Set.new(Repr::Get.new(Repr::Dot.new, "nextEnv".to_repr), "..".to_repr, Repr::Dot.new)
-  enter  = Repr::SetEnv.new(Repr::Get.new(Repr::Dot.new, "nextEnv".to_repr))
-  leave  = Repr::SetEnv.new(Repr::Get.new(Repr::Dot.new, "..".to_repr))
-  Repr::Begin.new(Lib::make_list(newstore, newenv, enter, *lst, leave))
+  newstore = Repr::set(Repr::getenv, "nextEnv".to_repr, Repr::Store.new({}))				  
+  newenv = Repr::set(Repr::get(Repr::getenv, "nextEnv".to_repr), "..".to_repr, Repr::getenv)
+  enter  = Repr::setenv(Repr::get(Repr::getenv, "nextEnv".to_repr))
+  leave  = Repr::setenv(Repr::get(Repr::getenv, "..".to_repr))
+  Repr::begin(Lib::make_list(newstore, newenv, enter, *lst, leave))
 }
 #}
 

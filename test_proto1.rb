@@ -100,4 +100,11 @@ class TC_Proto1 < Test::Unit::TestCase
 
     assert_equal(Num.new(42), ev.evaluate(c))
   end
+
+  def test_store
+    store = Repr::store({})
+    store["hoge"] = "hige".to_repr
+
+    assert_equal("hige".to_repr, store["hoge".to_repr])
+  end
 end

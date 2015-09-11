@@ -71,6 +71,16 @@ EOS
     define_repr_class(self, "Store", "table")  # データストアオブジェクト
     define_repr_class(self, "Function", "env", "body") # 関数
 
+    class Store
+      def [](key)
+        table[key.to_repr]
+      end
+
+      def []=(key, value)
+        table[key.to_repr] = value
+      end
+    end
+    
     # 主にプログラムを表すオブジェクト
     define_repr_class(self, "Add", "left", "right") # 言語の内部表現としての足し算
     define_repr_class(self, "Mult", "left", "right") # 言語の内部表現としての掛け算

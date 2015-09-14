@@ -131,8 +131,8 @@ module Garbanzo
 
     def self.any
       function {|s|
-        if source.size > 0
-          [source[0], source[1, -1]]
+        if s.size > 0
+          [s[0], s[1..-1]]
         else
           raise ParseError, "any: empty input string"
         end

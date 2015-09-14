@@ -124,19 +124,8 @@ module Garbanzo
       case program
       when Num, Bool, String, Function
         program
-      when Store;    eval_store(program)
-      when Add;      eval_add(program.left, program.right)
-      when Mult;     eval_mult(program.left, program.right)
-      when Equal;    eval_equal(program.left, program.right)
-      when NotEqual; eval_notequal(program.left, program.right)
-      when Print;    eval_print(program.value)
-      when Set;      eval_set(program.object, program.key, program.value)
-      when Get;      eval_get(program.object, program.key)
-      when While;    eval_while(program.condition, program.body)
-      when Begin;    eval_begin(program.body)
-      when Dot;      eval_getenv()
-      when SetEnv;   eval_setenv(program.env)
-      when Call;     eval_call(program.func, program.args)
+      when Store;
+        eval_store(program)
       else
         raise "EVALUATE: argument is not a program: #{program}"
       end

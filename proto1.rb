@@ -33,18 +33,13 @@ module Garbanzo
     # 構文拡張のやつです。
     def install_grammar_extension
       @parser.grammar.rules[:sentence] = Rule::choice(
-        ['#{',
-         Rule::function { |source|
-           idx = source.index('#}')
-           if idx
-             to_eval = source[0..idx-1]
-             @parser.instance_eval(to_eval, "(grammar_extension)")
-             [Repr::Bool.new(false), source[idx..-1]]
-           else
-             raise Rule::ParseError, "closing `#}' not found"
-           end
+        ['#{', 
+         Rule::many(!'#}'.to_rule >> Rule::any).map {|cs|
+           to_eval = cs.map(&:value).join
+           @parser.instance_eval(to_eval, "(grammar_extension)")
+           Repr::Bool.new(false)
          },
-         '#}'].sequence { Repr::Bool.new(false) })
+         '#}'].sequence >> Rule::success(false.to_repr))
     end
   end
 end

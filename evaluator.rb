@@ -10,8 +10,15 @@ module Garbanzo
     
     def initialize
       @dot = Store.new({})
+      @commands = Hash.new
     end
 
+    def command(commandname, *arguments, &func)
+      @commands[commandname] = lambda { |store|
+        func.call(*arguments.map {|aname| store[aname] })
+      }
+    end
+    
     def eval_add(left, right)
       Repr::num(evaluate(left).num + evaluate(right).num)
     end

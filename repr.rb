@@ -78,13 +78,17 @@ EOS
       puts str if $DEBUG
       self.module_eval(str, name)
     end
+
+    def self.define_binary_command(name)
+      self.define_command(name, "left", "right")
+    end
     
-    # 主にデータを表すオブジェクト
-    define_repr_class("Num", "num") # 言語の内部表現としての整数
-    define_repr_class("String", "value")  # 内部表現としての文字列
-    define_repr_class("Bool", "value")  # 内部表現としての文字列
-    define_repr_class("Store", "table")  # データストアオブジェクト
-    define_repr_class("Function", "env", "body") # 関数
+    ## 主にデータを表すオブジェクト
+    define_repr_class("Num", "num")               # 言語の内部表現としての整数
+    define_repr_class("String", "value")          # 内部表現としての文字列
+    define_repr_class("Bool", "value")            # 内部表現としての文字列
+    define_repr_class("Store", "table")           # データストアオブジェクト
+    define_repr_class("Function", "env", "body")  # 関数
 
     class Store
       def [](key)
@@ -96,23 +100,38 @@ EOS
       end
     end
     
-    # 主にプログラムを表すオブジェクト
-    define_command("Add", "left", "right") # 言語の内部表現としての足し算
-    define_command("Mult", "left", "right") # 言語の内部表現としての掛け算
-    define_command("Equal", "left", "right") # 同じかどうかを判定
-    define_command("NotEqual", "left", "right") # 違うかどうかを判定
+    ## 算術演算
+    define_binary_command("Add")                     # 言語の内部表現としての足し算
+    define_binary_command("Sub")                     # 引き算
+    define_binary_command("Mult")                    # 言語の内部表現としての掛け算
+    define_binary_command("Div")                     # 割り算
+    define_binary_command("Mod")                     # 割ったあまり
 
-    define_command("Print", "value") # print式を意味する内部表現
+    ## 比較
+    define_binary_command("Equal")                   # 同じかどうかを判定
+    define_binary_command("NotEqual")                # 違うかどうかを判定
 
+    ## 論理演算
+    define_binary_command("And")
+    define_binary_command("Or")
+    define_command("Not", "value")
+    
+    define_command("Print", "value")                 # print式を意味する内部表現
+
+    ## データストア関連
     define_command("Set", "object", "key", "value")  # データストアへの代入を表す
-    define_command("Get", "object", "key")  # データストアからの読み出しを表す
-    define_command("While", "condition", "body") # ループ命令
-    define_command("Begin", "body") # 逐次実行命令
+    define_command("Get", "object", "key")           # データストアからの読み出しを表す
+    define_command("Size", "object")                 # 
+    
+    ## 制御構文
+    define_command("While", "condition", "body")     # ループ命令
+    define_command("Begin", "body")                  # 逐次実行命令
 
-    define_command("GetEnv")  # 現在の環境を取得
-    define_command("SetEnv", "env") # 拡張
+    ## 環境
+    define_command("GetEnv")                         # 現在の環境を取得
+    define_command("SetEnv", "env")                  # 拡張
 
-    define_command("Call", "func", "args") # 呼び出し
+    define_command("Call", "func", "args")           # 呼び出し
     
     
     class ::Integer

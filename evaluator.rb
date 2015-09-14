@@ -108,11 +108,15 @@ module Garbanzo
     end
 
     def eval_if(condition, consequence, alternative)
-        if evaluate(condition) != false.to_repr
-          evaluate(consequence)
-        else
-          evaluate(alternative)
-        end
+      if evaluate(condition) != false.to_repr
+        evaluate(consequence)
+      else
+        evaluate(alternative)
+      end
+    end
+
+    def eval_lambda(env, body)
+      Repr::function(evaluate(env), body)
     end
     
     def eval_begin(body)
@@ -174,6 +178,7 @@ module Garbanzo
         
       when "while";    eval_while(s['condition'], s['body'])
       when "if";       eval_if(s['condition'], s['consequence'], s['alternative'])
+      when "lambda";   eval_lambda(s['env'], s['body'])
       when "begin";    eval_begin(s['body'])
 
       when "getenv";   eval_getenv()

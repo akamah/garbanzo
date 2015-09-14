@@ -85,7 +85,7 @@ grammar.rules[:addition] =
 #{
 grammar.rules[:function] =
   ["^{", :sentence, "}"].sequence {|_, body, _|
-    Repr::function(nil, body)
+    Repr::lambda(Repr::getenv, body)
   }
 #}
 

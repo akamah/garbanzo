@@ -126,6 +126,7 @@ EOS
     ## 制御構文
     define_command("While", "condition", "body")     # ループ命令
     define_command("If", "condition", "consequence", "alternative") # 条件分岐
+    define_command("Lambda", "env", "body")          # 関数を作る
     define_command("Begin", "body")                  # 逐次実行命令
 
     ## 環境

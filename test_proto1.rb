@@ -107,4 +107,11 @@ class TC_Proto1 < Test::Unit::TestCase
 
     assert_equal("hige".to_repr, store["hoge".to_repr])
   end
+
+  def test_quote
+    ev = Evaluator.new
+    store = Repr::quote(Repr.add(3.to_repr, 4.to_repr))
+    assert_equal(Repr.add(3.to_repr, 4.to_repr),
+                 ev.evaluate(store))
+  end
 end

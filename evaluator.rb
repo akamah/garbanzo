@@ -94,6 +94,9 @@ module Garbanzo
       obj.table.size
     end
 
+    def eval_quote(object)
+      object
+    end
     
     def eval_while(condition, body)
         cond, body = [condition, body]
@@ -175,7 +178,8 @@ module Garbanzo
       when "set";      eval_set(s['object'], s['key'], s['value'])
       when "get";      eval_get(s['object'], s['key'])
       when "size";     eval_size(s['object'])
-        
+
+      when "quote";    eval_quote(s['value'])
       when "while";    eval_while(s['condition'], s['body'])
       when "if";       eval_if(s['condition'], s['consequence'], s['alternative'])
       when "lambda";   eval_lambda(s['env'], s['body'])

@@ -1,6 +1,12 @@
 #{
 grammar.rules[:sentence].children << Rule::whitespaces
 #}
+#{
+grammar.rules[:comment] = "#".to_rule >> Rule::many(Rule::not("\n".to_rule) >> Rule::any) >> "\n".to_rule
+grammar.rules[:sentence].children << Rule::call(:comment)
+#}
+# コメントを実装したぞ！
+#
 
 #{
 grammar.rules[:number] = Rule::many_one(Rule::one_of("0123456789")).map {|as|

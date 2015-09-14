@@ -23,10 +23,23 @@ module Garbanzo
       Repr::num(evaluate(left).num + evaluate(right).num)
     end
 
+    def eval_sub(left, right)
+      Repr::num(evaluate(left).num - evaluate(right).num)
+    end
+    
     def eval_mult(left, right)
       Repr::num(evaluate(left).num * evaluate(right).num)      
     end
 
+    def eval_div(left, right)
+      Repr::num(evaluate(left).num / evaluate(right).num)      
+    end
+
+    def eval_mod(left, right)
+      Repr::num(evaluate(left).num % evaluate(right).num)      
+    end
+
+    
     def eval_equal(left, right)
       Repr::bool(evaluate(left).eql?(evaluate(right)))
     end
@@ -34,6 +47,20 @@ module Garbanzo
     def eval_notequal(left, right)
       Repr::bool(!evaluate(left).eql?(evaluate(right)))
     end
+
+    
+    def eval_and(left, right)
+      Repr::bool(evaluate(left).value && evaluate(right).value)
+    end
+    
+    def eval_or(left, right)
+      Repr::bool(evaluate(left).value || evaluate(right).value)
+    end
+    
+    def eval_and(left, right)
+      Repr::bool(!evaluate(left).value)
+    end
+    
     
     def eval_print(value)
       result = evaluate(value)
@@ -60,6 +87,14 @@ module Garbanzo
       result
     end
 
+    def eval_size(object)
+      obj = evaluate(object)
+
+      raise "SIZE: object #{obj.inspect} is not a store #{inspect}" unless obj.is_a? Store
+      obj.table.size
+    end
+
+    
     def eval_while(condition, body)
         cond, body = [condition, body]
         falseObj   = Bool.new(false)
@@ -111,16 +146,30 @@ module Garbanzo
       feature = evaluate(feature)
       case feature.value
       when "add";      eval_add(s['left'], s['right'])
+      when "sub";      eval_sub(s['left'], s['right'])
       when "mult";     eval_mult(s['left'], s['right'])
+      when "div";      eval_div(s['left'], s['right'])
+      when "mod";      eval_mod(s['left'], s['right'])
+
       when "equal";    eval_equal(s['left'], s['right'])
       when "notequal"; eval_notequal(s['left'], s['right'])
+
+      when "and";      eval_and(s['left'], s['right'])
+      when "or";       eval_or(s['left'], s['right'])
+      when "not";      eval_not(s['value'])
+
       when "print";    eval_print(s['value'])
+
       when "set";      eval_set(s['object'], s['key'], s['value'])
       when "get";      eval_get(s['object'], s['key'])
+      when "size";     eval_size(s['object'])
+        
       when "while";    eval_while(s['condition'], s['body'])
       when "begin";    eval_begin(s['body'])
+
       when "getenv";   eval_getenv()
       when "setenv";   eval_setenv(s['env'])
+
       when "call";     eval_call(s['func'], s['args'])
       else
         raise "EVALUATE2: #{feature.inspect} is not a valid feature name"

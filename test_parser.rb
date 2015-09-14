@@ -75,7 +75,7 @@ class TC_Parser < Test::Unit::TestCase
 
   def test_any
     s = build_parser(Rule::any >> Rule::any)
-    assert_equal(["a", "do"], s.parse("mado"))
+    assert_equal(["a".to_repr, "do"], s.parse("mado"))
   end
   
   def test_not

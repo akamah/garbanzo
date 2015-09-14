@@ -6,23 +6,26 @@ grammar.rules[:comment] = "#".to_rule >> Rule::many(Rule::not("\n".to_rule) >> R
 grammar.rules[:sentence].children << Rule::call(:comment)
 #}
 # コメントを実装したぞ！
-#
 
+# 数値を定義
 #{
 grammar.rules[:number] = Rule::many_one(Rule::one_of("0123456789")).map {|as|
   as.map(&:value).join.to_i.to_repr
 }
+# 識別子を定義する
 grammar.rules[:identifier] = Rule::many_one(Rule::one_of("abcdefghijklmnopqrstuvwxyz.")).map {|as|
   as.map(&:value).join.to_repr
 }
 #}
 
+# print文
 #{
 grammar.rules[:sentence].children << ["print", " ", :expression].sequence { |_, _, n|
   Repr::print(n)
 }
 #}
 
+# pathとは、a/b/cのように、オブジェクトのキーを指定するもの。
 #{
 grammar.rules[:path] = [:identifier, Rule::many(Rule::string("/") >> :identifier)].sequence { |a, idents|
   [a] + idents
@@ -31,21 +34,27 @@ grammar.rules[:path] = [:identifier, Rule::many(Rule::string("/") >> :identifier
 }
 #}
 
+# 変数はパスで表される
 #{
 grammar.rules[:variable]  = [:path].sequence {|idents|
   idents.reduce(Repr::getenv) { |body, key|
     Repr::get(body, key)
   }
 }
+#}
 
+# 原始式は、数値かパスのいずれかである
+#{
 grammar.rules[:primitive] = [:number, :variable].choice
 #}
 
+# おっと忘れてた、空のストアオブジェクトも原始式
 #{
 grammar.rules[:primitive].children <<
   "[]".to_rule.map { Repr::Store.new({}) }
 #}
 
+# 関数呼び出しは、原始式にカッコを加えたもの。
 #{
 grammar.rules[:call] = [:primitive, "(", :expression, ")"].sequence {|func, _, arg, _|
   Repr::call(func, arg)
@@ -53,6 +62,7 @@ grammar.rules[:call] = [:primitive, "(", :expression, ")"].sequence {|func, _, a
 #}
 
 
+# termは、関数呼び出しとパスでのアクセスを加えたもの
 #{
 grammar.rules[:term] = 
   [:call, Rule::optional(Rule::string("/") >> :path, [])].sequence { |a, idents|
@@ -62,6 +72,7 @@ grammar.rules[:term] =
 }
 #}
 
+# 足し算は、term二つをプラスでくっつけたもの。
 #{
 grammar.rules[:addition] = 
   [:term, Rule::many(Rule::string('+') >> :term)].sequence { |num, adds|
@@ -113,6 +124,9 @@ grammar.rules[:sentence].children << ["{", Rule::many(Call.new(:sentence)), "}"]
 }
 #}
 
+#{
+grammar.rules[:sentence].children << [:expression, ";"].sequence {|e, _| e}
+#}  
 
 i=0
 a=0
@@ -145,5 +159,5 @@ store/c=[]
 store/c/hoge=[]
 print store
 
-f=^{print a+b+12}
+f=^{a+b+12;}
 print f(store)

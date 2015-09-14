@@ -56,6 +56,16 @@ module Garbanzo
       when Bind
         x, rest = parse_rule(rule.rule, source)
         parse_rule(rule.func.call(x), rest)
+      when And
+        x, _ = parse_rule(rule.rule, source)
+        [x, source]
+      when Not
+        begin
+          parse_rule(rule.rule, source)
+        rescue ParseError
+          return [Repr::store({}), source]
+        end
+        raise ParseError, "not predicate matched"
       else
         raise "PARSE_RULE: error, not a rule #{rule}"
       end      

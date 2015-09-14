@@ -67,5 +67,22 @@ class TC_Parser < Test::Unit::TestCase
     s1 = build_parser(Rule::split_by_spaces("mado".to_rule, "homu".to_rule))
     assert_equal([%w(mado homu).map(&:to_repr), "saya"], s1.parse("mado homusaya"))
   end
+
+  def test_and
+    s1 = build_parser(Rule::and("homu".to_rule) >> "homu".to_rule)
+    assert_equal(["homu".to_repr, "saya"], s1.parse("homusaya"))
+  end
+
+  def test_any
+    s = build_parser(Rule::any >> Rule::any)
+    assert_equal(["a", "do"], s.parse("mado"))
+  end
+  
+  def test_not
+    r = "/*".to_rule >> Rule::many(Rule::not("*/".to_rule) >> Rule::any) >> "*/".to_rule
+    s1 = build_parser(r)
+
+    assert_equal(["*/".to_repr, "hogetara"], s1.parse("/* this is comment line */hogetara"))
+  end
 end
 

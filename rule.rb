@@ -33,6 +33,14 @@ module Garbanzo
         Garbanzo::Rule::choice(self, other.to_rule)
       end
 
+      def ~
+        Garbanzo::Rule::and(self)
+      end
+
+      def !
+        Garbanzo::Rule::not(self)
+      end
+      
       def map(&f)
         Garbanzo::Rule::bind(self) { |result|
           Garbanzo::Rule::success(f.call(result))
@@ -98,6 +106,24 @@ module Garbanzo
           @function = function
         end
       end
+
+      # 先読みするやつ。
+      class And < Rule
+        attr_accessor :rule
+
+        def initialize(rule)
+          @rule = rule
+        end
+      end
+      
+      # 同じく先読み、
+      class Not < Rule
+        attr_accessor :rule
+
+        def initialize(rule)
+          @rule = rule
+        end
+      end
     end
 
     # オープンクラス。クラスのみんなには、内緒だよ！
@@ -161,6 +187,14 @@ module Garbanzo
 
     def self.function(&func)
       Private::Function.new(&func)
+    end
+
+    def self.and(rule)
+      Private::And.new(rule)
+    end
+
+    def self.not(rule)
+      Private::Not.new(rule)
     end
     
     def self.optional(rule, default = nil)

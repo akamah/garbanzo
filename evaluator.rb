@@ -107,6 +107,14 @@ module Garbanzo
         result
     end
 
+    def eval_if(condition, consequence, alternative)
+        if evaluate(condition) != false.to_repr
+          evaluate(consequence)
+        else
+          evaluate(alternative)
+        end
+    end
+    
     def eval_begin(body)
         Lib::each_list(body) { |child|
           evaluate(child)
@@ -165,6 +173,7 @@ module Garbanzo
       when "size";     eval_size(s['object'])
         
       when "while";    eval_while(s['condition'], s['body'])
+      when "if";       eval_if(s['condition'], s['consequence'], s['alternative'])
       when "begin";    eval_begin(s['body'])
 
       when "getenv";   eval_getenv()

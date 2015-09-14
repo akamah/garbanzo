@@ -115,6 +115,15 @@ grammar.rules[:sentence].children << ["while", Rule::whitespaces, :condition, Ru
 #}
 
 #{
+grammar.rules[:sentence].children << ['if', Rule::whitespaces, :condition, Rule::whitespaces,
+				     :sentence, Rule::whitespaces,
+				     'else', Rule::whitespaces,
+				     :sentence].sequence { |_, _, cond, _, csq, _, _, _, alt, _|
+  Repr::if(cond, csq, alt)				     
+}
+#}
+
+#{
 grammar.rules[:sentence].children << ["{", Rule::many(Call.new(:sentence)), "}"].sequence { |_, lst, _|
   newstore = Repr::set(Repr::getenv, "nextEnv".to_repr, Repr::Store.new({}))				  
   newenv = Repr::set(Repr::get(Repr::getenv, "nextEnv".to_repr), "..".to_repr, Repr::getenv)
@@ -151,13 +160,27 @@ while i!=10 {
   }
 }
 
+if 1==2 {
+  print 135
+} else {
+  print 246
+}
+
 print sum
 store=[]
-store/a=10
+store/a=0
 store/b=20
 store/c=[]
 store/c/hoge=[]
 print store
 
-f=^{a+b+12;}
+f=^{if a==10 {
+      print 100
+    } else {
+      print $a
+      e=[]
+      e/a=$a+1
+      $$f(e);
+    }}
+    
 print f(store)

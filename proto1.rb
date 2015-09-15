@@ -49,7 +49,7 @@ if __FILE__ == $0
   include Garbanzo
   int = Interpreter.new
 
-  File.open("source.garb", "rb") { |f|
+  File.open(ARGV[0] || "source.garb", "rb") { |f|
     int.execute(f.read)
   }
 end

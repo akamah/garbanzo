@@ -31,6 +31,10 @@ module Garbanzo
       end
     end
 
+    def self.cons(hd, rt)
+      Repr::store({HEAD => hd, REST => rt})
+    end
+
     def self.make_list(*objs)
       l = null
       objs.reduce(l) { |lst, obj|

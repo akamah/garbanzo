@@ -135,7 +135,11 @@ EOS
     define_command("SetEnv", "env")                  # 拡張
 
     define_command("Call", "func", "args")           # 呼び出し
-    
+
+    ## 文字列処理
+    define_command("Append", "left", "right")
+    define_command("CharAt", "string", "index")
+    define_command("Length", "string")
     
     class ::Integer
       def to_repr; Garbanzo::Repr::num(self); end

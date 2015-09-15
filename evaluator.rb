@@ -152,7 +152,23 @@ module Garbanzo
 
       result
     end
-    
+
+    def eval_append(left, right)
+      Repr::string(left.value + right.value)
+    end
+
+    def eval_charat(string, index)
+      if index.num < string.value.length
+        Repr::string(string.value[index.num])
+      else
+        raise "CHARAT: index out of string's length"
+      end
+    end
+
+    def eval_length(string)
+      Repr::num(string.value.length)
+    end
+
     def eval_store(s)
       feature = s["@"]
 
@@ -189,6 +205,9 @@ module Garbanzo
       when "setenv";   eval_setenv(s['env'])
 
       when "call";     eval_call(s['func'], s['args'])
+      when "append";   eval_append(s['left'], s['right'])
+      when "charat";   eval_charat(s['string'], s['index'])
+      when "length";   eval_length(s['string'])
       else
         raise "EVALUATE2: #{feature.inspect} is not a valid feature name"
       end

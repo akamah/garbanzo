@@ -114,4 +114,16 @@ class TC_Proto1 < Test::Unit::TestCase
     assert_equal(Repr.add(3.to_repr, 4.to_repr),
                  ev.evaluate(store))
   end
+
+  def test_string_manip
+    ev = Evaluator.new
+
+    ap = Repr::append("mado".to_repr, "homu".to_repr)
+    at = Repr::charat("homu".to_repr, 2.to_repr)
+    le = Repr::length("homuhomu".to_repr)
+
+    assert_equal("madohomu".to_repr, ev.evaluate(ap))
+    assert_equal("m".to_repr, ev.evaluate(at))
+    assert_equal(8.to_repr, ev.evaluate(le))
+  end
 end

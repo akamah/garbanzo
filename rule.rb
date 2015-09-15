@@ -67,6 +67,10 @@ module Garbanzo
         def initialize(*children)
           @children = children        
         end
+
+        def <<(rule)
+          @children << rule
+        end
       end
       
       # 終端記号。ある文字列。
@@ -226,9 +230,13 @@ module Garbanzo
     end
 
     def self.whitespaces
-      many_one(whitespace).map { " ".to_repr }
+      many(whitespace).map { " ".to_repr }
     end
 
+    def self.token(rule)
+      [rule, whitespaces].sequence {|result, _| result}
+    end
+    
     def self.separate_by(rule, separator)
       optional([rule, many(separator >> rule)].sequence { |a, rest|
                  [a] + rest

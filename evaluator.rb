@@ -91,7 +91,7 @@ module Garbanzo
       obj = evaluate(object)
 
       raise "SIZE: object #{obj.inspect} is not a store #{inspect}" unless obj.is_a? Store
-      obj.table.size
+      obj.table.size.to_repr
     end
 
     def eval_quote(object)

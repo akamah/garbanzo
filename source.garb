@@ -1,5 +1,5 @@
 #{
-grammar.rules[:sentence].children << Rule::whitespaces
+grammar.rules[:sentence].children << Rule::whitespace
 #}
 #{
 grammar.rules[:comment] = "#".to_rule >> Rule::many(Rule::not("\n".to_rule) >> Rule::any) >> "\n".to_rule

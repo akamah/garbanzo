@@ -43,11 +43,9 @@ class TC_Parser < Test::Unit::TestCase
                       })
     s2 = build_parser(["mado", "mami"].choice)
 
-    s3 = build_parser(lambda { |source| return true, source }.to_rule)
     
     assert_equal(["OK", ""], s1.parse("madohomusaya"))
     assert_equal("saya", s2.parse("mamisaya")[1])
-    assert_equal([true, "hoge"], s3.parse("hoge"))
   end
 
   def test_optional

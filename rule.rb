@@ -50,6 +50,10 @@ module Garbanzo
       def bind(&f)
         Garbanzo::Rule::bind(self, &f)
       end
+
+      def message
+        "<rule>"
+      end
     end
 
     module Private
@@ -61,6 +65,10 @@ module Garbanzo
         def initialize(*children, &func)
           @children = children
           @func     = func
+        end
+
+        def message
+          children[0].message || "nop"
         end
       end
 
@@ -75,6 +83,10 @@ module Garbanzo
         def <<(rule)
           @children << rule
         end
+
+        def message
+          children.map(&:message).join(", or ") || "impossible"
+        end
       end
       
       # 終端記号。ある文字列。
@@ -84,6 +96,10 @@ module Garbanzo
         def initialize(string)
           @string = string
         end
+
+        def message
+          string
+        end
       end
 
       # 他のルールを呼び出す
@@ -92,6 +108,10 @@ module Garbanzo
         
         def initialize(rule_name)
           @rule_name = rule_name
+        end
+
+        def message
+          rule_name.to_s
         end
       end
 
@@ -104,14 +124,20 @@ module Garbanzo
           @rule = rule
           @func = func        
         end
+
+        def message
+          rule.message
+        end
       end
       
       # 関数で処理する。
       class Function < Rule
         attr_accessor :function
-
-        def initialize(&function)
+        attr_reader :message
+        
+        def initialize(message = "some func", &function)
           @function = function
+          @message  = message
         end
       end
 
@@ -122,6 +148,10 @@ module Garbanzo
         def initialize(rule)
           @rule = rule
         end
+
+        def message
+          "LAH " + rule.message
+        end
       end
       
       # 同じく先読み、
@@ -130,6 +160,10 @@ module Garbanzo
 
         def initialize(rule)
           @rule = rule
+        end
+
+        def message
+          "NOT " + rule.message
         end
       end
     end
@@ -149,22 +183,18 @@ module Garbanzo
       def to_rule; Garbanzo::Rule::call(self); end
     end
     
-    class ::Proc
-      def to_rule; Garbanzo::Rule::function(&self); end
-    end
-
     # リファクタリングして、Successなどのクラスを除去したい。
     # そのために、一旦既存のクラスをメソッドに置き換えることとした。
     def self.success(result)
-      function {|s| [result, s] }
+      function("success") {|s| [result, s] }
     end
 
     def self.fail(message = "failure")
-      function {|s| throw ParseError, message }
+      function("fail") {|s| throw ParseError, message }
     end
 
     def self.any
-      function {|s|
+      function("any") {|s|
         if s.size > 0
           [s[0].to_repr, s[1..-1]]
         else
@@ -193,8 +223,8 @@ module Garbanzo
       Private::Bind.new(rule, &func)
     end
 
-    def self.function(&func)
-      Private::Function.new(&func)
+    def self.function(message = "some func", &func)
+      Private::Function.new(message, &func)
     end
 
     def self.and(rule)

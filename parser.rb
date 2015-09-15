@@ -38,12 +38,16 @@ module Garbanzo
           end
         end
 
-        parse_rule(rule.children[-1], source)
+        begin
+          parse_rule(rule.children[-1], source)
+        rescue ParseError
+          raise ParseError, "expected #{rule.message}"
+        end
       when String
         if source.start_with?(rule.string)
           return Repr::String.new(rule.string), source[rule.string.length .. -1]                       
         else
-          raise ParseError, "expected #{rule.string}, source = #{source}"
+          raise ParseError, "expected #{rule.message}"
         end
       when Function
         rule.function.call(source)
@@ -65,7 +69,7 @@ module Garbanzo
         rescue ParseError
           return [Repr::store({}), source]
         end
-        raise ParseError, "not predicate matched"
+        raise ParseError, "expected #{rule.message}"
       else
         raise "PARSE_RULE: error, not a rule #{rule}"
       end      

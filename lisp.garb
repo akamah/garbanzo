@@ -1,0 +1,100 @@
+#{
+grammar.rules[:sentence].children << Rule::whitespace
+#}
+#{
+grammar.rules[:comment] = [";", Rule::many(!"\n".to_rule >> Rule::any), "\n"].sequence
+grammar.rules[:sentence].children << (Rule::call(:comment) >> Rule::success(true.to_repr))
+#}
+
+; Lisp風の言語を作成する。
+
+; 数値を定義
+#{
+grammar.rules[:number] = Rule::many_one(Rule::one_of("0123456789")).map {|as|
+  as.map(&:value).join.to_i.to_repr
+}
+#}
+
+; 識別子を定義する
+#{
+grammar.rules[:symbol] = Rule::many_one(Rule::one_of("abcdefghijklmnopqrstuvwxyz.")).map {|as|
+  as.map(&:value).join.to_repr
+}
+#}
+
+; 原始式を定義する
+#{
+grammar.rules[:atom] = [:number, :symbol].choice
+#}
+
+#{
+def make_app_parser(name, cmd, *args, &f)
+  [Rule::token('('.to_rule),
+   Rule::token(name.to_rule),
+   Rule::many(Rule::token(Rule::call(:expression))),
+   Rule::token(')'.to_rule)].sequence {|_, _, exprs, _|
+     exprs
+  }.bind {|exprs|
+     if f != nil
+       Rule::success(f.call(exprs))
+     elsif args.length == exprs.length
+       h = Repr::store(args.map(&:to_repr).zip(exprs).to_h)
+       h['@'.to_repr] = cmd.to_repr
+       Rule::success(h)
+     else
+       Rule::fail("argument length mismatch")
+     end
+  }
+end
+
+def make_binary_parser(name, cmd)
+  make_app_parser(name, cmd, 'left', 'right')
+end
+
+beginP = make_app_parser("begin", "begin") { |exprs|
+  Repr::begin(Lib::make_list(*exprs))
+}
+
+grammar.rules[:application] = [
+  make_binary_parser('+', 'add'),
+  make_binary_parser(*%w(- sub)),
+  make_binary_parser(*%w(* mult)),	
+  make_binary_parser(*%w(/ div)),
+  make_binary_parser(*%w(% mod)),
+  make_binary_parser(*%w(= equal)),
+  make_binary_parser(*%w(/= notequal)),
+  make_binary_parser(*%w(and and)),
+  make_binary_parser(*%w(or  or)),
+  make_app_parser(*%w(not not value)),
+  make_app_parser(*%w(print print value)),
+  make_app_parser(*%w(set set object key value)),
+  make_app_parser(*%w(get get object key)),
+  make_app_parser(*%w(size size object)),
+  make_app_parser(*%w(if if condition consequence alternative)),
+  make_app_parser(*%w(while while condition body)),
+  make_app_parser(*%w(quote quote value)),
+  make_app_parser(*%w(. getenv)),
+  beginP
+].choice
+
+#{
+grammar.rules[:expression] = [:atom, :application].choice
+#}
+
+#{
+grammar.rules[:sentence] << Rule::call(:expression)
+#}
+
+
+(print (+ 1 2))
+(set (.) hoge 3)
+(print (quote (get (.) hoge)))
+(print (size (.)))
+
+(set (.) i 0)
+(set (.) a 10)
+(while (/= (get (.) i) 10)
+ (begin
+  (set (.) a (+ (get (.) a) (get (.) i)))
+  (set (.) i (+ (get (.) i) 1))))
+(print (get (.) a))

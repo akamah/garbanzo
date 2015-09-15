@@ -46,6 +46,10 @@ module Garbanzo
           Garbanzo::Rule::success(f.call(result))
         }
       end
+
+      def bind(&f)
+        Garbanzo::Rule::bind(self, &f)
+      end
     end
 
     module Private

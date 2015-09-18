@@ -31,23 +31,21 @@ module Garbanzo
         es = rule.func.call(*es) if rule.func != nil
         return es, rest
       when Choice
-        for c in rule.children[0..-2]
+        errs = []
+        for c in rule.children
           begin
             return parse_rule(c, source)
-          rescue ParseError
+          rescue ParseError => e
+            errs << e.message
           end
         end
 
-        begin
-          parse_rule(rule.children[-1], source)
-        rescue ParseError
-          raise ParseError, "expected #{rule.message}"
-        end
+        raise ParseError, errs.join(', ')
       when String
         if source.start_with?(rule.string)
           return Repr::String.new(rule.string), source[rule.string.length .. -1]                       
         else
-          raise ParseError, "expected #{rule.message}"
+          raise ParseError, "#{rule.message}"
         end
       when Function
         rule.function.call(source)
@@ -55,7 +53,7 @@ module Garbanzo
         if r = grammar.rules[rule.rule_name]
           parse_rule(r, source)
         else
-          raise "rule: #{rule.rule_name} not found"
+          raise "rule: #{rule.rule_name}"
         end
       when Bind
         x, rest = parse_rule(rule.rule, source)
@@ -69,7 +67,7 @@ module Garbanzo
         rescue ParseError
           return [Repr::store({}), source]
         end
-        raise ParseError, "expected #{rule.message}"
+        raise ParseError, "not #{rule.message}"
       else
         raise "PARSE_RULE: error, not a rule #{rule}"
       end      

@@ -129,13 +129,11 @@ grammar.rules[:sentence].children << ['if', Rule::whitespaces, :condition, Rule:
 }
 #}
 
+# スコープの導入。これは、空の引数を取る関数を呼び出すこととする。
 #{
-grammar.rules[:sentence].children << ["{", Rule::many(Call.new(:sentence)), "}"].sequence { |_, lst, _|
-  newstore = Repr::set(Repr::getenv, "nextEnv".to_repr, Repr::Store.new({}))				  
-  newenv = Repr::set(Repr::get(Repr::getenv, "nextEnv".to_repr), "..".to_repr, Repr::getenv)
-  enter  = Repr::setenv(Repr::get(Repr::getenv, "nextEnv".to_repr))
-  leave  = Repr::setenv(Repr::get(Repr::getenv, "..".to_repr))
-  Repr::begin(Lib::make_list(newstore, newenv, enter, *lst, leave))
+grammar.rules[:sentence].children << ["{", Rule::many(:sentence.to_rule), "}"].sequence { |_, lst, _|
+  body = Repr::begin(Lib::make_list(*lst))
+  Repr::call(Repr::lambda(Repr::getenv, body), Repr::Store.new({}))
 }
 #}
 

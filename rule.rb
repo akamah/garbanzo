@@ -54,6 +54,10 @@ module Garbanzo
       def message
         "<rule>"
       end
+
+      def token
+        Garbanzo::Rule::token(self)
+      end
     end
 
     module Private

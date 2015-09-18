@@ -123,9 +123,12 @@ module Garbanzo
       end
       
       command("begin", "body") do |body|
+        result = false.to_repr
         Lib::each_list(body) { |child|
-          evaluate(child)
+          result = evaluate(child)
         }
+
+        result
       end
 
       command("getenv") do

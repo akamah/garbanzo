@@ -22,6 +22,27 @@ grammar.rules[:symbol] = Rule::many_one(Rule::one_of("abcdefghijklmnopqrstuvwxyz
 }
 #}
 
+; シンタックスシュガーを幾つか。
+#{
+grammar.rules[:quote] = ["'", :expression].sequence {|_, e|
+  s = Repr::store({})
+  s['@'] = 'quote'.to_repr
+  s['value'] = e
+  s
+}
+#}
+
+; 変数へのアクセス
+#{
+grammar.rules[:getvar] = ['@', :symbol].sequence {|_, e|
+  s = Repr::store({})
+  s['@'] = 'get'.to_repr
+  s['object'] = Repr::getenv
+  s['key'] = e.to_repr
+  s
+}
+#}
+
 ; 原始式を定義する
 #{
 grammar.rules[:atom] = [:number, :symbol].choice
@@ -78,7 +99,7 @@ grammar.rules[:application] = [
 ].choice
 
 #{
-grammar.rules[:expression] = [:atom, :application].choice
+grammar.rules[:expression] = [:atom, :application, :getvar, :quote].choice
 #}
 
 #{
@@ -88,13 +109,13 @@ grammar.rules[:sentence] << Rule::call(:expression)
 
 (print (+ 1 2))
 (set (.) hoge 3)
-(print (quote (get (.) hoge)))
+(print ''(get (.) hoge))
 (print (size (.)))
 
 (set (.) i 0)
 (set (.) a 10)
 (while (/= (get (.) i) 10)
  (begin
-  (set (.) a (+ (get (.) a) (get (.) i)))
-  (set (.) i (+ (get (.) i) 1))))
+  (set (.) a (+ @a @i))
+  (set (.) i (+ @i 1))))
 (print (get (.) a))

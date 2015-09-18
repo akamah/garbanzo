@@ -1,0 +1,41 @@
+#{
+grammar.rules[:nonemptyline] = [Rule::many_one(!"\n".to_rule >> Rule::any), "\n"].sequence { |cs, _|
+  r = cs.map(&:value).join.to_repr
+  r
+}
+grammar.rules[:emptyline] = "\n".to_rule
+grammar.rules[:sentence].children << :emptyline.to_rule
+#}
+
+#{
+grammar.rules[:paragraph] = Rule::many_one(:nonemptyline).map {|ss|
+  str = Repr::append("<p>".to_repr,
+          Repr::append(ss.map(&:value).join(' ').to_repr,
+                       "</p>".to_repr))
+  Repr::print(str)
+}
+grammar.rules[:sentence].children << :paragraph.to_rule
+#}
+
+#{
+grammar.rules[:heading] = [Rule::token("#"), :nonemptyline].sequence {|_, l|
+  str = Repr::append("<h1>".to_repr,
+          Repr::append(l, "</h1>".to_repr))
+  Repr::print(str)
+}
+grammar.rules[:sentence].children.unshift(:heading.to_rule)
+#}
+
+
+
+# Hey Diddle Diddle
+Hey diddle diddle,
+
+The cat and the fiddle,
+The cow jumped over the moon.
+The little dog laughed,
+To see such sport,
+
+And the dish ran away with the spoon.
+
+https://en.wikipedia.org/wiki/Hey_Diddle_Diddle

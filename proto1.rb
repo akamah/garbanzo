@@ -32,11 +32,13 @@ module Garbanzo
     
     # 構文拡張のやつです。
     def install_grammar_extension
+      @nth ||= 0
       @parser.grammar.rules[:sentence] = Rule::choice(
         ['#{', 
          Rule::many(!'#}'.to_rule >> Rule::any).map {|cs|
+           @nth += 1
            to_eval = cs.map(&:value).join
-           @parser.instance_eval(to_eval, "(grammar_extension)")
+           @parser.instance_eval(to_eval, "(grammar_extension: #{@nth})")
            Repr::Bool.new(false)
          },
          '#}'].sequence >> Rule::success(false.to_repr))

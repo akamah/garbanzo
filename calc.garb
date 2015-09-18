@@ -1,8 +1,8 @@
 #{
-grammar.rules[:sentence].children << Rule::whitespace
+grammar.rules[:sentence].children << Rule::many_one(Rule::whitespace).map { false.to_repr }
 #}
 #{
-grammar.rules[:comment] = "#".to_rule >> Rule::many(Rule::not("\n".to_rule) >> Rule::any) >> "\n".to_rule
+grammar.rules[:comment] = "#".to_rule >> Rule::many(Rule::not("\n") >> Rule::any) >> "\n"
 grammar.rules[:sentence].children << Rule::call(:comment)
 #}
 # コメントを実装したぞ！
@@ -11,22 +11,24 @@ grammar.rules[:sentence].children << Rule::call(:comment)
 #{
 grammar.rules[:number] = Rule::many_one(Rule::one_of("0123456789")).map {|as|
   as.map(&:value).join.to_i.to_repr
-}
+}.token
+
 # 識別子を定義する
 grammar.rules[:identifier] = Rule::many_one(Rule::one_of("abcdefghijklmnopqrstuvwxyz.")).map {|as|
   as.map(&:value).join.to_repr
-}
+}.token
 #}
 
 # 文字列を定義
 #{
-grammar.rules[:string] = ["\"", Rule::many(!"\"".to_rule >> Rule::any), "\""].sequence {|_, cs, _|
+grammar.rules[:string] = ["\"", Rule::many(!"\"".to_rule >> Rule::any), Rule::token("\"")].sequence {|_, cs, _|
   cs.map(&:value).join.to_repr
-}  
+}.token
 #}
+
 # print文
 #{
-grammar.rules[:sentence].children << ["print", " ", :expression].sequence { |_, _, n|
+grammar.rules[:sentence].children << ["print", Rule::many_one(Rule::whitespace), :expression].sequence { |_, _, n|
   Repr::print(n)
 }
 #}
@@ -42,7 +44,7 @@ grammar.rules[:path] = [:identifier, Rule::many(Rule::string("/") >> :identifier
 
 # 変数はパスで表される
 #{
-grammar.rules[:variable]  = [:path].sequence {|idents|
+grammar.rules[:variable]  = :path.to_rule.map {|idents|
   idents.reduce(Repr::getenv) { |body, key|
     Repr::get(body, key)
   }
@@ -57,12 +59,12 @@ grammar.rules[:primitive] = [:number, :string, :variable].choice
 # おっと忘れてた、空のストアオブジェクトも原始式
 #{
 grammar.rules[:primitive].children <<
-  "[]".to_rule.map { Repr::Store.new({}) }
+  Rule::token("[]").map { Repr::Store.new({}) }
 #}
 
 # 関数呼び出しは、原始式にカッコを加えたもの。
 #{
-grammar.rules[:call] = [:primitive, "(", :expression, ")"].sequence {|func, _, arg, _|
+grammar.rules[:call] = [:primitive, Rule::token("("), :expression, Rule::token(")")].sequence {|func, _, arg, _|
   Repr::call(func, arg)
 } | :primitive
 #}
@@ -90,7 +92,7 @@ grammar.rules[:addition] =
 
 #{
 grammar.rules[:function] =
-  ["^{", :sentence, "}"].sequence {|_, body, _|
+  [Rule::token("^{"), :sentence, Rule::token("}")].sequence {|_, body, _|
     Repr::lambda(Repr::getenv, body)
   }
 #}
@@ -100,52 +102,52 @@ grammar.rules[:expression] = [:addition, :function].choice
 #}
 
 #{
-grammar.rules[:condition] = [[:expression, "==", :expression].sequence {|l, _, r|
+grammar.rules[:condition] = [[:expression, Rule::token("=="), :expression].sequence {|l, _, r|
                                Repr::equal(l, r)
-                             }, [:expression, "!=", :expression].sequence {|l, _, r|
+                             }, [:expression, Rule::token("!="), :expression].sequence {|l, _, r|
                                Repr::notequal(l, r)
                              }].choice
 #}
 
 #{
 grammar.rules[:sentence].children <<
-  [:expression, "=", :expression].sequence {|object, _, expr|
+  [:expression, Rule::token("="), :expression].sequence {|object, _, expr|
   Repr::set(object['object'], object['key'], expr)
 }
 #}
 
 #{
-grammar.rules[:sentence].children << ["while", Rule::whitespaces, :condition, Rule::whitespaces, :sentence].sequence {|_, _, cond, _, body|
+grammar.rules[:sentence].children << [Rule::token("while"), :condition, :sentence].sequence {|_, cond, body|
   Repr::while(cond, body)
 }
 #}
 
 #{
-grammar.rules[:sentence].children << ['if', Rule::whitespaces, :condition, Rule::whitespaces,
-				     :sentence, Rule::whitespaces,
-				     'else', Rule::whitespaces,
-				     :sentence].sequence { |_, _, cond, _, csq, _, _, _, alt, _|
+grammar.rules[:sentence].children << [Rule::token('if'), :condition,
+				     :sentence,
+				     Rule::token('else'),
+				     :sentence].sequence { |_, cond, csq, _, alt|
   Repr::if(cond, csq, alt)				     
 }
 #}
 
 # スコープの導入。これは、空の引数を取る関数を呼び出すこととする。
 #{
-grammar.rules[:sentence].children << ["{", Rule::many(:sentence.to_rule), "}"].sequence { |_, lst, _|
+grammar.rules[:sentence].children << [Rule::token("{"), Rule::many(:sentence), Rule::token("}")].sequence { |_, lst, _|
   body = Repr::begin(Lib::make_list(*lst))
   Repr::call(Repr::lambda(Repr::getenv, body), Repr::Store.new({}))
 }
 #}
 
 #{
-grammar.rules[:sentence].children << [:expression, ";"].sequence {|e, _| e}
+grammar.rules[:sentence].children << [:expression, Rule::token(";")].sequence {|e, _| e}
 #}  
 
-i=0
-a=0
-b=1
+i = 0
+a = 0
+b = 1
 
-while i!=10 {
+while i != 10 {
   $i=$i+1
   tmp=$b
   $b=$a+$b
@@ -164,13 +166,14 @@ while i!=10 {
   }
 }
 
+print sum
+
 if 1==2 {
-  print 135
+  print "true"
 } else {
-  print 246
+  print "false"
 }
 
-print sum
 store=[]
 store/a=0
 store/b=20
@@ -179,13 +182,15 @@ store/d="hogehoge"
 store/c/hoge=[]
 print store
 
-f=^{if a==10 {
-      print 100
-    } else {
-      print $a
-      e=[]
-      e/a=$a+1
-      $$f(e);
-    }}
+f=^{
+  if a==10 {
+    print 100
+  } else {
+    print $a
+    e = []
+    e/a = $a+1
+    $$f(e);
+  }
+}
     
 print f(store)

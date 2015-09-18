@@ -241,7 +241,7 @@ module Garbanzo
       when Bool
         p.value.to_s
       when String
-        p.value.inspect
+        p.value
       when Store
         "{" + p.table.map {|k, v|
           show(k) + ":\n" + show(v).gsub(/^/, '  ')

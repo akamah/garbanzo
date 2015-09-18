@@ -18,6 +18,12 @@ grammar.rules[:identifier] = Rule::many_one(Rule::one_of("abcdefghijklmnopqrstuv
 }
 #}
 
+# 文字列を定義
+#{
+grammar.rules[:string] = ["\"", Rule::many(!"\"".to_rule >> Rule::any), "\""].sequence {|_, cs, _|
+  cs.map(&:value).join.to_repr
+}  
+#}
 # print文
 #{
 grammar.rules[:sentence].children << ["print", " ", :expression].sequence { |_, _, n|
@@ -43,9 +49,9 @@ grammar.rules[:variable]  = [:path].sequence {|idents|
 }
 #}
 
-# 原始式は、数値かパスのいずれかである
+# 原始式は、数値か文字列か変数のいずれかである
 #{
-grammar.rules[:primitive] = [:number, :variable].choice
+grammar.rules[:primitive] = [:number, :string, :variable].choice
 #}
 
 # おっと忘れてた、空のストアオブジェクトも原始式
@@ -171,6 +177,7 @@ store=[]
 store/a=0
 store/b=20
 store/c=[]
+store/d="hogehoge"
 store/c/hoge=[]
 print store
 

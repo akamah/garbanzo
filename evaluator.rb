@@ -157,10 +157,11 @@ module Garbanzo
       end
 
       command("append", "left", "right") do |left, right|
-        Repr::string(left.value + right.value)
+        Repr::string(evaluate(left).value + evaluate(right).value)
       end
 
       command("charat", "string", "index") do |string, index|
+        string = evaluate(string)
         if index.num < string.value.length
           Repr::string(string.value[index.num])
         else
@@ -169,6 +170,7 @@ module Garbanzo
       end
 
       command("length", "string") do |string|
+        string = evaluate(string)
         Repr::num(string.value.length)
       end
     end

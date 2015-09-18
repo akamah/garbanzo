@@ -224,7 +224,7 @@ module Garbanzo
     end
 
     def self.bind(rule, &func)
-      Private::Bind.new(rule, &func)
+      Private::Bind.new(rule.to_rule, &func)
     end
 
     def self.function(message = "some func", &func)
@@ -232,15 +232,15 @@ module Garbanzo
     end
 
     def self.and(rule)
-      Private::And.new(rule)
+      Private::And.new(rule.to_rule)
     end
 
     def self.not(rule)
-      Private::Not.new(rule)
+      Private::Not.new(rule.to_rule)
     end
     
     def self.optional(rule, default = nil)
-      rule | success(default)
+      rule.to_rule | success(default)
     end
 
     def self.many(rule)

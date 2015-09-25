@@ -104,4 +104,28 @@ class TC_Repr < Test::Unit::TestCase
     assert_equal("m".to_repr, ev.evaluate(at))
     assert_equal(8.to_repr, ev.evaluate(le))
   end
+
+  def test_proc
+    ev = Evaluator.new
+
+    pr = Repr::procedure(lambda {|a|
+                           (a['right'].num + a['left'].num).to_repr
+                         })
+    args = Repr::store({})
+    args['right'] = 1.to_repr
+    args['left']  = 3.to_repr
+    assert_equal(4.to_repr, ev.evaluate(Repr::call(pr, args)))
+    assert_equal(pr, ev.evaluate(pr))
+  end
+
+  def test_type_check
+    ev = Evaluator.new
+
+    pr = Repr::add(3.to_repr, "hoge".to_repr)
+
+    assert_raise {
+      ev.evaluate(pr)
+    }
+    
+  end
 end

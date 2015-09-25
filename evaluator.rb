@@ -20,79 +20,83 @@ module Garbanzo
       }
     end
 
-    def install_commands
-      command("add", "left", "right") do |left, right|
-        Repr::num(evaluate(left).num + evaluate(right).num)
-      end
-
-      command("sub", "left", "right") do |left, right|
-        Repr::num(evaluate(left).num - evaluate(right).num)
-      end
-      
-      command("mult", "left", "right") do |left, right|
-        Repr::num(evaluate(left).num * evaluate(right).num)     
-      end
-
-      command("div", "left", "right") do |left, right|
-        Repr::num(evaluate(left).num / evaluate(right).num)      
-      end
-
-      command("mod", "left", "right") do |left, right|
-        Repr::num(evaluate(left).num % evaluate(right).num)     
-      end
-
-      
-      command("equal", "left", "right") do |left, right|
-        Repr::bool(evaluate(left).eql?(evaluate(right)))
-      end
-
-      command("notequal", "left", "right") do |left, right|
-        Repr::bool(!evaluate(left).eql?(evaluate(right)))
-      end
-
-      
-      command("and", "left", "right") do |left, right|
-        Repr::bool(evaluate(left).value && evaluate(right.value))
-      end
-      
-      command("or", "left", "right") do |left, right|
-        Repr::bool(evaluate(left).value || evaluate(right.value))
-      end
-      
-      command("and", "left", "right") do |left, right|
-        Repr::bool(!evaluate(left).value)
-      end
-      
-      command("print", "value") do |value|
-        result = evaluate(value)
-        puts show(result)
-        result
-      end
-
-      command("set", "object", "key", "value") do |object, key, value|
-        obj = evaluate(object)
-        key = evaluate(key)
-        val = evaluate(value)
-
-        raise "SET: object is not a store #{obj}" unless obj.is_a? Store
-        obj.table[key] = val
-      end
-
-      command("get", "object", "key") do |object, key|
-        obj = evaluate(object)
-        key = evaluate(key)
+    # いわゆる演算子を定義する。
+    # 名前と型を書いて並べると、自動的に評価したのちにブロックに渡してくれる。
+    def operator(opname, *args, &func)
+      raise "invalid argument list" if args.length % 2 == 1
+      @commands[opname] = lambda { |store|
+        param = args.each_slice(2).map {|name, type|
+          e = evaluate(store[name.to_repr])
+          unless e.is_a? type
+            raise "operator `#{opname}' wants `#{name}' to be #{type}, not #{e.class}"
+          end
+          e
+        }
         
-        raise "GET: object #{obj.inspect} is not a store #{inspect}" unless obj.is_a? Store
-        result = obj.table[key]
+        func.call(*param)
+      }
+    end
+    
+    def install_commands
+      operator("add", "left", Num, "right", Num) do |left, right|
+        Repr::num(left.num + right.num)
+      end
+      
+      operator("sub", "left", Num, "right", Num) do |left, right|
+        Repr::num(left.num - right.num)
+      end
+      
+      operator("mult", "left", Num, "right", Num) do |left, right|
+        Repr::num(left.num * right.num)     
+      end
+
+      operator("div", "left", Num, "right", Num) do |left, right|
+        Repr::num(left.num / right.num)      
+      end
+
+      operator("mod", "left", Num, "right", Num) do |left, right|
+        Repr::num(left.num % right.num)     
+      end
+
+      
+      operator("equal", "left", Object, "right", Object) do |left, right|
+        Repr::bool(left.eql?(right))
+      end
+
+      operator("notequal", "left", Object, "right", Object) do |left, right|
+        Repr::bool(!left.eql?(right))
+      end
+
+      
+      operator("and", "left", Bool, "right", Bool) do |left, right|
+        Repr::bool(left.value && right.value)
+      end
+      
+      operator("or", "left", Bool, "right", Bool) do |left, right|
+        Repr::bool(left.value || right.value)
+      end
+      
+      operator("not", "left", Bool, "right", Bool) do |value|
+        Repr::bool(!evaluate(value).value)
+      end
+      
+      operator("print", "value", Object) do |value|
+        puts show(value)
+        value
+      end
+
+      operator("set", "object", Store, "key", Object, "value", Object) do |object, key, value|
+        object.table[key] = value
+      end
+
+      operator("get", "object", Store, "key", Object) do |object, key|
+        result = object.table[key]
         raise "GET: undefined key #{obj.inspect} for #{key.inspect}" unless result
         result
       end
 
-      command("size", "object") do |object|
-        obj = evaluate(object)
-
-        raise "SIZE: object #{obj.inspect} is not a store #{inspect}" unless obj.is_a? Store
-        obj.table.size.to_repr
+      operator("size", "object", Store) do |object|
+        object.table.size.to_repr
       end
 
       command("quote", "value") do |value|
@@ -131,37 +135,37 @@ module Garbanzo
         result
       end
 
-      command("getenv") do
+      operator("getenv") do
         @dot
       end
 
-      command("setenv", "env") do |env|
+      operator("setenv", "env", Store) do |env|
         @dot = evaluate(env)
       end
 
-      command("call", "func", "args") do |func, args|
-        f = evaluate(func)
-        a = evaluate(args)
-        
-        raise "EVALUATE: callee is not a function: #{func}" unless f.is_a? Function
-        raise "EVALUATE: arguments is not a data store: #{args}" unless a.is_a? Store
+      operator("call", "func", Callable, "args", Store) do |func, args|
+        case func
+        when Function
+          oldenv = @dot
+          args.table["..".to_repr] = func.env # 環境を拡張
 
-        oldenv = @dot
-        a.table["..".to_repr] = f.env # 環境を拡張
+          @dot = args
+          result = evaluate(func.body)
+          @dot = oldenv
 
-        @dot = a
-        result = evaluate(f.body)
-        @dot = oldenv
-
-        result
+          result
+        when Procedure
+          func.proc.call(args)
+        else
+          raise "EVALUATE: callee is not a function: #{func}" unless f.is_a? Function
+        end
       end
 
-      command("append", "left", "right") do |left, right|
-        Repr::string(evaluate(left).value + evaluate(right).value)
+      operator("append", "left", String, "right", String) do |left, right|
+        Repr::string(left.value + right.value)
       end
 
-      command("charat", "string", "index") do |string, index|
-        string = evaluate(string)
+      operator("charat", "string", String, "index", Num) do |string, index|
         if index.num < string.value.length
           Repr::string(string.value[index.num])
         else
@@ -169,8 +173,7 @@ module Garbanzo
         end
       end
 
-      command("length", "string") do |string|
-        string = evaluate(string)
+      operator("length", "string", String) do |string|
         Repr::num(string.value.length)
       end
     end
@@ -225,7 +228,7 @@ module Garbanzo
     
     def evaluate(program)
       case program
-      when Num, Bool, String, Function
+      when Num, Bool, String, Function, Procedure
         program
       when Store;
         eval_store(program)

@@ -5,7 +5,7 @@ module Garbanzo
     # 内部表現
   module Repr
     # 内部表現のオブジェクトを適当に定義してくれるメソッド。
-    def self.define_repr_class(classname, *attrs, **opts)
+    def self.define_repr_class(classname, superclass, *attrs)
       attr_list  = attrs.map {|x| ":" + x.to_s }.join(', ')
       attr_def   = attrs.length > 0 ? "attr_accessor " + attr_list : ""
       arguments  = attrs.join(', ')
@@ -15,21 +15,9 @@ module Garbanzo
       eql_def    = (["class"] + attrs).map {|x| "self.#{x}.eql?(other.#{x})" }.join(' && ')
 
       factory_name = classname.downcase
-#       to_repr    = ""
-#       if opts.include?(:wrapper)
-#         raise "attribute should be precisely 1 with wrapper class" if attrs.size != 1
-#         wraps = opts[:wrapper] 
-#         to_repr = <<"WRAPPER"
-# class ::#{wraps}
-#   def to_repr
-#     return Garbanzo::Repr::#{classname}.new(self)
-#   end
-# end
-# WRAPPER
-#       end
-      
+
       str = <<"EOS"
-class #{classname}
+class #{classname} < #{superclass}
   #{attr_def}
   def initialize(#{arguments})
     #{assignment}
@@ -84,11 +72,13 @@ EOS
     end
     
     ## 主にデータを表すオブジェクト
-    define_repr_class("Num", "num")               # 言語の内部表現としての整数
-    define_repr_class("String", "value")          # 内部表現としての文字列
-    define_repr_class("Bool", "value")            # 内部表現としての文字列
-    define_repr_class("Store", "table")           # データストアオブジェクト
-    define_repr_class("Function", "env", "body")  # 関数
+    define_repr_class("Num", Object, "num")               # 言語の内部表現としての整数
+    define_repr_class("String", Object, "value")          # 内部表現としての文字列
+    define_repr_class("Bool", Object, "value")            # 内部表現としての文字列
+    define_repr_class("Store", Object, "table")           # データストアオブジェクト
+    define_repr_class("Callable", Object)                  # 呼び出し可能なオブジェクト、という意味で
+    define_repr_class("Function", Callable, "env", "body")  # 関数
+    define_repr_class("Procedure", Callable, "proc")        # ネイティブの関数
 
     class Store
       def [](key)

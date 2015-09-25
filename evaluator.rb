@@ -8,8 +8,8 @@ module Garbanzo
   class Evaluator
     include Repr
     
-    def initialize
-      @dot = Store.new({})
+    def initialize(root = Repr::store({}))
+      @dot = root
       @commands = Hash.new
       install_commands
     end
@@ -91,7 +91,7 @@ module Garbanzo
 
       operator("get", "object", Store, "key", Object) do |object, key|
         result = object.table[key]
-        raise "GET: undefined key #{obj.inspect} for #{key.inspect}" unless result
+        raise "GET: undefined key #{object.inspect} for #{key.inspect}" unless result
         result
       end
 
@@ -140,7 +140,7 @@ module Garbanzo
       end
 
       operator("setenv", "env", Store) do |env|
-        @dot = evaluate(env)
+        @dot = env
       end
 
       operator("call", "func", Callable, "args", Store) do |func, args|
@@ -149,6 +149,10 @@ module Garbanzo
           oldenv = @dot
           args.table["..".to_repr] = func.env # 環境を拡張
 
+          unless args.table.include?("/".to_repr)
+            args.table["/".to_repr] = oldenv["/"]
+          end
+          
           @dot = args
           result = evaluate(func.body)
           @dot = oldenv

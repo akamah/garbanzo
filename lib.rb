@@ -44,5 +44,12 @@ module Garbanzo
       }
       l
     end
+
+    def self.add
+      Repr::procedure(
+        lambda {|a|
+          (a['right'].num + a['left'].num).to_repr
+        })
+    end
   end
 end

@@ -16,17 +16,25 @@ module Garbanzo
   # EvaluatorとParserをカプセルしたもの。
   class Interpreter
     def initialize
-      @evaluator = Evaluator.new
+      @evaluator = Evaluator.new(construct_root)
       @parser    = Parser.new
 
       install_grammar_extension
     end
 
+    def evaluate(prog)
+      @evaluator.evaluate(prog)
+    end
+
+    def parse(src)
+      @parser.parse(src)
+    end
+    
     def execute(src)
       while src != ""
-        prog, src = @parser.parse(src)
+        prog, src = parse(src)
 #        puts "program: #{@evaluator.show(prog)}"
-        @evaluator.evaluate(prog)
+        evaluate(prog)
       end
     end
     
@@ -42,6 +50,13 @@ module Garbanzo
            Repr::Bool.new(false)
          },
          '#}'].sequence >> Rule::success(false.to_repr))
+    end
+
+    def construct_root
+      root = Repr::store({})
+      root['add'] = Lib::add
+      root['/']   = root
+      root
     end
   end
 end

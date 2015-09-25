@@ -48,6 +48,10 @@ grammar.rules[:variable]  = :path.to_rule.map {|idents|
   idents.reduce(Repr::getenv) { |body, key|
     Repr::get(body, key)
   }
+} | ["/", :path].sequence {|_, idents|
+  idents.reduce(Repr::get(Repr::getenv, '/'.to_repr)) { |body, key|
+    Repr::get(body, key)
+  }
 }
 #}
 
@@ -181,6 +185,14 @@ store/c=[]
 store/d="hogehoge"
 store/c/hoge=[]
 print store
+
+args = []
+args/left = 42
+args/right = 32
+
+print /add
+print "42 + 32 = "
+print /add(args)
 
 f=^{
   if a==10 {

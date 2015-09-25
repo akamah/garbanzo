@@ -255,6 +255,8 @@ module Garbanzo
         }.to_a.join("\n") + "}"
       when Function
         "^{ #{show(p.body)} }"
+      when Procedure
+        "<proc>"
       else
         raise "SHOW: argument is not a repr: #{p.inspect}"
       end

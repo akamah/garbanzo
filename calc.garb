@@ -60,10 +60,16 @@ grammar.rules[:variable]  = :path.to_rule.map {|idents|
 grammar.rules[:primitive] = [:number, :string, :variable].choice
 #}
 
-# おっと忘れてた、空のストアオブジェクトも原始式
+# おっと忘れてた、ストアオブジェクトも原始式
 #{
+grammar.rules[:pair] = [:identifier, Rule::token(":"), :expression].sequence { |id, _, expr|
+  [id, expr]
+}
+
 grammar.rules[:primitive].children <<
-  Rule::token("[]").map { Repr::Store.new({}) }
+  [Rule::token("["), Rule::separate_by(:pair, Rule::token(",")), Rule::token("]")].sequence { |_, lst, _|
+    Repr::store(lst.to_h)
+  }
 #}
 
 # 関数呼び出しは、原始式にカッコを加えたもの。
@@ -186,9 +192,7 @@ store/d="hogehoge"
 store/c/hoge=[]
 print store
 
-args = []
-args/left = 42
-args/right = 32
+args = [left: 42, right: 32]
 
 print /add
 print "42 + 32 = "

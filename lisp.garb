@@ -84,6 +84,7 @@ grammar.rules[:application] = [
   make_binary_parser(*%w(% mod)),
   make_binary_parser(*%w(= equal)),
   make_binary_parser(*%w(/= notequal)),
+  make_binary_parser(*%w(< lessthan)),
   make_binary_parser(*%w(and and)),
   make_binary_parser(*%w(or  or)),
   make_app_parser(*%w(not not value)),
@@ -106,16 +107,58 @@ grammar.rules[:expression] = [:atom, :application, :getvar, :quote].choice
 grammar.rules[:sentence] << Rule::call(:expression)
 #}
 
+#{
+grammar.rules[:expression].children << ["[]"].sequence { Repr::store({}) }
+#}
 
-(print (+ 1 2))
-(set (.) hoge 3)
-(print ''(get (.) hoge))
-(print (size (.)))
+#{
+grammar.rules[:boolean] = "#t".to_rule.map { Repr::bool(true) } | "#f".to_rule.map { Repr::bool(false) }
+grammar.rules[:expression].children << Rule::call(:boolean)
+#}
+
+(print eratosthenes)
+(set (.) i 0)
+(set (.) n 100)
+(set (.) q 34)
+(set (.) sieve [])
+
+(while (< @i @n)
+ (begin
+   (set @sieve @i #t)
+   (set (.) i (+ @i 1))))
+
+(set @sieve 0 #f)
+(set @sieve 1 #f)
+
+(set (.) i 2)
+(while (< @i @q)
+ (begin
+   (if (= (get @sieve @i) #t)
+       (begin
+         (set (.) a (* @i 2))
+	 (while (< @a @n)
+	  (begin
+	   (set @sieve @a #f)
+	   (set (.) a (+ @a @i)))))
+       #f)
+   (set (.) i (+ 1 @i))))
 
 (set (.) i 0)
-(set (.) a 10)
-(while (/= (get (.) i) 10)
+(while (< @i @n)
  (begin
-  (set (.) a (+ @a @i))
-  (set (.) i (+ @i 1))))
-(print (get (.) a))
+   (if (get @sieve @i)
+       (print @i)
+       #f)
+   (set (.) i (+ 1 @i))))
+
+; (set (.) hoge 3)
+; (print ''(get (.) hoge))
+; (print (size (.)))
+; 
+; (set (.) i 0)
+; (set (.) a 10)
+; (while (/= (get (.) i) 10)
+;  (begin
+;   (set (.) a (+ @a @i))
+;   (set (.) i (+ @i 1))))
+; (print (get (.) a))

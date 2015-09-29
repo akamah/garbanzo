@@ -184,48 +184,38 @@ while i != 10 {
   print $a
 }
 
-i=0
-sum=0
-while i!=10 {
-  $i=$i+1
-  j=0
-  while j!=10 {
-    $j=$j+1
-    $$sum=$$sum+1
-  }
-}
+print "----------"
 
-print sum
-
-if 1==2 {
-  print "true"
-} else {
-  print "false"
-}
-
-store=[]
-store/a=0
-store/b=20
-store/c=[]
-store/d="hogehoge"
-store/c/hoge=[]
-print store
-
-args = [left: 42, right: 32]
-
-print /add
-print "42 + 32 = "
-print /add(args)
-
-f=^{
-  if a==10 {
-    print 100
-  } else {
-    print $a
-    e = []
-    e/a = $a+1
-    $$f(e);
-  }
-}
-    
-print f(store)
+# 
+# if 1==2 {
+#   print "true"
+# } else {
+#   print "false"
+# }
+# 
+# store=[]
+# store/a=0
+# store/b=20
+# store/c=[]
+# store/d="hogehoge"
+# store/c/hoge=[]
+# print store
+# 
+# args = [left: 42, right: 32]
+# 
+# print /add
+# print "42 + 32 = "
+# print /add(args)
+# 
+# f=^{
+#   if a==10 {
+#     print 100
+#   } else {
+#     print $a
+#     e = []
+#     e/a = $a+1
+#     $$f(e);
+#   }
+# }
+#     
+# print f(store)

@@ -90,16 +90,27 @@ grammar.rules[:term] =
 }
 #}
 
-# 足し算は、term二つをプラスでくっつけたもの。
+# かけ算は、termをくっつけたもの
+#{
+grammar.rules[:multiplication] = 
+  [:term, Rule::many(Rule::string('*').token >> :term)].sequence { |num, mults|
+  mults.reduce(num) { |expr, adder|
+    Repr::mult(expr, adder)
+  }
+}
+#}
+
+# 足し算は、multiplication二つをプラスでくっつけたもの。
 #{
 grammar.rules[:addition] = 
-  [:term, Rule::many(Rule::string('+') >> :term)].sequence { |num, adds|
+  [:multiplication, Rule::many(Rule::string('+').token >> :multiplication)].sequence { |num, adds|
   adds.reduce(num) { |expr, adder|
     Repr::add(expr, adder)
   }
 }
 #}
 
+# 関数は、いまのところ^{ <sentence> }と書く
 #{
 grammar.rules[:function] =
   [Rule::token("^{"), :sentence, Rule::token("}")].sequence {|_, body, _|

@@ -37,6 +37,8 @@ class TC_Repr < Test::Unit::TestCase
 
     ev.evaluate(Repr::set(ds, key, val))
     assert_equal(val, ev.evaluate(Repr::get(ds, key)))
+
+    assert_equal(true.to_repr, ev.evaluate(Repr::lessthan(3.to_repr, 10.to_repr)))
   end
 
   

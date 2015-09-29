@@ -100,6 +100,7 @@ EOS
     ## 比較
     define_binary_command("Equal")                   # 同じかどうかを判定
     define_binary_command("NotEqual")                # 違うかどうかを判定
+    define_binary_command("LessThan")                # <
 
     ## 論理演算
     define_binary_command("And")

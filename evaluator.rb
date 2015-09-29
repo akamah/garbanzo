@@ -67,6 +67,10 @@ module Garbanzo
         Repr::bool(!left.eql?(right))
       end
 
+      operator("lessthan", "left", Num, "right", Num) do |left, right|
+        Repr::bool(left.num < right.num)
+      end
+
       
       operator("and", "left", Bool, "right", Bool) do |left, right|
         Repr::bool(left.value && right.value)

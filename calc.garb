@@ -7,26 +7,26 @@ grammar.rules[:sentence].children << Rule::call(:comment)
 #}
 # コメントを実装したぞ！
 
-# 数値を定義
+# 数値を定義 (1428)
 #{
 grammar.rules[:number] = Rule::many_one(Rule::one_of("0123456789")).map {|as|
   as.map(&:value).join.to_i.to_repr
 }.token
 
-# 識別子を定義する
+# 識別子を定義 (hoge, poyo)
 grammar.rules[:identifier] = Rule::many_one(Rule::one_of("abcdefghijklmnopqrstuvwxyz.")).map {|as|
   as.map(&:value).join.to_repr
 }.token
 #}
 
-# 文字列を定義
+# 文字列を定義 ("string")
 #{
 grammar.rules[:string] = ["\"", Rule::many(!"\"".to_rule >> Rule::any), Rule::token("\"")].sequence {|_, cs, _|
   cs.map(&:value).join.to_repr
 }.token
 #}
 
-# print文
+# print文 (print 3)
 #{
 grammar.rules[:sentence].children << ["print", Rule::many_one(Rule::whitespace), :expression].sequence { |_, _, n|
   Repr::print(n)
@@ -72,7 +72,7 @@ grammar.rules[:primitive].children <<
   }
 #}
 
-# 関数呼び出しは、原始式にカッコを加えたもの。
+# 関数呼び出しは、原始式にカッコを後置したもの, func(expr)
 #{
 grammar.rules[:call] = [:primitive, Rule::token("("), :expression, Rule::token(")")].sequence {|func, _, arg, _|
   Repr::call(func, arg)
@@ -119,6 +119,7 @@ grammar.rules[:condition] = [[:expression, Rule::token("=="), :expression].seque
                              }].choice
 #}
 
+# 代入構文
 #{
 grammar.rules[:sentence].children <<
   [:expression, Rule::token("="), :expression].sequence {|object, _, expr|
@@ -126,12 +127,14 @@ grammar.rules[:sentence].children <<
 }
 #}
 
+# 繰り返しのwhileループ
 #{
 grammar.rules[:sentence].children << [Rule::token("while"), :condition, :sentence].sequence {|_, cond, body|
   Repr::while(cond, body)
 }
 #}
 
+# if文
 #{
 grammar.rules[:sentence].children << [Rule::token('if'), :condition,
 				     :sentence,
@@ -149,14 +152,19 @@ grammar.rules[:sentence].children << [Rule::token("{"), Rule::many(:sentence), R
 }
 #}
 
+# 式の末尾にセミコロンをつけると文になるやつ
 #{
 grammar.rules[:sentence].children << [:expression, Rule::token(";")].sequence {|e, _| e}
 #}  
 
+# 代入できます
 i = 0
 a = 0
 b = 1
 
+print "fibonacci numbers"
+
+# フィボナッチ数を出力する
 while i != 10 {
   $i=$i+1
   tmp=$b

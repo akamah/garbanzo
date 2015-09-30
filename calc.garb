@@ -2,7 +2,8 @@
 grammar.rules[:sentence].children << Rule::many_one(Rule::whitespace).map { false.to_repr }
 #}
 #{
-grammar.rules[:comment] = "#".to_rule >> Rule::many(Rule::not("\n") >> Rule::any) >> "\n"
+grammar.rules[:eof] = Rule::not(Rule::any)
+grammar.rules[:comment] = "#".to_rule >> Rule::many(Rule::not("\n") >> Rule::any) >> ("\n".to_rule | :eof)
 grammar.rules[:sentence].children << Rule::call(:comment)
 #}
 # コメントを実装したぞ！

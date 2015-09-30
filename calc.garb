@@ -37,7 +37,12 @@ grammar.rules[:sentence].children << ["print", Rule::many_one(Rule::whitespace),
 #{
 grammar.rules[:path] = [:identifier, Rule::many(Rule::string("/") >> :identifier)].sequence { |a, idents|
   [a] + idents
-} | ["$", :path].sequence { |_, idents|
+}
+#}
+
+# $path という記法で、親を辿れるようにする
+#{
+grammar.rules[:path] = grammar.rules[:path] | ["$", :path].sequence { |_, idents|
   ["..".to_repr] + idents
 }
 #}
@@ -54,6 +59,7 @@ grammar.rules[:variable]  = :path.to_rule.map {|idents|
   }
 }
 #}
+
 
 # 原始式は、数値か文字列か変数のいずれかである
 #{

@@ -151,7 +151,21 @@ EOS
     
     define_command("Set", "object", "key", "value")  # データストアへの代入を表す
     define_command("Get", "object", "key")           # データストアからの読み出しを表す
-    define_command("Size", "object")                 # 
+    define_command("Size", "object")                 # データストアのサイズを取得
+
+    define_command("Remove", "object", "key") # キーを削除
+    
+    define_command("GetPrevKey", "object", "origin") # あるキーの前のキーを取得
+    define_command("GetNextKey", "object", "origin") # あるキーの次のキーを取得
+    
+    define_command("InsertPrev", "object", "origin", "key", "value") # あるキーの前に挿入
+    define_command("InsertNext", "object", "origin", "key", "value") # 後に
+
+    define_command("FirstKey", "object") # 最初のキーを取得
+    define_command("LastKey", "object") # 最後のキーを取得
+
+
+    
     
     ## 制御構文
     define_command("Quote", "value");                # 評価の抑制

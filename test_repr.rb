@@ -130,4 +130,12 @@ class TC_Repr < Test::Unit::TestCase
     }
     
   end
+
+  def test_remove
+    ev = Evaluator.new
+
+    pr = Repr::remove(Repr::store({3.to_repr => 12.to_repr}), 3.to_repr)
+
+    assert_equal(12.to_repr, ev.evaluate(pr))
+  end
 end

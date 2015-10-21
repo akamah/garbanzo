@@ -103,6 +103,12 @@ module Garbanzo
         object.table.size.to_repr
       end
 
+      operator("remove", "object", Store, "key", Object) do |object, key|
+        object.table.delete(key)
+      end
+      
+
+      
       command("quote", "value") do |value|
         value
       end

@@ -107,6 +107,9 @@ module Garbanzo
         object.remove(key)
       end
       
+      operator("exist", "object", Store, "key", Object) do |object, key|
+        object.exist(key)
+      end
       
       command("quote", "value") do |value|
         value

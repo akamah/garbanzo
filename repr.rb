@@ -94,7 +94,11 @@ EOS
       end
 
       def remove(key)
-        table.delete(key)
+        table.delete(key.to_repr)
+      end
+
+      def exist(key)
+        table.include?(key.to_repr).to_repr
       end
     end
     
@@ -161,7 +165,8 @@ EOS
     define_command("Get", "object", "key")           # データストアからの読み出しを表す
     define_command("Size", "object")                 # データストアのサイズを取得
 
-    define_command("Remove", "object", "key") # キーを削除
+    define_command("Remove", "object", "key")        # キーを削除
+    define_command("Exist", "object", "key")         # キーが存在するか
     
     define_command("GetPrevKey", "object", "origin") # あるキーの前のキーを取得
     define_command("GetNextKey", "object", "origin") # あるキーの次のキーを取得

@@ -110,6 +110,45 @@ EOS
     define_command("Print", "value")                 # print式を意味する内部表現
 
     ## データストア関連
+    # * get by key
+    # * get by index
+    # * size
+    # insert to index
+    # set to key
+    # set to index
+    # remove by key
+    # remove by index
+    # ? indexがout of rangeになったらどうしよう？
+    # => parse error みたいに？
+    # ? set to key, set to indexって、存在してない場合はどうするんだ？
+    # ?? set to indexの場合、indexが存在しないならエラーで良さそう
+    # ?? set to keyの場合、存在していなかったら追加でいいか？
+    # ??? 追加ということにすると、キーが重複したらどうするのか？
+    ## しかしだ、順序付けられたマップは欲しい、すごく欲しい。
+    ## この際、配列のどこどこを指定して〜とかできなくてもいいから欲しい。
+    ## シーケンシャルアクセスくらいしかしないだろうから欲しい。
+
+    ## ユースケース
+    ### 末尾に、"hoge"を追加する
+    ### 先頭に、"hoge"を追加する。
+    ### "poyo" の後に、 "hoge"を追加する。
+    ### "hoge"を削除
+    ### "hoge"を置き換える。
+    ### 純粋に配列として使う場合は、添え字そのものを数値にすると思う。
+    ### じゃあ、ランダムアクセスまでできなくても良いのでは？
+
+    ## とりあえず作りたい
+    # そのキーがあるか
+    # キーより取得
+    # あるキーの前/次のキーを取得
+    # あるキーの前/後に追加
+    # 最初/最後のキーを取得
+    # あるキーを削除
+    # サイズを取得
+    # * イテレータだとかを考えるのは後。
+    # * アクセスできない場合は容赦なくエラーを飛ばす。
+
+    
     define_command("Set", "object", "key", "value")  # データストアへの代入を表す
     define_command("Get", "object", "key")           # データストアからの読み出しを表す
     define_command("Size", "object")                 # 

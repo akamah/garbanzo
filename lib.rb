@@ -9,19 +9,19 @@ module Garbanzo
     REST = Repr::String.new("rest")
 
     def self.null
-      Repr::Store.new({})
+      Repr::store({})
     end
     
     def self.list_node?(obj)
-      obj.class == Repr::Store && obj.table.include?(HEAD) && obj.table.include?(REST)
+      obj.class == Repr::Store && obj.exist(HEAD).value && obj.exist(REST).value
     end
 
     def self.head(obj)
-      list_node?(obj) ? obj.table[HEAD] : Bool.new(false)
+      list_node?(obj) ? obj[HEAD] : Bool.new(false)
     end
 
     def self.rest(obj)
-      list_node?(obj) ? obj.table[REST] : Bool.new(false)
+      list_node?(obj) ? obj[REST] : Bool.new(false)
     end
     
     def self.each_list(lst)
@@ -38,9 +38,9 @@ module Garbanzo
     def self.make_list(*objs)
       l = null
       objs.reduce(l) { |lst, obj|
-        lst.table[HEAD] = obj
-        lst.table[REST] = null
-        lst.table[REST]
+        lst[HEAD] = obj
+        lst[REST] = null
+        lst[REST]
       }
       l
     end

@@ -161,7 +161,7 @@ module Garbanzo
           oldenv = @dot
           args[".."] = func.env # 環境を拡張
 
-          unless args.table.include?("/".to_repr)
+          unless args.exist("/".to_repr)
             args["/"] = oldenv["/"]
           end
           

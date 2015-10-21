@@ -88,6 +88,14 @@ EOS
       def []=(key, value)
         table[key.to_repr] = value
       end
+
+      def size
+        table.size.to_repr
+      end
+
+      def remove(key)
+        table.delete(key)
+      end
     end
     
     ## 算術演算

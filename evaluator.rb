@@ -90,24 +90,23 @@ module Garbanzo
       end
 
       operator("set", "object", Store, "key", Object, "value", Object) do |object, key, value|
-        object.table[key] = value
+        object[key] = value
       end
 
       operator("get", "object", Store, "key", Object) do |object, key|
-        result = object.table[key]
+        result = object[key]
         raise "GET: undefined key #{object.inspect} for #{key.inspect}" unless result
         result
       end
 
       operator("size", "object", Store) do |object|
-        object.table.size.to_repr
+        object.size
       end
 
       operator("remove", "object", Store, "key", Object) do |object, key|
-        object.table.delete(key)
+        object.remove(key)
       end
       
-
       
       command("quote", "value") do |value|
         value
@@ -157,10 +156,10 @@ module Garbanzo
         case func
         when Function
           oldenv = @dot
-          args.table["..".to_repr] = func.env # 環境を拡張
+          args[".."] = func.env # 環境を拡張
 
           unless args.table.include?("/".to_repr)
-            args.table["/".to_repr] = oldenv["/"]
+            args["/"] = oldenv["/"]
           end
           
           @dot = args

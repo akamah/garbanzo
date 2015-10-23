@@ -81,24 +81,75 @@ EOS
     define_repr_class("Procedure", Callable, "proc")        # ネイティブの関数
 
     class Store
+      def initialize(obj)
+        case obj
+        when Hash
+          @table = obj.to_a
+        when Array
+          @table = obj
+        end
+      end
+
+      def find_entry(key)
+        @table.find { |e| e[0] == key.to_repr }
+      end
+
+      def find_entry_index(key)
+        @table.find_index { |e| e[0] == key.to_repr }
+      end
+      
       def [](key)
-        table[key.to_repr]
+        entry = find_entry(key)
+
+        if entry != nil
+          entry[1]
+        else
+          raise "Store[], no entry found: #{key} in #{@table}"
+        end
       end
 
       def []=(key, value)
-        table[key.to_repr] = value
+        entry = find_entry(key)
+        if entry != nil
+          entry[1] = value
+        else
+          @table << [key.to_repr, value]
+        end
       end
+      
 
       def size
-        table.size.to_repr
+        @table.size.to_repr
       end
 
       def remove(key)
-        table.delete(key.to_repr)
+        entry = find_entry(key)
+        @table.delete(entry)
+        entry[1]
       end
 
       def exist(key)
-        table.include?(key.to_repr).to_repr
+        (find_entry(key) != nil).to_repr
+      end
+
+      def get_prev_key(origin)
+        index = find_entry_index(origin)
+        return @table[index - 1]
+      end
+
+      def get_next_key(origin)
+        index = find_entry_index(origin)
+        return @table[index + 1]
+      end
+
+      def insert_prev(origin, key, value)
+        index = find_entry_index(origin)
+        @table.insert(index, key, value)
+      end
+
+      def insert_next(origin, key, value)
+        index = find_entry_index(origin)
+        @table.insert(index + 1, key, value)
       end
     end
     

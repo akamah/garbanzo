@@ -196,9 +196,8 @@ module Garbanzo
 
     
     def eval_store(s)
+      return s unless s.exist("@").value
       feature = s["@"]
-
-      return s if feature == nil
 
       feature = evaluate(feature)
       f = @commands[feature.value] or raise "EVALUATE2: #{feature.inspect} is not a valid feature name"

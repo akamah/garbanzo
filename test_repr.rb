@@ -138,4 +138,16 @@ class TC_Repr < Test::Unit::TestCase
 
     assert_equal(12.to_repr, ev.evaluate(pr))
   end
+
+  def test_datastore
+    st = Repr::store({})
+    st['hoge'] = 3.to_repr
+
+    assert_equal(3.to_repr, st['hoge'])
+    assert_equal(1.to_repr, st.size)
+
+    st['hoge'] = 5.to_repr
+    
+    assert_equal(5.to_repr, st['hoge'])
+  end
 end

@@ -1,6 +1,5 @@
 #!/bin/sh
 
-set -e
 trap exit INT
 
 while true

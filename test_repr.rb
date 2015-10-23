@@ -149,5 +149,16 @@ class TC_Repr < Test::Unit::TestCase
     st['hoge'] = 5.to_repr
     
     assert_equal(5.to_repr, st['hoge'])
+
+    assert_equal(true.to_repr, st.exist('hoge'))
+
+    st['piyo'] = 8.to_repr
+    st['fuga'] = 9.to_repr
+
+    assert_equal('piyo'.to_repr, st.get_prev_key('fuga'))
+    assert_equal('piyo'.to_repr, st.get_next_key('hoge'))
+
+    assert_equal('hoge'.to_repr, st.first_key)
+    assert_equal('fuga'.to_repr, st.last_key)
   end
 end

@@ -134,12 +134,12 @@ EOS
 
       def get_prev_key(origin)
         index = find_entry_index(origin)
-        return @table[index - 1]
+        return @table[index - 1][0]
       end
 
       def get_next_key(origin)
         index = find_entry_index(origin)
-        return @table[index + 1]
+        return @table[index + 1][0]
       end
 
       def insert_prev(origin, key, value)
@@ -150,6 +150,14 @@ EOS
       def insert_next(origin, key, value)
         index = find_entry_index(origin)
         @table.insert(index + 1, key, value)
+      end
+
+      def first_key
+        @table[0][0]
+      end
+
+      def last_key
+        @table[-1][0]
       end
     end
     

@@ -110,6 +110,32 @@ module Garbanzo
       operator("exist", "object", Store, "key", Object) do |object, key|
         object.exist(key)
       end
+
+      operator("getprevkey", "object", Store, "origin", Object) do |object, key|
+        object.get_prev_key(key)
+      end
+
+      operator("getnextkey", "object", Store, "origin", Object) do |object, key|
+        object.get_next_key(key)
+      end
+
+      operator("insertprev", "object", Store, "origin", Object,
+               "key", Object, "value", Object) do |object, origin, key, value|
+        object.insert_prev(origin, key, value)
+      end
+
+      operator("insertnext", "object", Store, "origin", Object,
+               "key", Object, "value", Object) do |object, origin, key, value|
+        object.insert_next(origin, key, value)
+      end
+
+      operator("firstkey", "object", Store) do |object|
+        object.first_key
+      end
+      
+      operator("lastkey", "object", Store) do |object|
+        object.last_key
+      end
       
       command("quote", "value") do |value|
         value

@@ -104,7 +104,7 @@ EOS
         if entry != nil
           entry[1]
         else
-          raise "Store[], no entry found: #{key} in #{@table}"
+          raise "Store[], no entry found: #{key.value} in #{@table}"
         end
       end
 

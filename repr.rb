@@ -252,6 +252,8 @@ EOS
 
     define_command("Call", "func", "args")           # 呼び出し
 
+    define_command("Eval", "env", "program")         # 禁断のやつ
+    
     ## 文字列処理
     define_command("Append", "left", "right")
     define_command("CharAt", "string", "index")

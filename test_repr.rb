@@ -161,4 +161,18 @@ class TC_Repr < Test::Unit::TestCase
     assert_equal('hoge'.to_repr, st.first_key)
     assert_equal('fuga'.to_repr, st.last_key)
   end
+
+  def test_eval
+    ev = Evaluator.new
+
+    env  = Repr::store({ "hoge".to_repr => 3.to_repr })
+    prog = Repr::store({ "@".to_repr => "eval".to_repr,
+                         "env".to_repr => env,
+                         "program".to_repr =>
+                                   Repr::quote(
+                                     Repr::add(33.to_repr,
+                                               Repr::get(Repr::getenv,
+                                                         "hoge".to_repr))) })
+    assert_equal(36.to_repr, ev.evaluate(prog))
+  end
 end

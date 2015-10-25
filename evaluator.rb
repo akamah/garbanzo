@@ -203,6 +203,16 @@ module Garbanzo
         end
       end
 
+      operator("eval", "env", Store, "program", Object) do |env, program|
+        prevEnv = @dot
+        @dot = env
+        result = self.evaluate(program)
+        @dot = prevEnv
+
+        result
+      end
+
+      
       operator("append", "left", String, "right", String) do |left, right|
         Repr::string(left.value + right.value)
       end

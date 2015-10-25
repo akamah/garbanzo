@@ -159,6 +159,12 @@ EOS
       def last_key
         @table[-1][0]
       end
+
+      def each_key
+        @table.each do |kv|
+          yield(kv[0], kv[1])
+        end
+      end
     end
     
     ## 算術演算

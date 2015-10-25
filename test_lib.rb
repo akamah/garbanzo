@@ -7,7 +7,7 @@ class TC_Lib < Test::Unit::TestCase
   include Garbanzo
   include Garbanzo::Repr
 
-  
+=begin  
   def test_list_miscs
     hoge = Lib::make_list(String.new("mado"),
                           String.new("homu"),
@@ -29,4 +29,5 @@ class TC_Lib < Test::Unit::TestCase
                   String.new("saya")],
                  elms)
   end
+=end
 end

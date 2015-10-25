@@ -166,9 +166,14 @@ module Garbanzo
       
       command("begin", "body") do |body|
         result = false.to_repr
-        Lib::each_list(body) { |child|
-          result = evaluate(child)
-        }
+
+        body.each_key do |k, v|
+          result = evaluate(v)
+        end
+        
+#        Lib::each_list(body) { |child|
+#          result = evaluate(child)
+#        }
 
         result
       end

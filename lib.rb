@@ -37,11 +37,14 @@ module Garbanzo
 
     def self.make_list(*objs)
       l = null
-      objs.reduce(l) { |lst, obj|
-        lst[HEAD] = obj
-        lst[REST] = null
-        lst[REST]
-      }
+      objs.each_with_index do |obj, i|
+        l[i.to_repr] = obj
+      end
+#      objs.reduce(l) { |lst, obj|
+#        lst[HEAD] = obj
+#        lst[REST] = null
+#        lst[REST]
+#      }
       l
     end
 

@@ -36,6 +36,11 @@ module Garbanzo
         func.call(*param)
       }
     end
+
+    def install(name, &action)
+      @commands[name] = action
+    end
+    
     
     def install_commands
       operator("add", "left", Num, "right", Num) do |left, right|

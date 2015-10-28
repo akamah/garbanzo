@@ -260,4 +260,13 @@ class TC_Repr < Test::Unit::TestCase
                   }))
     assert_equal('homu'.to_repr, ev.evaluate(prog))
   end
+
+  def test_datastore_cmd
+    ev = Evaluator.new
+
+    prog = Repr::datastore(
+      Repr::store({ "hoge".to_repr => Repr::add(3.to_repr, 4.to_repr) }))
+      
+    assert_equal(Repr::store({ "hoge".to_repr => 7.to_repr }), ev.evaluate(prog))
+  end
 end

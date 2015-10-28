@@ -137,6 +137,16 @@ module Garbanzo
       operator("lastkey", "object", Store) do |object|
         object.last_key
       end
+
+      command("datastore", "object") do |object|
+        store = Repr::store({})
+        
+        object.each_key { |k|
+          store[k] = self.evaluate(object[k])
+        }
+        store
+      end
+
       
       command("quote", "value") do |value|
         value

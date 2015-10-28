@@ -276,7 +276,7 @@ EOS
     define_command("FirstKey", "object") # 最初のキーを取得
     define_command("LastKey", "object") # 最後のキーを取得
 
-
+    define_command("DataStore", "object") # データストアオブジェクトを作成。
     
     
     ## 制御構文

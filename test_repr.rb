@@ -1,6 +1,7 @@
 require 'test/unit'
 require './repr.rb'
 require './evaluator.rb'
+require './rule.rb'
 
 
 class TC_Repr < Test::Unit::TestCase
@@ -193,5 +194,39 @@ class TC_Repr < Test::Unit::TestCase
                        "banana".to_repr => true.to_repr,
                        "chocolate".to_repr => "kinoko".to_repr }),
                  st2)
+  end
+
+
+  def test_token
+    ev = Evaluator.new
+
+    source = Repr::store({})
+    source["source"] = "homuhomu".to_repr
+
+    prog = Repr::token(source)
+    
+    assert_equal("h".to_repr, ev.evaluate(prog))
+    assert_equal("o".to_repr, ev.evaluate(prog))
+    assert_equal("m".to_repr, ev.evaluate(prog))
+    assert_equal("u".to_repr, ev.evaluate(prog))
+    assert_equal("homu".to_repr, source["source"])
+    assert_equal("h".to_repr, ev.evaluate(prog))
+    assert_equal("o".to_repr, ev.evaluate(prog))
+    assert_equal("m".to_repr, ev.evaluate(prog))
+    assert_equal("u".to_repr, ev.evaluate(prog))
+
+    assert_raise(Rule::ParseError) {
+      ev.evaluate(prog)
+    }
+  end
+
+  def test_fail
+    ev = Evaluator.new
+
+    prog = Repr::fail("error".to_repr)
+
+    assert_raise(Rule::ParseError) {
+      ev.evaluate(prog)
+    }
   end
 end

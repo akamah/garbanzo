@@ -1,6 +1,7 @@
 # coding: utf-8
 require './repr.rb'
 require './lib.rb'
+require './rule.rb'
 
 
 module Garbanzo
@@ -236,6 +237,23 @@ module Garbanzo
 
       operator("copy", "object", Object) do |object|
         object.copy
+      end
+
+      ## パース関連コマンド
+      operator("token", "source", Store) do |object|
+        s = object["source"]
+
+        if s.value.size > 0
+          c = Repr::string(s.value[0]) # 一文字切り出して
+          object["source"] = Repr::string(s.value[1..-1]) # 更新して
+          c # 返す
+        else
+          raise Rule::ParseError, "end of source".to_repr
+        end
+      end
+
+      operator("fail", "message", Object) do |message|
+        raise Rule::ParseError, message
       end
     end
 

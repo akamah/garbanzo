@@ -298,6 +298,16 @@ EOS
     define_command("Append", "left", "right")
     define_command("CharAt", "string", "index")
     define_command("Length", "string")
+
+    ## パース関連
+    # token: 現在の環境の、sourceという名前の文字列の先頭から1文字切り出し返却する。
+    #        sourceが空文字列ならエラーを投げる。
+    define_command("token", "source")
+
+    # raise: いわゆる例外を投げる。
+    define_command("fail", "message")
+
+    
     
     class ::Integer
       def to_repr; Garbanzo::Repr::num(self); end

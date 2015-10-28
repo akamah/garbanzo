@@ -273,6 +273,16 @@ module Garbanzo
           raise Rule::ParseError(errors.join(', ').to_repr)
         }.call
       end
+
+      operator("terminal", "string", String) do |string|
+        source = @dot["source"]
+        if source.value.start_with?(string.value)
+          @dot["source"] = source.value[string.value.length .. -1].to_repr
+          string.copy
+        else
+          raise ParseError, "#{message}"
+        end
+      end
     end
 
     

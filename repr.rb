@@ -310,6 +310,8 @@ EOS
     # choice: いくつかの選択肢を順番に試す
     define_command("choice", "children")
     
+    # terminal: 終端記号をパース
+    define_command("terminal", "string")
     
     class ::Integer
       def to_repr; Garbanzo::Repr::num(self); end

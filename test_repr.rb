@@ -246,4 +246,18 @@ class TC_Repr < Test::Unit::TestCase
 
     assert_equal('h'.to_repr, ev.evaluate(prog))
   end
+
+  def test_terminal
+    ev = Evaluator.new
+    st = Repr::store({})
+    st['source'] = "madohomu".to_repr
+    ev.evaluate(Repr::setenv(st))
+    
+    prog = Repr::begin(
+      Repr::store({
+                    "mado".to_repr => Repr::terminal('mado'.to_repr),
+                    "homu".to_repr => Repr::terminal('homu'.to_repr)
+                  }))
+    assert_equal('homu'.to_repr, ev.evaluate(prog))
+  end
 end

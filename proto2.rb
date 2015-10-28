@@ -66,7 +66,7 @@ if __FILE__ == $0
     begin
       int.execute(f.read)
     rescue Rule::ParseError => e
-      p e.message
+      p "parse error, expecting #{e.message}"
     end
   }
 end

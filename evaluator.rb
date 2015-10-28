@@ -233,6 +233,10 @@ module Garbanzo
       operator("length", "string", String) do |string|
         Repr::num(string.value.length)
       end
+
+      operator("copy", "object", Object) do |object|
+        object.copy
+      end
     end
 
     

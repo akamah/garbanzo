@@ -175,4 +175,23 @@ class TC_Repr < Test::Unit::TestCase
                                                          "hoge".to_repr))) })
     assert_equal(36.to_repr, ev.evaluate(prog))
   end
+
+  def test_copy
+    st = Repr::store({ "apple".to_repr => 55.to_repr,
+                       "banana".to_repr => true.to_repr,
+                       "chocolate".to_repr => "kinoko".to_repr })
+    st2 = st.copy
+
+    st.remove("apple".to_repr)
+    st["banana"] = false.to_repr
+    st["chocolate"].value[3] = "a"
+
+    assert_equal(Repr::store({ "banana".to_repr => false.to_repr,
+                               "chocolate".to_repr => "kinako".to_repr }),
+                 st)
+    assert_equal(Repr::store({ "apple".to_repr => 55.to_repr,
+                       "banana".to_repr => true.to_repr,
+                       "chocolate".to_repr => "kinoko".to_repr }),
+                 st2)
+  end
 end

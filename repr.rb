@@ -80,6 +80,36 @@ EOS
     define_repr_class("Function", Callable, "env", "body")  # 関数
     define_repr_class("Procedure", Callable, "proc")        # ネイティブの関数
 
+    class Num
+      def copy
+        Num.new(self.num)
+      end
+    end
+
+    class String
+      def copy
+        String.new(::String.new(self.value))
+      end
+    end
+
+    class Bool
+      def copy
+        Bool.new(self.value)
+      end
+    end
+
+    class Function
+      def copy
+        Function.new(self.env.copy, self.body.copy)
+      end
+    end
+    
+    class Procedure
+      def copy
+        Procedure.new(self.proc)
+      end
+    end
+    
     class Store
       def initialize(obj)
         case obj
@@ -88,6 +118,10 @@ EOS
         when Array
           @table = obj
         end
+      end
+
+      def copy
+        Store.new(@table.to_a.map {|k, v| [k.copy, v.copy] })
       end
 
       def find_entry(key)

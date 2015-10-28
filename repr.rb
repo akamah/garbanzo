@@ -302,7 +302,7 @@ EOS
     ## パース関連
     # token: 現在の環境の、sourceという名前の文字列の先頭から1文字切り出し返却する。
     #        sourceが空文字列ならエラーを投げる。
-    define_command("token", "source")
+    define_command("token")
 
     # raise: いわゆる例外を投げる。
     define_command("fail", "message")

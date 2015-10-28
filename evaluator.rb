@@ -240,12 +240,12 @@ module Garbanzo
       end
 
       ## パース関連コマンド
-      operator("token", "source", Store) do |object|
-        s = object["source"]
+      operator("token") do
+        s = @dot["source"]
 
         if s.value.size > 0
           c = Repr::string(s.value[0]) # 一文字切り出して
-          object["source"] = Repr::string(s.value[1..-1]) # 更新して
+          @dot["source"] = Repr::string(s.value[1..-1]) # 更新して
           c # 返す
         else
           raise Rule::ParseError, "end of source".to_repr

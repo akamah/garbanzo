@@ -203,7 +203,9 @@ class TC_Repr < Test::Unit::TestCase
     source = Repr::store({})
     source["source"] = "homuhomu".to_repr
 
-    prog = Repr::token(source)
+    prog = Repr::token
+
+    ev.evaluate(Repr::setenv(source))
     
     assert_equal("h".to_repr, ev.evaluate(prog))
     assert_equal("o".to_repr, ev.evaluate(prog))

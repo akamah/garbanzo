@@ -231,4 +231,19 @@ class TC_Repr < Test::Unit::TestCase
       ev.evaluate(prog)
     }
   end
+
+  def test_choice
+    ev = Evaluator.new
+
+    prog = Repr::choice(
+      { 'hoge'.to_repr => Repr::fail('hoge'.to_repr),
+        'hige'.to_repr => Repr::fail('hige'.to_repr),
+        'hage'.to_repr => Repr::token
+      })
+
+    st = Repr::store({ 'source'.to_repr => "homu".to_repr })
+    ev.evaluate(Repr::setenv(st))
+
+    assert_equal('h'.to_repr, ev.evaluate(prog))
+  end
 end

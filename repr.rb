@@ -307,6 +307,8 @@ EOS
     # raise: いわゆる例外を投げる。
     define_command("fail", "message")
 
+    # choice: いくつかの選択肢を順番に試す
+    define_command("choice", "children")
     
     
     class ::Integer

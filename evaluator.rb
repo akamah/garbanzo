@@ -255,6 +255,24 @@ module Garbanzo
       operator("fail", "message", Object) do |message|
         raise Rule::ParseError, message
       end
+
+      command("choice", "children") do |children|
+        -> { # local jump errorを解消するために、ここにlambdaを入れた。
+          source_orig = @dot["source"].copy
+          errors = []
+
+          children.each_key { |k|
+            begin
+              @dot["source"] = source_orig.copy
+              return self.evaluate(children[k])
+            rescue Rule::ParseError => e
+              errors << e.message
+            end
+          }
+
+          raise Rule::ParseError(errors.join(', ').to_repr)
+        }.call
+      end
     end
 
     

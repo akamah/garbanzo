@@ -200,8 +200,8 @@ class TC_Repr < Test::Unit::TestCase
   def test_token
     ev = Evaluator.new
 
-    source = Repr::store({})
-    source["source"] = "homuhomu".to_repr
+    source = Repr::store({ 'source'.to_repr =>
+                                    Repr::store({ 'source'.to_repr => "homuhomu".to_repr }) })
 
     prog = Repr::token
 
@@ -211,7 +211,7 @@ class TC_Repr < Test::Unit::TestCase
     assert_equal("o".to_repr, ev.evaluate(prog))
     assert_equal("m".to_repr, ev.evaluate(prog))
     assert_equal("u".to_repr, ev.evaluate(prog))
-    assert_equal("homu".to_repr, source["source"])
+    assert_equal("homu".to_repr, source["source"]["source"])
     assert_equal("h".to_repr, ev.evaluate(prog))
     assert_equal("o".to_repr, ev.evaluate(prog))
     assert_equal("m".to_repr, ev.evaluate(prog))
@@ -241,7 +241,8 @@ class TC_Repr < Test::Unit::TestCase
         'hage'.to_repr => Repr::token
       })
 
-    st = Repr::store({ 'source'.to_repr => "homu".to_repr })
+    st = Repr::store({ 'source'.to_repr =>
+                                Repr::store({ 'source'.to_repr => "homu".to_repr }) })
     ev.evaluate(Repr::setenv(st))
 
     assert_equal('h'.to_repr, ev.evaluate(prog))
@@ -249,8 +250,9 @@ class TC_Repr < Test::Unit::TestCase
 
   def test_terminal
     ev = Evaluator.new
-    st = Repr::store({})
-    st['source'] = "madohomu".to_repr
+    st = Repr::store({ 'source'.to_repr =>
+                                Repr::store({ 'source'.to_repr => "madohomu".to_repr }) })
+
     ev.evaluate(Repr::setenv(st))
     
     prog = Repr::begin(

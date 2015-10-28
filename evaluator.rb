@@ -8,6 +8,8 @@ module Garbanzo
   # 評価するやつ。変数とか文脈とか何も考えていないので単純
   class Evaluator
     include Repr
+
+    attr_accessor :dot
     
     def initialize(root = Repr::store({}))
       @dot = root
@@ -251,11 +253,11 @@ module Garbanzo
 
       ## パース関連コマンド
       operator("token") do
-        s = @dot["source"]
+        s = @dot["source"]["source"]
 
         if s.value.size > 0
           c = Repr::string(s.value[0]) # 一文字切り出して
-          @dot["source"] = Repr::string(s.value[1..-1]) # 更新して
+          @dot["source"]["source"] = Repr::string(s.value[1..-1]) # 更新して
           c # 返す
         else
           raise Rule::ParseError, "end of source".to_repr
@@ -268,29 +270,29 @@ module Garbanzo
 
       command("choice", "children") do |children|
         -> { # local jump errorを解消するために、ここにlambdaを入れた。
-          source_orig = @dot["source"].copy
+          source_orig = @dot["source"]["source"].copy
           errors = []
 
           children.each_key { |k|
             begin
-              @dot["source"] = source_orig.copy
+              @dot["source"]["source"] = source_orig.copy
               return self.evaluate(children[k])
             rescue Rule::ParseError => e
               errors << e.message
             end
           }
 
-          raise Rule::ParseError(errors.join(', ').to_repr)
+          raise Rule::ParseError, errors.join(', ')
         }.call
       end
 
       operator("terminal", "string", String) do |string|
-        source = @dot["source"]
+        source = @dot["source"]["source"]
         if source.value.start_with?(string.value)
-          @dot["source"] = source.value[string.value.length .. -1].to_repr
+          @dot["source"]["source"] = source.value[string.value.length .. -1].to_repr
           string.copy
         else
-          raise ParseError, "#{message}"
+          raise Rule::ParseError, string.value
         end
       end
     end

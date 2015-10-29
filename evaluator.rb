@@ -295,6 +295,22 @@ module Garbanzo
           raise Rule::ParseError, string.value
         end
       end
+
+      command("many", "parser") do |parser|
+        i = 0
+        result = Repr::store({})
+        
+        while true
+          begin
+            result[i.to_repr] = self.evaluate(parser)
+            i += 1
+          rescue Rule::ParseError
+            break
+          end
+        end
+
+        result
+      end
     end
 
     

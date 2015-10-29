@@ -271,4 +271,17 @@ class TC_Repr < Test::Unit::TestCase
       
     assert_equal(Repr::store({ "hoge".to_repr => 7.to_repr }), ev.evaluate(prog))
   end
+
+  def test_many
+    prog = Repr::many(Repr::terminal("homu".to_repr))
+    st = Repr::store({ 'source'.to_repr =>
+                                Repr::store({ 'source'.to_repr => "homuhomuhomu".to_repr })
+                     })
+    ev = Evaluator.new(st)
+    result = Repr::store({ 0.to_repr => "homu".to_repr,
+                           1.to_repr => "homu".to_repr,
+                           2.to_repr => "homu".to_repr })
+
+    assert_equal(result, ev.evaluate(prog))
+  end
 end

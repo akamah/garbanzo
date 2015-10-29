@@ -312,6 +312,10 @@ EOS
     
     # terminal: 終端記号をパース
     define_command("terminal", "string")
+
+    # many: 任意個数のマッチ、要は例外が飛ぶまでそのプログラムを繰り替えす。
+    define_command("many", "parser")
+
     
     class ::Integer
       def to_repr; Garbanzo::Repr::num(self); end

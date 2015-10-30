@@ -6,7 +6,7 @@ module Garbanzo
   module Repr
     # 内部表現のオブジェクトを適当に定義してくれるメソッド。
     def self.define_repr_class(classname, superclass, *attrs)
-      attr_list  = attrs.map {|x| ":" + x.to_s }.join(', ')
+      attr_list  = attrs.map {|x| ":" + x.inspect }.join(', ')
       attr_def   = attrs.length > 0 ? "attr_accessor " + attr_list : ""
       arguments  = attrs.join(', ')
       assignment = attrs.map {|x| "@#{x} = #{x}" }.join('; ')
@@ -84,11 +84,19 @@ EOS
       def copy
         Num.new(self.num)
       end
+
+      def inspect
+        self.num.inspect
+      end
     end
 
     class String
       def copy
         String.new(::String.new(self.value))
+      end
+
+      def inspect
+        self.value.inspect
       end
     end
 
@@ -96,17 +104,29 @@ EOS
       def copy
         Bool.new(self.value)
       end
+
+      def inspect
+        self.value.inspect
+      end
     end
 
     class Function
       def copy
         Function.new(self.env.copy, self.body.copy)
       end
+
+      def inspect
+        "#<func>"
+      end
     end
     
     class Procedure
       def copy
         Procedure.new(self.proc)
+      end
+
+      def inspect
+        "#<proc>"
       end
     end
     
@@ -138,7 +158,7 @@ EOS
         if entry != nil
           entry[1]
         else
-          raise "Store[], no entry found: #{key.value} in #{@table}"
+          raise "Store[], no entry found: #{key.to_repr.value} in #{@table.map {|k| k[0]}}"
         end
       end
 
@@ -198,6 +218,10 @@ EOS
         @table.each do |kv|
           yield(kv[0], kv[1])
         end
+      end
+
+      def inspect
+        @table.inspect
       end
     end
     
@@ -334,7 +358,7 @@ EOS
 
     class ::Hash
       def to_repr
-        Garbanzo::Repr::store(self.map {|k, v| [k.to_repr, v.to_repr] }.to_h)
+        Garbanzo::Repr::store(self.map {|k, v| [k.to_repr, v.to_repr] })
       end
     end
 

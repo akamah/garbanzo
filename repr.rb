@@ -299,6 +299,13 @@ EOS
     define_command("CharAt", "string", "index")
     define_command("Length", "string")
 
+    # 文字列の先頭の文字コードを取得する
+    define_command("ToCode", "string")
+
+    # 数値を文字コードに対応する文字列に変換する
+    define_command("FromCode", "num")
+
+    
     ## パース関連
     # token: 現在の環境の、sourceという名前の文字列の先頭から1文字切り出し返却する。
     #        sourceが空文字列ならエラーを投げる。

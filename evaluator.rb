@@ -247,6 +247,19 @@ module Garbanzo
         Repr::num(string.value.length)
       end
 
+      operator("tocode", "string", String) do |string|
+        if string.value.size > 0
+          Repr::num(string.value.ord)
+        else
+          raise "TOCODE: empty string"
+        end
+      end
+
+      operator("fromcode", "num", Num) do |num|
+        Repr::string(num.num.chr(Encoding::UTF_8))
+      end
+      
+
       operator("copy", "object", Object) do |object|
         object.copy
       end

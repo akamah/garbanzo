@@ -284,4 +284,14 @@ class TC_Repr < Test::Unit::TestCase
 
     assert_equal(result, ev.evaluate(prog))
   end
+
+  def test_code
+    ev = Evaluator.new
+
+    prog1 = Repr::tocode("a".to_repr)
+    prog2 = Repr::fromcode(65.to_repr)
+
+    assert_equal(97.to_repr, ev.evaluate(prog1))
+    assert_equal("A".to_repr, ev.evaluate(prog2))
+  end
 end

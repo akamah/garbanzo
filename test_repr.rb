@@ -239,7 +239,7 @@ class TC_Repr < Test::Unit::TestCase
       { 'hoge'.to_repr => Repr::fail('hoge'.to_repr),
         'hige'.to_repr => Repr::fail('hige'.to_repr),
         'hage'.to_repr => Repr::token
-      })
+      }.to_repr)
 
     st = Repr::store({ 'source'.to_repr =>
                                 Repr::store({ 'source'.to_repr => "homu".to_repr }) })

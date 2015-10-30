@@ -334,7 +334,7 @@ EOS
 
     class ::Hash
       def to_repr
-        Garbanzo::Repr::store(self.map {|k, v| [k, v.to_repr] }.to_h)
+        Garbanzo::Repr::store(self.map {|k, v| [k.to_repr, v.to_repr] }.to_h)
       end
     end
 

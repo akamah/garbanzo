@@ -204,8 +204,8 @@ module Garbanzo
         when Function
           oldenv = @dot
           args[".."] = func.env # 環境を拡張
-
-          unless args.exist("/".to_repr)
+          
+          unless args.exist("/".to_repr).value
             args["/"] = oldenv["/"]
           end
           
@@ -266,11 +266,11 @@ module Garbanzo
 
       ## パース関連コマンド
       operator("token") do
-        s = @dot["source"]["source"]
+        s = @dot["/"]["source"]["source"]
 
         if s.value.size > 0
           c = Repr::string(s.value[0]) # 一文字切り出して
-          @dot["source"]["source"] = Repr::string(s.value[1..-1]) # 更新して
+          @dot["/"]["source"]["source"] = Repr::string(s.value[1..-1]) # 更新して
           c # 返す
         else
           raise Rule::ParseError, "end of source".to_repr
@@ -283,12 +283,12 @@ module Garbanzo
 
       operator("choice", "children", Store) do |children|
         -> { # local jump errorを解消するために、ここにlambdaを入れた。
-          source_orig = @dot["source"]["source"].copy
+          source_orig = @dot["/"]["source"]["source"].copy
           errors = []
 
           children.each_key { |k|
             begin
-              @dot["source"]["source"] = source_orig.copy
+              @dot["/"]["source"]["source"] = source_orig.copy
               return self.evaluate(children[k])
             rescue Rule::ParseError => e
               errors << e.message
@@ -300,9 +300,9 @@ module Garbanzo
       end
 
       operator("terminal", "string", String) do |string|
-        source = @dot["source"]["source"]
+        source = @dot["/"]["source"]["source"]
         if source.value.start_with?(string.value)
-          @dot["source"]["source"] = source.value[string.value.length .. -1].to_repr
+          @dot["/"]["source"]["source"] = source.value[string.value.length .. -1].to_repr
           string.copy
         else
           raise Rule::ParseError, string.value
@@ -380,7 +380,7 @@ module Garbanzo
       when Store;
         eval_store(program)
       else
-        raise "EVALUATE: argument is not a program: #{program}"
+        raise "EVALUATE: argument is not a program: #{program.inspect} of #{program.class}"
       end
     end
 

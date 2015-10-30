@@ -74,8 +74,8 @@ class TC_Repr < Test::Unit::TestCase
   end
 
   def test_function
-    ev = Evaluator.new
-
+    ev = Evaluator.new({'/' => 0}.to_repr)
+    
     func = Repr::function(Store.new({}), Repr::add(Repr::get(Repr::getenv, String.new("a")), Num.new(10)))
     c = Repr::call(func, Store.new({String.new('a') => Num.new(32)}))
 
@@ -202,7 +202,8 @@ class TC_Repr < Test::Unit::TestCase
 
     source = Repr::store({ 'source'.to_repr =>
                                     Repr::store({ 'source'.to_repr => "homuhomu".to_repr }) })
-
+    source['/'] = source
+    
     prog = Repr::token
 
     ev.evaluate(Repr::setenv(source))
@@ -243,16 +244,19 @@ class TC_Repr < Test::Unit::TestCase
 
     st = Repr::store({ 'source'.to_repr =>
                                 Repr::store({ 'source'.to_repr => "homu".to_repr }) })
+    st['/'] = st
     ev.evaluate(Repr::setenv(st))
 
     assert_equal('h'.to_repr, ev.evaluate(prog))
+    assert_equal('omu'.to_repr, st['/']['source']['source'])
   end
 
   def test_terminal
     ev = Evaluator.new
     st = Repr::store({ 'source'.to_repr =>
                                 Repr::store({ 'source'.to_repr => "madohomu".to_repr }) })
-
+    st['/'] = st
+    
     ev.evaluate(Repr::setenv(st))
     
     prog = Repr::begin(
@@ -277,6 +281,7 @@ class TC_Repr < Test::Unit::TestCase
     st = Repr::store({ 'source'.to_repr =>
                                 Repr::store({ 'source'.to_repr => "homuhomuhomu".to_repr })
                      })
+    st['/'] = st
     ev = Evaluator.new(st)
     result = Repr::store({ 0.to_repr => "homu".to_repr,
                            1.to_repr => "homu".to_repr,

@@ -1,4 +1,4 @@
-#!/usr/bin/ruby
+#!/usr/local/bin/ruby
 # coding: utf-8
 
 
@@ -33,6 +33,7 @@ module Garbanzo
       while @evaluator.dot['/']['source']['source'].value.size > 0
         sentence = parse
         program  = evaluate(sentence)
+        puts(program)
         res = evaluate(program)
         puts(res.inspect)
       end
@@ -46,7 +47,7 @@ module Garbanzo
       parser = Repr::store({})
       parser['/'] = root
       parser['sentence'] = Repr::choice(Repr::store({}))
-      parser['sentence']['children']['homu'] = Repr::begin(
+      parser['sentence']['children']['homu'] = Repr::scope(
         Repr::store({
           "readhomu".to_repr =>
                      Repr::set(Repr::getenv, "homu".to_repr,
@@ -113,7 +114,7 @@ module Garbanzo
           }.to_repr))
 
       
-      parser['sentence']['children']['hoge'] = Repr::begin(
+      parser['sentence']['children']['hoge'] = Repr::scope(
         { "readhoge" => Repr::terminal('hoge'.to_repr),
           "foreach"  => Repr::call(root['foreach'],
                                    { "store" => {
@@ -147,10 +148,10 @@ module Garbanzo
 
 
       ## string
-      parser['string'] = Repr::begin(
+      parser['string'] = Repr::scope(
         { "beginstring" => Repr::terminal('"'.to_repr),
           "contents"    => Repr::set(Repr::getenv, "tmp".to_repr,
-                                     Repr::many(Repr::call(root['oneof'], { "string" => "@abcdefghijklmnopqrstuvwxyz" }.to_repr))),
+                                     Repr::many(Repr::call(root['oneof'], { "string" => "\n@/abcdefghijklmnopqrstuvwxyz" }.to_repr))),
           "endstring"   => Repr::terminal('"'.to_repr),
           "result"      => Repr::set(Repr::getenv, "res".to_repr, "".to_repr),
           "convert"     => Repr::call(root['foreach'],
@@ -168,15 +169,42 @@ module Garbanzo
           "return"      => Repr::get(Repr::getenv, "res".to_repr)
         }.to_repr)
 
-      parser['sentence']['children']['string'] = parser['string']
-
       ## datastore
-      parser['datastore'] = Repr::begin(
-        { "begindatastore" => Repr::terminal("{"),
-          "enddatastore" => Repr::terminal("}")
+      parser['datastore'] = Repr::scope(
+        { "begindatastore" => Repr::terminal("{".to_repr),
+          "initresult" => Repr::set(Repr::getenv, "result".to_repr, Repr::datastore({})),
+          "readrec" => Repr::many(
+            Repr::begin(
+              { "readstring"     => Repr::set(
+                  Repr::getenv, "key".to_repr,
+                  Repr::eval(Repr::getenv,
+                    Repr::get(Repr::get(Repr::get(Repr::getenv, "/".to_repr),
+                                        "parser".to_repr),
+                              "string".to_repr))),
+                "separator"      => Repr::terminal(":".to_repr),
+                "readexpression" => Repr::set(
+                  Repr::getenv, "value".to_repr,
+                  Repr::eval(Repr::getenv,
+                    Repr::get(Repr::get(Repr::get(Repr::getenv, "/".to_repr),
+                                        "parser".to_repr),
+                              "expression".to_repr))),
+                "readcomma" => Repr::terminal(",".to_repr),
+                "updatevalue" => Repr::set(Repr::get(Repr::getenv, "result".to_repr),
+                                           Repr::get(Repr::getenv, "key".to_repr),
+                                           Repr::get(Repr::getenv, "value".to_repr)),
+              }.to_repr)),
+          "enddatastore" => Repr::terminal("}".to_repr),
+          "return" => Repr::get(Repr::getenv, "result".to_repr)
         }.to_repr)
 
-      
+
+      ## an expression is either a datastore or a string
+      parser['expression'] = Repr::choice(
+        { "datastore" => parser['datastore'],
+          "string" => parser['string']
+        }.to_repr)
+
+      parser['sentence']['children']['expression'] = parser['expression']
       root['parser'] = parser
       root
     end
@@ -199,3 +227,4 @@ if __FILE__ == $0
   }
 end
 
+# {"@":"set","object":{"@":"get","object":{"@":"get","object":{"@":"get","object":{"@":"getenv",},"key":"parser",},"key":"sentence",},"key":"children",},"key":"newline","value":{"@":"terminal","string":"homu",},}

@@ -240,9 +240,12 @@ module Garbanzo
       operator("eval", "env", Store, "program", Object) do |env, program|
         prevEnv = @dot
         @dot = env
-        result = self.evaluate(program)
-        @dot = prevEnv
-
+        begin
+          result = self.evaluate(program)
+        ensure
+          @dot = prevEnv
+        end
+        
         result
       end
 

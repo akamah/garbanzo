@@ -33,9 +33,8 @@ module Garbanzo
       while @evaluator.dot['/']['source']['source'].value.size > 0
         sentence = parse
         program  = evaluate(sentence)
-        evaluate(program)
-
-        p @evaluator.dot['/']['source']
+        res = evaluate(program)
+        puts(res.inspect)
       end
     end
 
@@ -56,23 +55,41 @@ module Garbanzo
         })
       )
 
-      # root['foreach'] = function(
-      #   root,
-      #   Repr::begin(
-      # { "getfirst"  => set(getenv, "first".to_repr, firstkey(get(getenv, "store".to_repr))),
-          #   "setkey"    => set(getenv, "key".to_repr, get(getenv, "first".to_repr)),
-          #   "callfirst" => call(get(getenv, "func".to_repr),
-          #                       datastore({ "argument" => get(get(getenv, "store".to_repr),
-          #                                                     get(getenv, "key".to_repr)) }.to_repr)),
-          #   "loop" => Repr::while(
-          #     notequal(getnextkey(get(getenv, "store".to_repr)),
-          #              get(getenv, "first".to_repr)),
-          #     Repr::begin(
-          #       { "call" => call(get(getenv, "func".to_repr),
-          #                        datastore({ "argument" => get(get(getenv, "store".to_repr),
-          #                                                      getnextkey(get(getenv, "store".to_repr),
-          #                                                                 "key".to_repr)) }.to_repr)),
-
+      root['foreach'] = Repr::function(
+        root,
+        Repr::if(Repr::equal(Repr::size(Repr::get(Repr::getenv, "store".to_repr)),
+                             0.to_repr),
+                 true.to_repr,
+                 Repr::begin(
+                   { "getlast"    => Repr::set(Repr::getenv, "last".to_repr,
+                                               Repr::lastkey(Repr::get(Repr::getenv, "store".to_repr))),
+                     "initkey"    => Repr::set(Repr::getenv, "key".to_repr,
+                                               Repr::firstkey(Repr::get(Repr::getenv, "store".to_repr))),
+                     "loop" => Repr::while(
+                       Repr::notequal(Repr::get(Repr::getenv, "last".to_repr),
+                                      Repr::get(Repr::getenv, "key".to_repr)),
+                       Repr::begin(
+                         { "call" => Repr::call(
+                             Repr::get(Repr::getenv, "func".to_repr),
+                             Repr::datastore(
+                               { "key" => Repr::get(Repr::getenv, "key".to_repr),
+                                 "value" => Repr::get(Repr::get(Repr::getenv, "store".to_repr),
+                                                      Repr::get(Repr::getenv, "key".to_repr))
+                               }.to_repr)),
+                           "updatekey" => Repr::set(Repr::getenv, "key".to_repr,
+                                                    Repr::getnextkey(
+                                                      Repr::get(Repr::getenv, "store".to_repr),
+                                                      Repr::get(Repr::getenv, "key".to_repr)))
+                         }.to_repr)),
+                     "calllast" => Repr::call(
+                       Repr::get(Repr::getenv, "func".to_repr),
+                       Repr::datastore(
+                         { "key" => Repr::get(Repr::getenv, "key".to_repr),
+                           "value" => Repr::get(Repr::get(Repr::getenv, "store".to_repr),
+                                                Repr::get(Repr::getenv, "key".to_repr))
+                         }.to_repr)),                       
+                     "return" => true.to_repr
+                   }.to_repr)))
 
       root['oneof'] = Repr::function(
         root,
@@ -91,13 +108,26 @@ module Garbanzo
                                                              }.to_repr)),
                   "increment" => Repr::set(Repr::getenv, "i".to_repr, Repr::add(Repr::get(Repr::getenv, "i".to_repr), 1.to_repr))
                 }.to_repr)),
-            "print" => Repr::print(Repr::get(Repr::getenv, "store".to_repr)),
+#            "print" => Repr::print(Repr::get(Repr::getenv, "store".to_repr)),
             "choice" => Repr::choice(Repr::get(Repr::getenv, "store".to_repr))
           }.to_repr))
 
+      
       parser['sentence']['children']['hoge'] = Repr::begin(
-        { "oneof" => Repr::call(root['oneof'], { "string" => "hoge" }.to_repr),
-          "print" => Repr::print("hoge".to_repr)
+        { "readhoge" => Repr::terminal('hoge'.to_repr),
+          "foreach"  => Repr::call(root['foreach'],
+                                   { "store" => {
+                                       1 => "mado",
+                                       2 => "homu",
+                                       3 => "saya"
+                                     }.to_repr,
+                                     "func" => Repr::function(
+                                       Repr::getenv,
+                                       Repr::begin(
+                                         { "printkey" => Repr::print(Repr::get(Repr::getenv, "key".to_repr)),
+                                           "printval" => Repr::print(Repr::get(Repr::getenv, "value".to_repr))
+                                         }.to_repr))
+                                   }.to_repr)
         }.to_repr)
       
       # parser['sentence']['children']['number'] = Repr::begin(
@@ -114,6 +144,38 @@ module Garbanzo
       #                                  charat(get(getenv, "string"), get(getenv, "i".to_repr))),
       #             "increment" => set(getenv, "i".to_repr, add(get(getenv, "i".to_repr), 1.to_repr))
       #           }.to_repr)),
+
+
+      ## string
+      parser['string'] = Repr::begin(
+        { "beginstring" => Repr::terminal('"'.to_repr),
+          "contents"    => Repr::set(Repr::getenv, "tmp".to_repr,
+                                     Repr::many(Repr::call(root['oneof'], { "string" => "@abcdefghijklmnopqrstuvwxyz" }.to_repr))),
+          "endstring"   => Repr::terminal('"'.to_repr),
+          "result"      => Repr::set(Repr::getenv, "res".to_repr, "".to_repr),
+          "convert"     => Repr::call(root['foreach'],
+                                      Repr::datastore(
+                                        { "store" => Repr::get(Repr::getenv, "tmp".to_repr),
+                                          "func"  => Repr::lambda(
+                                            Repr::getenv,
+                                            Repr::set(Repr::get(Repr::getenv, "..".to_repr),
+                                                      "res".to_repr,
+                                                      Repr::append(
+                                                        Repr::get(Repr::get(Repr::getenv, "..".to_repr),
+                                                                  "res".to_repr),
+                                                        Repr::get(Repr::getenv, "value".to_repr))))
+                                        }.to_repr)),
+          "return"      => Repr::get(Repr::getenv, "res".to_repr)
+        }.to_repr)
+
+      parser['sentence']['children']['string'] = parser['string']
+
+      ## datastore
+      parser['datastore'] = Repr::begin(
+        { "begindatastore" => Repr::terminal("{"),
+          "enddatastore" => Repr::terminal("}")
+        }.to_repr)
+
       
       root['parser'] = parser
       root
@@ -131,6 +193,8 @@ if __FILE__ == $0
       int.execute(f.read)
     rescue Rule::ParseError => e
       p "parse error, expecting #{e.message}"
+    rescue => e
+      puts e.message
     end
   }
 end

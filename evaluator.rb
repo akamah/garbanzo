@@ -328,12 +328,15 @@ module Garbanzo
       command("many", "parser") do |parser|
         i = 0
         result = Repr::store({})
+        string = @dot['/']['source']['source']
         
         while true
           begin
             result[i.to_repr] = self.evaluate(parser)
+            string = @dot['/']['source']['source']
             i += 1
           rescue Rule::ParseError
+            @dot['/']['source']['source'] = string
             break
           end
         end

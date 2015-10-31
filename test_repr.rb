@@ -299,4 +299,15 @@ class TC_Repr < Test::Unit::TestCase
     assert_equal(97.to_repr, ev.evaluate(prog1))
     assert_equal("A".to_repr, ev.evaluate(prog2))
   end
+
+  def test_scope
+    st = { "a" => "hoge", "/" => "root" }.to_repr
+    ev = Evaluator.new(st)
+
+    prog1 = Repr::scope(Repr::set(Repr::getenv, "a".to_repr, 42.to_repr))
+    prog2 = Repr::get(Repr::getenv, "a".to_repr)
+    ev.evaluate(prog1)
+
+    assert_equal("hoge".to_repr, ev.evaluate(prog2))
+  end
 end

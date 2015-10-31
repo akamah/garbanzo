@@ -137,6 +137,8 @@ EOS
           @table = obj.to_a
         when Array
           @table = obj
+        else
+          raise "cannot construct a datastore from: #{obj}"
         end
       end
 
@@ -309,6 +311,7 @@ EOS
     define_command("If", "condition", "consequence", "alternative") # 条件分岐
     define_command("Lambda", "env", "body")          # 関数を作る
     define_command("Begin", "body")                  # 逐次実行命令
+    define_command("Scope", "body")                  # スコープを導入しての逐次実行
 
     ## 環境
     define_command("GetEnv")                         # 現在の環境を取得

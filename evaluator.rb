@@ -183,12 +183,22 @@ module Garbanzo
         body.each_key do |k, v|
           result = evaluate(v)
         end
-        
-#        Lib::each_list(body) { |child|
-#          result = evaluate(child)
-#        }
 
         result
+      end
+
+      # スコープを導入するコマンド。
+      command("scope", "body") do |body|
+        emptyenv = {}.to_repr
+        extend_scope(emptyenv, @dot) do
+          result = false.to_repr
+
+          body.each_key do |k, v|
+            result = evaluate(v)
+          end
+
+          result
+        end
       end
 
       operator("getenv") do
@@ -202,21 +212,24 @@ module Garbanzo
       operator("call", "func", Callable, "args", Store) do |func, args|
         case func
         when Function
-          oldenv = @dot
-          args[".."] = func.env # 環境を拡張
+          # oldenv = @dot
+          # args[".."] = func.env # 環境を拡張
           
-          unless args.exist("/".to_repr).value
-            args["/"] = oldenv["/"]
-          end
+          # unless args.exist("/".to_repr).value
+          #   args["/"] = oldenv["/"]
+          # end
           
-          @dot = args
-          begin
-            result = evaluate(func.body)
-          ensure
-            @dot = oldenv            
-          end
+          # @dot = args
+          # begin
+          #   result = evaluate(func.body)
+          # ensure
+          #   @dot = oldenv            
+          # end
 
-          result
+        # result
+          extend_scope(args, func.env) do
+            evaluate(func.body)
+          end
         when Procedure
           func.proc.call(args)
         else
@@ -385,6 +398,25 @@ module Garbanzo
       else
         raise "EVALUATE: argument is not a program: #{program.inspect} of #{program.class}"
       end
+    end
+
+    def extend_scope(newenv, parent)
+      oldenv = @dot
+      newenv[".."] = parent
+
+      unless newenv.exist("/".to_repr).value
+        newenv["/"] = oldenv["/"]
+      end
+
+      @dot = newenv
+      result = nil
+      begin
+        result = yield
+      ensure
+        @dot = oldenv
+      end
+
+      result
     end
 
     def show(p)

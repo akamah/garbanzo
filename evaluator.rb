@@ -210,8 +210,11 @@ module Garbanzo
           end
           
           @dot = args
-          result = evaluate(func.body)
-          @dot = oldenv
+          begin
+            result = evaluate(func.body)
+          ensure
+            @dot = oldenv            
+          end
 
           result
         when Procedure
@@ -394,7 +397,7 @@ module Garbanzo
         p.value
       when Store
         "{" + p.table.map {|k, v|
-          show(k) + ":\n" + show(v).gsub(/^/, '  ')
+          show(k)
         }.to_a.join("\n") + "}"
       when Function
         "^{ #{show(p.body)} }"

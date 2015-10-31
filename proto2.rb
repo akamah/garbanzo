@@ -34,7 +34,7 @@ module Garbanzo
       # 設定したソースコードが残っている限り
       while @evaluator.dot['/']['source']['source'].value.size > 0
         sentence = parse
-#        puts(sentence.inspect)
+        puts(sentence.inspect)
         res = evaluate(sentence)
         puts(res.inspect)
       end
@@ -152,7 +152,7 @@ module Garbanzo
       parser['string'] = Repr::scope(
         { "beginstring" => Repr::terminal('"'.to_repr),
           "contents"    => Repr::set(Repr::getenv, "tmp".to_repr,
-                                     Repr::many(Repr::call(root['oneof'], { "string" => "\n.$@/abcdefghijklmnopqrstuvwxyz" }.to_repr))),
+                                     Repr::many(Repr::call(root['oneof'], { "string" => " '\n.$@/abcdefghijklmnopqrstuvwxyz" }.to_repr))),
           "endstring"   => Repr::terminal('"'.to_repr),
           "result"      => Repr::set(Repr::getenv, "res".to_repr, "".to_repr),
           "convert"     => Repr::call(root['foreach'],
@@ -223,8 +223,6 @@ if __FILE__ == $0
     rescue Rule::ParseError => e
       puts "parse error, expecting #{e.message}"
       p(int.evaluator.dot['/']['source']['source'].value)
-    rescue => e
-      puts(e.message)
     end
   }
 end

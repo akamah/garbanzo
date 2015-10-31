@@ -310,7 +310,8 @@ module Garbanzo
               @dot["/"]["source"]["source"] = source_orig.copy
               return self.evaluate(children[k])
             rescue Rule::ParseError => e
-              errors << e.message
+              rest = @dot["/"]["source"]["source"].value.length
+              errors << "'#{e.message}' resting '#{rest}'"
             end
           }
 

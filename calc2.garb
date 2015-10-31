@@ -1,5 +1,11 @@
 {"@":"set","object":{"@":"get","object":{"@":"get","object":{"@":"get","object":{"@":"getenv",},"key":"parser",},"key":"sentence",},"key":"children",},"key":"newline","value":{"@":"quote","value":{"@":"terminal","string":"
 ",},},}
 
-{"@":"set","object":{"@":"get","object":{"@":"get","object":{"@":"get","object":{"@":"getenv",},"key":"parser",},"key":"expression",},"key":"children",},"key":"dot","value":{"@":"quote","value":{"@":"begin","body":{"read":{"@":"terminal","string":".",},"return":{"@":"getenv",},},},},}
+{"@":"set","object":{"@":"get","object":{"@":"get","object":{"@":"get","object":{"@":"getenv",},"key":"parser",},"key":"expression",},"key":"children",},"key":"dot","value":{"@":"quote","value":{"@":"begin","body":{"read":{"@":"terminal","string":".",},"return":{"@":"quote","value":{"@":"getenv",},},},},},}
 
+{"@":"set","object":{"@":"get","object":{"@":"get","object":{"@":"get","object":.,"key":"parser",},"key":"expression",},"key":"children",},"key":"englishget","value":{"@":"quote","value":{"@":"scope","body":{"get":{"@":"terminal","string":"get ",},"key":{"@":"set","object":.,"key":"key","value":{"@":"eval","env":.,"program":{"@":"get","object":{"@":"get","object":{"@":"get","object":.,"key":"/",},"key":"parser",},"key":"string",},},},"of":{"@":"terminal","string":" of ",},"value":{"@":"set","object":.,"key":"value","value":{"@":"eval","env":.,"program":{"@":"get","object":{"@":"get","object":{"@":"get","object":.,"key":"/",},"key":"parser",},"key":"expression",},},},"return":{"@":"datastore","object":{"@":"get","key":{"@":"get","object":.,"key":"key",},"object":{"@":"get","object":.,"key":"value",},},},},},},}
+
+{"@":"set","object":get "children" of get "sentence" of get "parser" of .,"key":"setenglish","value":{"@":"quote","value":{"@":"scope","body":{"set":{"@":"terminal","string":"set ",},"key":{"@":"set","object":.,"key":"key","value":{"@":"eval","env":.,"program":get "string" of get "parser" of get "/" of .,},},"to":{"@":"terminal","string":" to ",},"value":{"@":"set","object":.,"key":"value","value":{"@":"eval","env":.,"program":get "expression" of get "parser" of get "/" of .,},},"of":{"@":"terminal","string":" of ",},"object":{"@":"set","object":.,"key":"object","value":{"@":"eval","env":.,"program":get "expression" of get "parser" of get "/" of .,},},"return":{"@":"datastore","object":{"@":"set","object":get "object" of .,"key":get "key" of .,"value":get "value" of .,},},},},},}
+
+set "a" to "hoge" of .
+get "a" of .

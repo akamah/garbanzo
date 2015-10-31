@@ -95,6 +95,10 @@ EOS
         String.new(::String.new(self.value))
       end
 
+      def eql?(other)
+        return other.class == String && other.value == self.value
+      end
+      
       def inspect
         self.value.inspect
       end

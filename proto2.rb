@@ -13,6 +13,8 @@ module Garbanzo
   
   # EvaluatorとParserをカプセルしたもの。
   class Interpreter2
+    attr_accessor :evaluator
+    
     def initialize
       @evaluator = Evaluator.new(construct_root)
     end
@@ -32,9 +34,8 @@ module Garbanzo
       # 設定したソースコードが残っている限り
       while @evaluator.dot['/']['source']['source'].value.size > 0
         sentence = parse
-        program  = evaluate(sentence)
-        puts(program)
-        res = evaluate(program)
+#        puts(sentence.inspect)
+        res = evaluate(sentence)
         puts(res.inspect)
       end
     end
@@ -47,14 +48,14 @@ module Garbanzo
       parser = Repr::store({})
       parser['/'] = root
       parser['sentence'] = Repr::choice(Repr::store({}))
-      parser['sentence']['children']['homu'] = Repr::scope(
-        Repr::store({
-          "readhomu".to_repr =>
-                     Repr::set(Repr::getenv, "homu".to_repr,
-                               Repr::terminal("homu".to_repr)),
-          "printhomu".to_repr => Repr::print(Repr::get(Repr::getenv, "homu".to_repr))
-        })
-      )
+      # parser['sentence']['children']['homu'] = Repr::begin(
+      #   Repr::store({
+      #     "readhomu".to_repr =>
+      #                Repr::set(Repr::getenv, "homu".to_repr,
+      #                          Repr::terminal("homu".to_repr)),
+      #     "printhomu".to_repr => Repr::print(Repr::get(Repr::getenv, "homu".to_repr))
+      #   })
+      # )
 
       root['foreach'] = Repr::function(
         root,
@@ -114,22 +115,22 @@ module Garbanzo
           }.to_repr))
 
       
-      parser['sentence']['children']['hoge'] = Repr::scope(
-        { "readhoge" => Repr::terminal('hoge'.to_repr),
-          "foreach"  => Repr::call(root['foreach'],
-                                   { "store" => {
-                                       1 => "mado",
-                                       2 => "homu",
-                                       3 => "saya"
-                                     }.to_repr,
-                                     "func" => Repr::function(
-                                       Repr::getenv,
-                                       Repr::begin(
-                                         { "printkey" => Repr::print(Repr::get(Repr::getenv, "key".to_repr)),
-                                           "printval" => Repr::print(Repr::get(Repr::getenv, "value".to_repr))
-                                         }.to_repr))
-                                   }.to_repr)
-        }.to_repr)
+      # parser['sentence']['children']['hoge'] = Repr::scope(
+      #   { "readhoge" => Repr::terminal('hoge'.to_repr),
+      #     "foreach"  => Repr::call(root['foreach'],
+      #                              { "store" => {
+      #                                  1 => "mado",
+      #                                  2 => "homu",
+      #                                  3 => "saya"
+      #                                }.to_repr,
+      #                                "func" => Repr::function(
+      #                                  Repr::getenv,
+      #                                  Repr::begin(
+      #                                    { "printkey" => Repr::print(Repr::get(Repr::getenv, "key".to_repr)),
+      #                                      "printval" => Repr::print(Repr::get(Repr::getenv, "value".to_repr))
+      #                                    }.to_repr))
+      #                              }.to_repr)
+      #   }.to_repr)
       
       # parser['sentence']['children']['number'] = Repr::begin(
       #   { "head" => set(getenv, "head".to_repr, call(get(get(getenv, "/".to_repr), "oneof".to_repr),
@@ -151,7 +152,7 @@ module Garbanzo
       parser['string'] = Repr::scope(
         { "beginstring" => Repr::terminal('"'.to_repr),
           "contents"    => Repr::set(Repr::getenv, "tmp".to_repr,
-                                     Repr::many(Repr::call(root['oneof'], { "string" => "\n@/abcdefghijklmnopqrstuvwxyz" }.to_repr))),
+                                     Repr::many(Repr::call(root['oneof'], { "string" => "\n.$@/abcdefghijklmnopqrstuvwxyz" }.to_repr))),
           "endstring"   => Repr::terminal('"'.to_repr),
           "result"      => Repr::set(Repr::getenv, "res".to_repr, "".to_repr),
           "convert"     => Repr::call(root['foreach'],
@@ -220,11 +221,12 @@ if __FILE__ == $0
     begin
       int.execute(f.read)
     rescue Rule::ParseError => e
-      p "parse error, expecting #{e.message}"
+      puts "parse error, expecting #{e.message}"
+      p(int.evaluator.dot['/']['source']['source'].value)
     rescue => e
-      puts e.message
+      puts(e.message)
     end
   }
 end
 
-# {"@":"set","object":{"@":"get","object":{"@":"get","object":{"@":"get","object":{"@":"getenv",},"key":"parser",},"key":"sentence",},"key":"children",},"key":"newline","value":{"@":"terminal","string":"homu",},}
+

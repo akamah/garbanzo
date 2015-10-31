@@ -149,27 +149,29 @@ module Garbanzo
 
 
       ## string
-      parser['string'] = Repr::scope(
-        { "beginstring" => Repr::terminal('"'.to_repr),
-          "contents"    => Repr::set(Repr::getenv, "tmp".to_repr,
-                                     Repr::many(Repr::call(root['oneof'], { "string" => " '\n.$@/abcdefghijklmnopqrstuvwxyz" }.to_repr))),
-          "endstring"   => Repr::terminal('"'.to_repr),
-          "result"      => Repr::set(Repr::getenv, "res".to_repr, "".to_repr),
-          "convert"     => Repr::call(root['foreach'],
-                                      Repr::datastore(
-                                        { "store" => Repr::get(Repr::getenv, "tmp".to_repr),
-                                          "func"  => Repr::lambda(
-                                            Repr::getenv,
-                                            Repr::set(Repr::get(Repr::getenv, "..".to_repr),
-                                                      "res".to_repr,
-                                                      Repr::append(
-                                                        Repr::get(Repr::get(Repr::getenv, "..".to_repr),
-                                                                  "res".to_repr),
-                                                        Repr::get(Repr::getenv, "value".to_repr))))
-                                        }.to_repr)),
-          "return"      => Repr::get(Repr::getenv, "res".to_repr)
-        }.to_repr)
+      # parser['string'] = Repr::scope(
+      #   { "beginstring" => Repr::terminal('"'.to_repr),
+      #     "contents"    => Repr::set(Repr::getenv, "tmp".to_repr,
+      #                                Repr::many(Repr::call(root['oneof'], { "string" => " '\n.$@/abcdefghijklmnopqrstuvwxyz" }.to_repr))),
+      #     "endstring"   => Repr::terminal('"'.to_repr),
+      #     "result"      => Repr::set(Repr::getenv, "res".to_repr, "".to_repr),
+      #     "convert"     => Repr::call(root['foreach'],
+      #                                 Repr::datastore(
+      #                                   { "store" => Repr::get(Repr::getenv, "tmp".to_repr),
+      #                                     "func"  => Repr::lambda(
+      #                                       Repr::getenv,
+      #                                       Repr::set(Repr::get(Repr::getenv, "..".to_repr),
+      #                                                 "res".to_repr,
+      #                                                 Repr::append(
+      #                                                   Repr::get(Repr::get(Repr::getenv, "..".to_repr),
+      #                                                             "res".to_repr),
+      #                                                   Repr::get(Repr::getenv, "value".to_repr))))
+      #                                   }.to_repr)),
+      #     "return"      => Repr::get(Repr::getenv, "res".to_repr)
+      #   }.to_repr)
 
+      parser['string'] = Repr::parsestring
+      
       ## datastore
       parser['datastore'] = Repr::scope(
         { "begindatastore" => Repr::terminal("{".to_repr),
@@ -226,5 +228,3 @@ if __FILE__ == $0
     end
   }
 end
-
-

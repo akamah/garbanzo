@@ -347,6 +347,17 @@ module Garbanzo
 
         result
       end
+
+      command("parsestring") do
+        source = @dot["/"]["source"]["source"]
+        if source.value =~ /^"((?:[a-z\/@.$' ]|\n)*)"(.*)$/m
+          @dot['/']['source']['source'] = $2.to_repr
+          p $1
+          $1.to_repr
+        else
+          raise Rule::ParseError, "string"
+        end
+      end
     end
 
     

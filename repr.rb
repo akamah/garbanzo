@@ -358,6 +358,7 @@ EOS
     # many: 任意個数のマッチ、要は例外が飛ぶまでそのプログラムを繰り替えす。
     define_command("many", "parser")
 
+    define_command("parsestring")
     
     class ::Integer
       def to_repr; Garbanzo::Repr::num(self); end

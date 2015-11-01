@@ -111,7 +111,10 @@ module Garbanzo
                   "increment" => Repr::set(Repr::getenv, "i".to_repr, Repr::add(Repr::get(Repr::getenv, "i".to_repr), 1.to_repr))
                 }.to_repr)),
 #            "print" => Repr::print(Repr::get(Repr::getenv, "store".to_repr)),
-            "choice" => Repr::choice(Repr::get(Repr::getenv, "store".to_repr))
+            "choice" => Repr::datastore(
+              { "@" => "choice",
+                "children" => Repr::get(Repr::getenv, "store".to_repr)
+              }.to_repr)
           }.to_repr))
 
       

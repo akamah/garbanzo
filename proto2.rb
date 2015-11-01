@@ -177,25 +177,26 @@ module Garbanzo
         { "begindatastore" => Repr::terminal("{".to_repr),
           "initresult" => Repr::set(Repr::getenv, "result".to_repr, Repr::datastore({})),
           "readrec" => Repr::many(
-            Repr::begin(
-              { "readstring"     => Repr::set(
-                  Repr::getenv, "key".to_repr,
-                  Repr::eval(Repr::getenv,
-                    Repr::get(Repr::get(Repr::get(Repr::getenv, "/".to_repr),
-                                        "parser".to_repr),
-                              "string".to_repr))),
-                "separator"      => Repr::terminal(":".to_repr),
-                "readexpression" => Repr::set(
-                  Repr::getenv, "value".to_repr,
-                  Repr::eval(Repr::getenv,
-                    Repr::get(Repr::get(Repr::get(Repr::getenv, "/".to_repr),
-                                        "parser".to_repr),
-                              "expression".to_repr))),
-                "readcomma" => Repr::terminal(",".to_repr),
-                "updatevalue" => Repr::set(Repr::get(Repr::getenv, "result".to_repr),
-                                           Repr::get(Repr::getenv, "key".to_repr),
-                                           Repr::get(Repr::getenv, "value".to_repr)),
-              }.to_repr)),
+            Repr::quote(
+              Repr::begin(
+                { "readstring"     => Repr::set(
+                    Repr::getenv, "key".to_repr,
+                    Repr::eval(Repr::getenv,
+                               Repr::get(Repr::get(Repr::get(Repr::getenv, "/".to_repr),
+                                                   "parser".to_repr),
+                                         "string".to_repr))),
+                  "separator"      => Repr::terminal(":".to_repr),
+                  "readexpression" => Repr::set(
+                    Repr::getenv, "value".to_repr,
+                    Repr::eval(Repr::getenv,
+                               Repr::get(Repr::get(Repr::get(Repr::getenv, "/".to_repr),
+                                                   "parser".to_repr),
+                                         "expression".to_repr))),
+                  "readcomma" => Repr::terminal(",".to_repr),
+                  "updatevalue" => Repr::set(Repr::get(Repr::getenv, "result".to_repr),
+                                             Repr::get(Repr::getenv, "key".to_repr),
+                                             Repr::get(Repr::getenv, "value".to_repr)),
+                }.to_repr))),
           "enddatastore" => Repr::terminal("}".to_repr),
           "return" => Repr::get(Repr::getenv, "result".to_repr)
         }.to_repr)

@@ -277,7 +277,7 @@ class TC_Repr < Test::Unit::TestCase
   end
 
   def test_many
-    prog = Repr::many(Repr::terminal("homu".to_repr))
+    prog = Repr::many(Repr::quote(Repr::terminal("homu".to_repr)))
     st = Repr::store({ 'source'.to_repr =>
                                 Repr::store({ 'source'.to_repr => "homuhomuhomu".to_repr })
                      })

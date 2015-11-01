@@ -329,7 +329,7 @@ module Garbanzo
         end
       end
 
-      command("many", "parser") do |parser|
+      operator("many", "parser", Object) do |parser|
         i = 0
         result = Repr::store({})
         string = @dot['/']['source']['source']

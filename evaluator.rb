@@ -438,6 +438,8 @@ module Garbanzo
     end
 
     def show(p)
+      return p.inspect
+      
       case p
       when Num
         p.num.to_s
@@ -459,3 +461,7 @@ module Garbanzo
     end
   end
 end
+
+
+#set "whitespace" to {"@":"many","parser":{"@":"call","func":get "oneof" of get "/#" of .,"args":{"string":" 
+#",},},} of get "parser" of get "/" of .

@@ -120,7 +120,7 @@ EOS
       end
 
       def inspect
-        "#<func>"
+        "^ (#{self.body.inspect})"
       end
     end
     
@@ -208,12 +208,15 @@ EOS
 
       def insert_prev(origin, key, value)
         index = find_entry_index(origin)
-        @table.insert(index, key, value)
+
+        @cache[key] = value
+        @table.insert(index, [key, value])
       end
 
       def insert_next(origin, key, value)
         index = find_entry_index(origin)
-        @table.insert(index + 1, key, value)
+        @cache[key] = value
+        @table.insert(index + 1, [key, value])
       end
 
       def first_key

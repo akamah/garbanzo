@@ -14,9 +14,11 @@ module Garbanzo
   # EvaluatorとParserをカプセルしたもの。
   class Interpreter2
     attr_accessor :evaluator
+    attr_accessor :debug
     
-    def initialize
+    def initialize(debug = true)
       @evaluator = Evaluator.new(construct_root)
+      @debug = debug
     end
 
     def evaluate(prog)
@@ -26,7 +28,7 @@ module Garbanzo
     def parse
       evaluate(@evaluator.dot['/']['parser']['sentence'])
     end
-    
+
     def execute(src)
       # 入力ソースコードを評価器にセットする。
       @evaluator.dot['/']['source'] = Repr::store('source'.to_repr => src.to_repr)
@@ -34,10 +36,12 @@ module Garbanzo
       # 設定したソースコードが残っている限り
       while @evaluator.dot['/']['source']['source'].value.size > 0
         sentence = parse
-        puts(sentence.inspect)
+        puts("> #{sentence.inspect}") if debug
         res = evaluate(sentence)
-        puts(res.inspect)
+        puts("=> #{res.inspect}") if debug
       end
+
+      res
     end
 
     def construct_root
@@ -150,28 +154,26 @@ module Garbanzo
       #             "increment" => set(getenv, "i".to_repr, add(get(getenv, "i".to_repr), 1.to_repr))
       #           }.to_repr)),
 
-
-      ## string
-      # parser['string'] = Repr::scope(
-      #   { "beginstring" => Repr::terminal('"'.to_repr),
-      #     "contents"    => Repr::set(Repr::getenv, "tmp".to_repr,
-      #                                Repr::many(Repr::call(root['oneof'], { "string" => " '\n.$@/abcdefghijklmnopqrstuvwxyz" }.to_repr))),
-      #     "endstring"   => Repr::terminal('"'.to_repr),
-      #     "result"      => Repr::set(Repr::getenv, "res".to_repr, "".to_repr),
-      #     "convert"     => Repr::call(root['foreach'],
-      #                                 Repr::datastore(
-      #                                   { "store" => Repr::get(Repr::getenv, "tmp".to_repr),
-      #                                     "func"  => Repr::lambda(
-      #                                       Repr::getenv,
-      #                                       Repr::set(Repr::get(Repr::getenv, "..".to_repr),
-      #                                                 "res".to_repr,
-      #                                                 Repr::append(
-      #                                                   Repr::get(Repr::get(Repr::getenv, "..".to_repr),
-      #                                                             "res".to_repr),
-      #                                                   Repr::get(Repr::getenv, "value".to_repr))))
-      #                                   }.to_repr)),
-      #     "return"      => Repr::get(Repr::getenv, "res".to_repr)
-      #   }.to_repr)
+      parser['string'] = Repr::scope(
+        { "beginstring" => Repr::terminal('"'.to_repr),
+          "contents"    => Repr::set(Repr::getenv, "tmp".to_repr,
+                                     Repr::many(Repr::call(root['oneof'], { "string" => " '\n.$@/abcdefghijklmnopqrstuvwxyz" }.to_repr))),
+          "endstring"   => Repr::terminal('"'.to_repr),
+          "result"      => Repr::set(Repr::getenv, "res".to_repr, "".to_repr),
+          "convert"     => Repr::call(root['foreach'],
+                                      Repr::datastore(
+                                        { "store" => Repr::get(Repr::getenv, "tmp".to_repr),
+                                          "func"  => Repr::lambda(
+                                            Repr::getenv,
+                                            Repr::set(Repr::get(Repr::getenv, "..".to_repr),
+                                                      "res".to_repr,
+                                                      Repr::append(
+                                                        Repr::get(Repr::get(Repr::getenv, "..".to_repr),
+                                                                  "res".to_repr),
+                                                        Repr::get(Repr::getenv, "value".to_repr))))
+                                        }.to_repr)),
+          "return"      => Repr::get(Repr::getenv, "res".to_repr)
+        }.to_repr)
 
       parser['string'] = Repr::parsestring
       
@@ -187,7 +189,7 @@ module Garbanzo
                     Repr::eval(Repr::getenv,
                                Repr::get(Repr::get(Repr::get(Repr::getenv, "/".to_repr),
                                                    "parser".to_repr),
-                                         "string".to_repr))),
+                                         "expression".to_repr))),
                   "separator"      => Repr::terminal(":".to_repr),
                   "readexpression" => Repr::set(
                     Repr::getenv, "value".to_repr,
@@ -221,7 +223,7 @@ end
 
 if __FILE__ == $0
   include Garbanzo
-  int = Interpreter2.new
+  int = Interpreter2.new(false)
 
   File.open(ARGV[0] || "calc2.garb", "rb") { |f|
     begin

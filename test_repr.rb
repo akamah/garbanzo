@@ -288,6 +288,11 @@ class TC_Repr < Test::Unit::TestCase
                            2.to_repr => "homu".to_repr })
 
     assert_equal(result, ev.evaluate(prog))
+
+    st['source']['source'] = "hoge".to_repr
+
+    ev = Evaluator.new(st)
+    assert_equal(Repr::store({}), ev.evaluate(prog))
   end
 
   def test_code

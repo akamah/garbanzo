@@ -311,7 +311,7 @@ module Garbanzo
               return self.evaluate(children[k])
             rescue Rule::ParseError => e
               rest = @dot["/"]["source"]["source"].value.length
-              errors << "'#{e.message}' resting '#{rest}'"
+              errors << "'#{e.message} rest: #{rest}'"
             end
           }
 

@@ -23,18 +23,15 @@ set "tokstring"to '{"@":"scope","body":{"str":set "str"to $get "string"of get "p
 
 get "whitespace" of get "parser" of .
 
-set "tokenize" to {"@":"lambda","env":.,"body":{"@":"datastore","object"
-:{"@":"begin","body"
-  :{"read"
-    :{"@":"datastore","object"
-           :{"@":"set","object".,"key":"value","value":{"@":"datastore","object"
-             :{"@":"eval","env":'.,"program":get "parser" of .,},}of .,},},"space"
-    :'$get "whitespace" of get "parser" of get "/" of .,"return"
-    :'get "value" of .,},},}of get "/" of .
+set "tokenize" to {"@":"lambda","env":.,"body":{"@":"begin","body"
+:{"create":set "tree" to '{"@":"scope","body"
+                           :{"generate":set "value" to $"dummy" of .,"whitespace":$get "whitespace" of get "parser" of get "/" of .,"return"
+                           :get "value" of .,},}of .,"assign"
+          :set "value" to get "parser" of .of get "generate" of get "body" of get "tree" of .,"return":get "tree" of .,},},}of .
 
 
 {"@":"remove","object":get "children"of get "expression"of get "parser"of .,"key":"string",}
 
 {"@"    :"print"
-,"value":{"@":"call","func":get "tokenize" of .,"args":{"parser":"theparser",},},}
+,"value":{"@":"call","func":get "tokenize" of .,"args":{"parser":'"theparser",},},}
 

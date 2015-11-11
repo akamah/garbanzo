@@ -362,12 +362,25 @@ module Garbanzo
 
     
     def eval_store(s)
-      return s unless s.exist("@").value
-      feature = s["@"]
+      if s.exist("@").value
+        feature = evaluate(s["@"])
 
-      feature = evaluate(feature)
-      f = @commands[feature.value] or raise "EVALUATE2: #{feature.inspect} is not a valid feature name"
-      f.call(s)
+        unless @commands.include?(feature.value)
+          raise "EVALUATE2: #{feature.inspect} is not a valid feature name"
+        end
+
+        @commands[feature.value].call(s)
+      else
+        # 命令が書かれていなかった場合は，内側の要素を全て評価することとした．
+        result = {}.to_repr
+
+        s.each_key { |k, v|
+#          puts "key: #{k.inspect}, value: #{v.inspect}"
+          result[k] = evaluate(v)
+        }
+
+        result
+      end
     end
     
     def evaluate(program)

@@ -88,6 +88,10 @@ EOS
       def inspect
         self.num.inspect
       end
+
+      def to_s
+        self.num.to_s
+      end
     end
 
     class String
@@ -102,6 +106,11 @@ EOS
       def inspect
         self.value.inspect
       end
+
+      def to_s
+        self.value.to_s
+      end
+
     end
 
     class Bool

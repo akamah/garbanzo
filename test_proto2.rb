@@ -37,5 +37,26 @@ class TC_Proto2 < Test::Unit::TestCase
     assert_equal({ 'hoge' => 'hige' }.to_repr,
                  int.execute('"hoge" : "hige"'))
   end
+
+  def test_datastore
+    int = Interpreter2.new(false)
+
+    assert_equal({}.to_repr,
+                 int.execute('{ }'))
+    
+    assert_equal({ 'hoge' => 'hige' }.to_repr,
+                 int.execute('{"hoge" : "hige"}'))
+
+    assert_equal({ 'hoge' => 'hige',
+                    'homu' => 'mado' }.to_repr,
+                 int.execute('{"hoge" : "hige", "homu" : "mado", }'))
+
+    assert_equal({ 'hoge' => {'homu' => 'mado'}.to_repr }.to_repr,
+                 int.execute('{"hoge":{"homu": "mado",},}'))
+
+    assert_raise(Rule::ParseError) {
+      int.execute('{"hoge":"hige",,}')
+    }
+  end
 end
 

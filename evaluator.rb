@@ -217,7 +217,7 @@ module Garbanzo
           end
         when Procedure
           extend_scope(args, {}.to_repr) do
-            func.proc.call(args)
+            func.proc.call(self, args)
           end
         else
           raise "EVALUATE: callee is not a function: #{func}" unless f.is_a? Function

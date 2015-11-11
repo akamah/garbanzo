@@ -45,8 +45,8 @@ module Garbanzo
     end
 
     def install_string_rule(root)
-      stringp = Repr::Procedure.new(
-        lambda { |env|
+      stringp = Repr::procedure(
+        lambda { |e, env|
           source = env["/"]["source"]["source"]
           if source.value =~ /^"((?:[a-z\/@.$' ]|\n)*)"(.*)$/m
             env['/']['source']['source'] = $2.to_repr
@@ -62,8 +62,8 @@ module Garbanzo
     end
 
     def install_whitespaces_rule(root)
-      whitep = Repr::Procedure.new(
-        lambda { |env|
+      whitep = Repr::procedure(
+        lambda { |e, env|
           source = env["/"]["source"]["source"]
           source.value =~ /^([[:space:]]*)(.*)$/m
 

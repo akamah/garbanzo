@@ -50,7 +50,7 @@ module Garbanzo
 
     def self.add
       Repr::procedure(
-        lambda {|a|
+        lambda {|e, a|
           (a['right'].num + a['left'].num).to_repr
         })
     end

@@ -368,43 +368,6 @@ module Garbanzo
       feature = evaluate(feature)
       f = @commands[feature.value] or raise "EVALUATE2: #{feature.inspect} is not a valid feature name"
       f.call(s)
-      
-      # case feature.value
-      # when "add";      eval_add(s['left'], s['right'])
-      # when "sub";      eval_sub(s['left'], s['right'])
-      # when "mult";     eval_mult(s['left'], s['right'])
-      # when "div";      eval_div(s['left'], s['right'])
-      # when "mod";      eval_mod(s['left'], s['right'])
-
-      # when "equal";    eval_equal(s['left'], s['right'])
-      # when "notequal"; eval_notequal(s['left'], s['right'])
-
-      # when "and";      eval_and(s['left'], s['right'])
-      # when "or";       eval_or(s['left'], s['right'])
-      # when "not";      eval_not(s['value'])
-
-      # when "print";    eval_print(s['value'])
-
-      # when "set";      eval_set(s['object'], s['key'], s['value'])
-      # when "get";      eval_get(s['object'], s['key'])
-      # when "size";     eval_size(s['object'])
-
-      # when "quote";    eval_quote(s['value'])
-      # when "while";    eval_while(s['condition'], s['body'])
-      # when "if";       eval_if(s['condition'], s['consequence'], s['alternative'])
-      # when "lambda";   eval_lambda(s['env'], s['body'])
-      # when "begin";    eval_begin(s['body'])
-
-      # when "getenv";   eval_getenv()
-      # when "setenv";   eval_setenv(s['env'])
-
-      # when "call";     eval_call(s['func'], s['args'])
-      # when "append";   eval_append(s['left'], s['right'])
-      # when "charat";   eval_charat(s['string'], s['index'])
-      # when "length";   eval_length(s['string'])
-      # else
-        
-      # end
     end
     
     def evaluate(program)
@@ -462,6 +425,3 @@ module Garbanzo
   end
 end
 
-
-#set "whitespace" to {"@":"many","parser":{"@":"call","func":get "oneof" of get "/#" of .,"args":{"string":" 
-#",},},} of get "parser" of get "/" of .

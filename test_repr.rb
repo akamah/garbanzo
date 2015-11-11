@@ -36,7 +36,7 @@ class TC_Repr < Test::Unit::TestCase
     key = String.new("saya")
     val = Num.new("38")
 
-    ev.evaluate(Repr::set(ds, key, val))
+    ev.evaluate(Repr::set(Repr::quote(ds), key, val))
     assert_equal(val, ev.evaluate(Repr::get(ds, key)))
 
     assert_equal(true.to_repr, ev.evaluate(Repr::lessthan(3.to_repr, 10.to_repr)))
@@ -52,14 +52,15 @@ class TC_Repr < Test::Unit::TestCase
 
     # cond: (10 == a) == false
     cond = Repr::equal(Repr::equal(Num.new(10), Repr::get(env, a)), Bool.new(false))
-    body = Repr::equal(Repr::set(env, sum,
-                                 Repr::add(Repr::get(env, sum), Repr::get(env, a))),
-                       Repr::set(env, a,
-                                 Repr::add(Num.new(1), Repr::get(env, a))))
+    body = Repr::equal(Repr::set(Repr::quote(env), sum,
+                                 Repr::add(Repr::get(Repr::quote(env), sum),
+                                           Repr::get(Repr::quote(env), a))),
+                       Repr::set(Repr::quote(env), a,
+                                 Repr::add(Num.new(1), Repr::get(Repr::quote(env), a))))
     expr = Repr::while(cond, body)
     ev.evaluate(expr)
     
-    assert_equal(Num.new(45), ev.evaluate(Repr::get(env, sum)))
+    assert_equal(Num.new(45), ev.evaluate(Repr::get(Repr::quote(env), sum)))
   end
 
   def test_begin
@@ -135,7 +136,7 @@ class TC_Repr < Test::Unit::TestCase
   def test_remove
     ev = Evaluator.new
 
-    pr = Repr::remove(Repr::store({3.to_repr => 12.to_repr}), 3.to_repr)
+    pr = Repr::remove(Repr::quote(Repr::store({3.to_repr => 12.to_repr})), 3.to_repr)
 
     assert_equal(12.to_repr, ev.evaluate(pr))
   end
@@ -168,7 +169,7 @@ class TC_Repr < Test::Unit::TestCase
 
     env  = Repr::store({ "hoge".to_repr => 3.to_repr })
     prog = Repr::store({ "@".to_repr => "eval".to_repr,
-                         "env".to_repr => env,
+                         "env".to_repr => Repr::quote(env),
                          "program".to_repr =>
                                    Repr::quote(
                                      Repr::add(33.to_repr,
@@ -198,7 +199,6 @@ class TC_Repr < Test::Unit::TestCase
 
 
   def test_token
-    ev = Evaluator.new
 
     source = Repr::store({ 'source'.to_repr =>
                                     Repr::store({ 'source'.to_repr => "homuhomu".to_repr }) })
@@ -206,7 +206,7 @@ class TC_Repr < Test::Unit::TestCase
     
     prog = Repr::token
 
-    ev.evaluate(Repr::setenv(source))
+    ev = Evaluator.new(source)
     
     assert_equal("h".to_repr, ev.evaluate(prog))
     assert_equal("o".to_repr, ev.evaluate(prog))
@@ -234,30 +234,27 @@ class TC_Repr < Test::Unit::TestCase
   end
 
   def test_choice
-    ev = Evaluator.new
-
     prog = Repr::choice(
-      { 'hoge'.to_repr => Repr::fail('hoge'.to_repr),
-        'hige'.to_repr => Repr::fail('hige'.to_repr),
-        'hage'.to_repr => Repr::token
+      { 'hoge' => Repr::fail('hoge'.to_repr),
+        'hige' => Repr::fail('hige'.to_repr),
+        'hage' => Repr::token
       }.to_repr)
 
     st = Repr::store({ 'source'.to_repr =>
-                                Repr::store({ 'source'.to_repr => "homu".to_repr }) })
+                       Repr::store({ 'source'.to_repr => "homu".to_repr }) })
     st['/'] = st
-    ev.evaluate(Repr::setenv(st))
 
+    ev = Evaluator.new(st)
     assert_equal('h'.to_repr, ev.evaluate(prog))
     assert_equal('omu'.to_repr, st['/']['source']['source'])
   end
 
   def test_terminal
-    ev = Evaluator.new
     st = Repr::store({ 'source'.to_repr =>
                                 Repr::store({ 'source'.to_repr => "madohomu".to_repr }) })
     st['/'] = st
-    
-    ev.evaluate(Repr::setenv(st))
+
+    ev = Evaluator.new(st)
     
     prog = Repr::begin(
       Repr::store({

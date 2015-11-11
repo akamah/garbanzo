@@ -110,7 +110,7 @@ class TC_Repr < Test::Unit::TestCase
   end
 
   def test_proc
-    ev = Evaluator.new
+    ev = Evaluator.new({'/' => false.to_repr}.to_repr)
 
     pr = Repr::procedure(lambda {|a|
                            (a['right'].num + a['left'].num).to_repr

@@ -300,7 +300,7 @@ module Garbanzo
         raise Rule::ParseError, message
       end
 
-      operator("choice", "children", Store) do |children|
+      command("choice", "children") do |children|
         -> { # local jump errorを解消するために、ここにlambdaを入れた。
           source_orig = @dot["/"]["source"]["source"].copy
           errors = []

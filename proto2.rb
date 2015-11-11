@@ -44,6 +44,22 @@ module Garbanzo
       res
     end
 
+    def install_string_rule(root)
+      stringp = Repr::Procedure.new(
+        lambda { |env|
+          source = env["/"]["source"]["source"]
+          if source.value =~ /^"((?:[a-z\/@.$' ]|\n)*)"(.*)$/m
+            env['/']['source']['source'] = $2.to_repr
+            p $1
+            $1.to_repr
+          else
+            raise Rule::ParseError, "string"
+          end
+        })
+      root['parser']['string'] = Repr::call(
+        Repr::quote(stringp), {}.to_repr)
+    end
+
     def construct_root
       root = Repr::store({})
       root['add'] = Lib::add
@@ -51,6 +67,9 @@ module Garbanzo
       
       parser = Repr::store({})
       parser['/'] = root
+
+      root['parser'] = parser
+
       parser['sentence'] = Repr::choice(Repr::store({}))
       # parser['sentence']['children']['homu'] = Repr::begin(
       #   Repr::store({
@@ -154,28 +173,28 @@ module Garbanzo
       #             "increment" => set(getenv, "i".to_repr, add(get(getenv, "i".to_repr), 1.to_repr))
       #           }.to_repr)),
 
-      parser['string'] = Repr::scope(
-        { "beginstring" => Repr::terminal('"'.to_repr),
-          "contents"    => Repr::set(Repr::getenv, "tmp".to_repr,
-                                     Repr::many(Repr::call(root['oneof'], { "string" => " '\n.$@/abcdefghijklmnopqrstuvwxyz" }.to_repr))),
-          "endstring"   => Repr::terminal('"'.to_repr),
-          "result"      => Repr::set(Repr::getenv, "res".to_repr, "".to_repr),
-          "convert"     => Repr::call(root['foreach'],
-                                      Repr::datastore(
-                                        { "store" => Repr::get(Repr::getenv, "tmp".to_repr),
-                                          "func"  => Repr::lambda(
-                                            Repr::getenv,
-                                            Repr::set(Repr::get(Repr::getenv, "..".to_repr),
-                                                      "res".to_repr,
-                                                      Repr::append(
-                                                        Repr::get(Repr::get(Repr::getenv, "..".to_repr),
-                                                                  "res".to_repr),
-                                                        Repr::get(Repr::getenv, "value".to_repr))))
-                                        }.to_repr)),
-          "return"      => Repr::get(Repr::getenv, "res".to_repr)
-        }.to_repr)
+      # parser['string'] = Repr::scope(
+      #   { "beginstring" => Repr::terminal('"'.to_repr),
+      #     "contents"    => Repr::set(Repr::getenv, "tmp".to_repr,
+      #                                Repr::many(Repr::call(root['oneof'], { "string" => " '\n.$@/abcdefghijklmnopqrstuvwxyz" }.to_repr))),
+      #     "endstring"   => Repr::terminal('"'.to_repr),
+      #     "result"      => Repr::set(Repr::getenv, "res".to_repr, "".to_repr),
+      #     "convert"     => Repr::call(root['foreach'],
+      #                                 Repr::datastore(
+      #                                   { "store" => Repr::get(Repr::getenv, "tmp".to_repr),
+      #                                     "func"  => Repr::lambda(
+      #                                       Repr::getenv,
+      #                                       Repr::set(Repr::get(Repr::getenv, "..".to_repr),
+      #                                                 "res".to_repr,
+      #                                                 Repr::append(
+      #                                                   Repr::get(Repr::get(Repr::getenv, "..".to_repr),
+      #                                                             "res".to_repr),
+      #                                                   Repr::get(Repr::getenv, "value".to_repr))))
+      #                                   }.to_repr)),
+      #     "return"      => Repr::get(Repr::getenv, "res".to_repr)
+      #   }.to_repr)
 
-      parser['string'] = Repr::parsestring
+      install_string_rule(root)
       
       ## datastore
       parser['datastore'] = Repr::scope(
@@ -214,7 +233,7 @@ module Garbanzo
         }.to_repr)
 
       parser['sentence']['children']['expression'] = parser['expression']
-      root['parser'] = parser
+
       root
     end
   end

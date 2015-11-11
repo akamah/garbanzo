@@ -212,26 +212,13 @@ module Garbanzo
       operator("call", "func", Callable, "args", Store) do |func, args|
         case func
         when Function
-          # oldenv = @dot
-          # args[".."] = func.env # 環境を拡張
-          
-          # unless args.exist("/".to_repr).value
-          #   args["/"] = oldenv["/"]
-          # end
-          
-          # @dot = args
-          # begin
-          #   result = evaluate(func.body)
-          # ensure
-          #   @dot = oldenv            
-          # end
-
-        # result
           extend_scope(args, func.env) do
             evaluate(func.body)
           end
         when Procedure
-          func.proc.call(args)
+          extend_scope(args, {}.to_repr) do
+            func.proc.call(args)
+          end
         else
           raise "EVALUATE: callee is not a function: #{func}" unless f.is_a? Function
         end
@@ -352,7 +339,6 @@ module Garbanzo
         source = @dot["/"]["source"]["source"]
         if source.value =~ /^"((?:[a-z\/@.$' ]|\n)*)"(.*)$/m
           @dot['/']['source']['source'] = $2.to_repr
-          p $1
           $1.to_repr
         else
           raise Rule::ParseError, "string"

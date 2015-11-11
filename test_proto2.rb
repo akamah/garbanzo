@@ -27,5 +27,15 @@ class TC_Proto2 < Test::Unit::TestCase
       int.evaluator.dot['/']['parser']['whitespaces']
     assert_equal("   ".to_repr, int.execute("   "))
   end
+
+  def test_pair
+    int = Interpreter2.new(false)
+
+    int.evaluator.dot['/']['parser']['sentence'] =
+      int.evaluator.dot['/']['parser']['pair']
+
+    assert_equal({ 'hoge' => 'hige' }.to_repr,
+                 int.execute('"hoge" : "hige"'))
+  end
 end
 

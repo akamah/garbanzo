@@ -76,6 +76,27 @@ module Garbanzo
         Repr::quote(whitep), {}.to_repr)
     end
 
+    def install_pair_rule(root)
+      pairp = Repr::Procedure.new(
+        lambda { |e, env|
+          keyp = env["/"]["parser"]["string"]
+          exprp = env["/"]["parser"]["expression"]
+          whitep = env["/"]["parser"]["whitespaces"]
+          
+          k = e.evaluate(keyp)
+          e.evaluate(whitep)
+          e.evaluate(Repr::terminal(":".to_repr))
+          e.evaluate(whitep)
+          v = e.evaluate(exprp)
+          e.evaluate(whitep)
+
+          Repr::store({ k => v })
+        })
+
+      root['parser']['pair'] = Repr::call(
+        Repr::quote(pairp), {}.to_repr)
+    end
+    
     def construct_root
       root = Repr::store({})
       root['add'] = Lib::add
@@ -212,6 +233,7 @@ module Garbanzo
 
       install_string_rule(root)
       install_whitespaces_rule(root)
+      install_pair_rule(root)
       
       ## datastore
       parser['datastore'] = Repr::scope(

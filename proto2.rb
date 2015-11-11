@@ -50,7 +50,8 @@ module Garbanzo
           source = env["/"]["source"]["source"]
           if source.value =~ /^"((?:[a-z\/@.$' ]|\n)*)"(.*)$/m
             env['/']['source']['source'] = $2.to_repr
-            p $1
+
+            puts "string: #{$1.to_s}"
             $1.to_repr
           else
             raise Rule::ParseError, "string"
@@ -58,6 +59,21 @@ module Garbanzo
         })
       root['parser']['string'] = Repr::call(
         Repr::quote(stringp), {}.to_repr)
+    end
+
+    def install_whitespaces_rule(root)
+      whitep = Repr::Procedure.new(
+        lambda { |env|
+          source = env["/"]["source"]["source"]
+          source.value =~ /^([[:space:]]*)(.*)$/m
+
+#          puts "whitespace: #{$1.length}"
+          
+          env["/"]["source"]["source"] = $2.to_repr
+          $1.to_repr
+        })
+      root['parser']['whitespaces'] = Repr::call(
+        Repr::quote(whitep), {}.to_repr)
     end
 
     def construct_root
@@ -195,6 +211,7 @@ module Garbanzo
       #   }.to_repr)
 
       install_string_rule(root)
+      install_whitespaces_rule(root)
       
       ## datastore
       parser['datastore'] = Repr::scope(

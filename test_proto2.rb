@@ -19,5 +19,13 @@ class TC_Proto2 < Test::Unit::TestCase
     
     assert_equal("B".to_repr, int.execute("B"))
   end
+
+  def test_string
+    int = Interpreter2.new(false)
+
+    int.evaluator.dot['/']['parser']['sentence']['children']['white'] =
+      int.evaluator.dot['/']['parser']['whitespaces']
+    assert_equal("   ".to_repr, int.execute("   "))
+  end
 end
 

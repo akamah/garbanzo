@@ -2,6 +2,7 @@
 require './repr.rb'
 require './lib.rb'
 require './rule.rb'
+require './stream.rb'
 
 
 module Garbanzo
@@ -270,35 +271,36 @@ module Garbanzo
         object.copy
       end
 
+      
       ## パース関連コマンド
       operator("token") do
-        s = @dot["/"]["source"]["source"]
+        s = @dot["/"]["source"]
 
-        if s.value.size > 0
-          c = Repr::string(s.value[0]) # 一文字切り出して
-          @dot["/"]["source"]["source"] = Repr::string(s.value[1..-1]) # 更新して
-          c # 返す
-        else
-          raise Rule::ParseError, "end of source".to_repr
-        end
+        s.parse_token
       end
-
+        
       operator("fail", "message", Object) do |message|
-        raise Rule::ParseError, message
+        raise Rule::ParseError.new(message)
       end
 
       command("choice", "children") do |children|
         -> { # local jump errorを解消するために、ここにlambdaを入れた。
-          source_orig = @dot["/"]["source"]["source"].copy
+          s = @dot["/"]["source"]
+          state = s.copy_state
           errors = []
 
-          children.each_key { |k|
+#          puts "choice called"
+#          puts state
+          
+          children.each_key { |k, v|
+            p k, v
             begin
-              @dot["/"]["source"]["source"] = source_orig.copy
-              return self.evaluate(children[k])
+              s.set_state(state)
+              res = self.evaluate(v)
+#              puts "result : #{res}"
+              return res
             rescue Rule::ParseError => e
-              rest = @dot["/"]["source"]["source"].value.length
-              errors << "'#{e.message} rest: #{rest}'"
+              errors << e.message
             end
           }
 
@@ -307,27 +309,23 @@ module Garbanzo
       end
 
       operator("terminal", "string", String) do |string|
-        source = @dot["/"]["source"]["source"]
-        if source.value.start_with?(string.value)
-          @dot["/"]["source"]["source"] = source.value[string.value.length .. -1].to_repr
-          string.copy
-        else
-          raise Rule::ParseError, string.value
-        end
+        s = @dot["/"]["source"]
+        s.parse_terminal(string)
       end
 
       operator("many", "parser", Object) do |parser|
         i = 0
         result = Repr::store({})
-        string = @dot['/']['source']['source']
+        s = @dot['/']["source"]
+        state = nil
         
         while true
+          state = s.copy_state
           begin
             result[i.to_repr] = self.evaluate(parser)
-            string = @dot['/']['source']['source']
             i += 1
           rescue Rule::ParseError
-            @dot['/']['source']['source'] = string
+            s.set_state(state)
             break
           end
         end
@@ -336,13 +334,8 @@ module Garbanzo
       end
 
       command("parsestring") do
-        source = @dot["/"]["source"]["source"]
-        if source.value =~ /^"((?:[a-z\/@.$' ]|\n)*)"(.*)$/m
-          @dot['/']['source']['source'] = $2.to_repr
-          $1.to_repr
-        else
-          raise Rule::ParseError, "string"
-        end
+        s = @dot["/"]["source"]
+        s.parse_string
       end
     end
 

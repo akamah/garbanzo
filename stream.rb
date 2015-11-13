@@ -3,51 +3,94 @@
 # 入力はSource, 出力はSinkと名付ける。
 
 require './repr'
-
+require './rule'
 
 module Garbanzo
-  class Source
-    def initialize(source)
-      case source
-      when String
-        @source = StringSource.new(source)
-      else
-        raise "argument is not suitable for creating source"
+  module Repr
+    class Store
+      def self.create_source(str)
+        Repr::store({ "source".to_repr => str.to_repr,
+                      "line".to_repr => 1.to_repr,
+                      "column".to_repr => 1.to_repr,
+                      "index".to_repr => 0.to_repr })
       end
-    end
 
-    # 一文字を入力する。
-    # 入力されるのは、内部表現としての文字
-    def token
-      @source.token
-    end
-
-    # ブロックを評価し、失敗した場合は状態を巻き戻す。
-    def try
-      @source.try
-    end
-  end
-
-  class StringSource
-    def initialize(source)
-      @source  = source
-      @indices = [0]
-    end
-
-    def token
-      raise "STREAM INCONSISTENT: indices.length < 1" if @indices.length < 1
+      def is_source
+      end
       
-      if @indices.first < @source.length
-        t = @source[@indices.first]
-        @indices[0] += 1
-        return Repr::String.new(t)
-      else
-        return Repr::Bool.new(false)
+      def source_vars
+        if exist('source') and exist('line') and exist('column')
+          return self['source'].value, self['index'].num,
+                 self['line'].num, self['column'].num
+        else
+          raise "this is not a source"
+        end
       end
-    end
+      
+      def parse_token
+        s, i, l, c = source_vars
 
-    def try
-      a.unshift(a.first)
+        if i >= s.length
+          self.fail("there is no character left".to_repr)
+        else
+          tok = s[i]
+          i += 1
+          
+          if tok == "\n"
+            l += 1
+            c = 1
+          else
+            c += 1
+          end
+
+          self['index']  = i.to_repr
+          self['line']   = l.to_repr
+          self['column'] = c.to_repr
+
+          tok.to_repr
+        end
+      end
+
+      def fail(msg)
+        raise Rule::ParseError.new(msg.value, self['line'].num, self['column'].num)
+      end
+
+      def parse_terminal(str)
+        str.value.length.times do |k|
+          t = parse_token
+
+          if t.value != str.value[k]
+            fail(str.to_repr)
+          end
+        end
+
+        str.to_repr
+      end
+
+      def parse_string
+        t = parse_token
+        s = ""
+        
+        self.fail("beginning of string") if t.value != '"'
+
+        while true
+          t = parse_token
+          return s.to_repr  if t.value == '"'
+
+          s += t.value
+        end
+      end
+
+      def copy_state
+        s, i, l, c = source_vars
+        return [s.to_repr, i.to_repr, l.to_repr, c.to_repr]
+      end
+
+      def set_state(array)
+        puts array
+        
+        self['source'], self['index'], self['line'], self['column'] = array
+      end
     end
   end
 end

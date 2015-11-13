@@ -6,4 +6,4 @@ require './test_repr.rb'
 require './test_lib.rb'
 require './test_interpreter.rb'
 require './test_proto2.rb'
-
+require './test_stream.rb'

@@ -17,7 +17,15 @@ module Garbanzo
     end
     
     # 構文解析に失敗した時は、例外を投げて伝えることにする。
-    class ParseError < StandardError; end
+    class ParseError < StandardError
+      attr_reader :line, :column
+      
+      def initialize(message="parse error", line=1, column=1)
+        super("#{message}, on line #{line}, column #{column}")
+        @line = line
+        @column = column
+      end
+    end
 
     # ルール、パーサコンビネータで言う所のParser
     class Rule

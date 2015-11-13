@@ -173,7 +173,7 @@ EOS
         if val != nil
           val
         else
-          raise "Store[], no entry found: #{key.to_repr.value} in #{@table.map {|k| k}}"
+          raise "no entry found: #{key.to_repr.inspect} in #{self.table.map {|e| e[0]}.inspect}"
         end
       end
 

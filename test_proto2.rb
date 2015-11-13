@@ -8,11 +8,11 @@ require './proto2.rb'
 
 class TC_Proto2 < Test::Unit::TestCase
   include Garbanzo
-  
+
   def test_oneof
     int = Interpreter2.new(false)
 
-    int.evaluator.dot['/']['parser']['sentence']['children']['hoge'] =
+    int.evaluator.dot['/']['parser']['sentence'] =
       int.evaluator.evaluate(
       Repr::call(int.evaluator.dot['/']['oneof'],
                  { "string" => "ABCDE" }.to_repr))
@@ -35,7 +35,7 @@ class TC_Proto2 < Test::Unit::TestCase
       int.evaluator.dot['/']['parser']['pair']
 
     assert_equal({ 'hoge' => 'hige' }.to_repr,
-                 int.execute('"hoge" : "hige"'))
+                 int.execute('"hoge":"hige"'))
   end
 
   def test_datastore

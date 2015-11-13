@@ -21,6 +21,11 @@ class TC_Stream < Test::Unit::TestCase
 
     assert_equal(2.to_repr, s1['line'])
     assert_equal(1.to_repr, s1['column'])
+
+    s2 = Store.create_source("h")
+    t = s2.parse_token
+
+    assert_equal("h".to_repr, t)
   end
 
   def test_source_terminal
@@ -36,6 +41,10 @@ class TC_Stream < Test::Unit::TestCase
     assert_raise(Rule::ParseError) do
       s1.parse_terminal("mado".to_repr)
     end
+
+    s2 = Store.create_source("homuhomu")
+    t = s2.parse_terminal("homuhomu".to_repr)
+    assert_equal("homuhomu".to_repr, t)    
   end
   
   def test_parse_string

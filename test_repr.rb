@@ -197,12 +197,17 @@ class TC_Repr < Test::Unit::TestCase
                  st2)
   end
 
-
-  def test_token
-
-    source = Repr::store({ 'source'.to_repr =>
-                                    Repr::store({ 'source'.to_repr => "homuhomu".to_repr }) })
+  def construct_test_root(string)
+    source = Repr::store(
+      { 'source'.to_repr =>
+                 Repr::Store.create_source(string) })
     source['/'] = source
+    
+    return source
+  end
+  
+  def test_token
+    source = construct_test_root("homuhomu")
     
     prog = Repr::token
 
@@ -212,7 +217,6 @@ class TC_Repr < Test::Unit::TestCase
     assert_equal("o".to_repr, ev.evaluate(prog))
     assert_equal("m".to_repr, ev.evaluate(prog))
     assert_equal("u".to_repr, ev.evaluate(prog))
-    assert_equal("homu".to_repr, source["source"]["source"])
     assert_equal("h".to_repr, ev.evaluate(prog))
     assert_equal("o".to_repr, ev.evaluate(prog))
     assert_equal("m".to_repr, ev.evaluate(prog))
@@ -240,20 +244,13 @@ class TC_Repr < Test::Unit::TestCase
         'hage' => Repr::token
       }.to_repr)
 
-    st = Repr::store({ 'source'.to_repr =>
-                       Repr::store({ 'source'.to_repr => "homu".to_repr }) })
-    st['/'] = st
-
+    st = construct_test_root("homu")
     ev = Evaluator.new(st)
     assert_equal('h'.to_repr, ev.evaluate(prog))
-    assert_equal('omu'.to_repr, st['/']['source']['source'])
   end
 
   def test_terminal
-    st = Repr::store({ 'source'.to_repr =>
-                                Repr::store({ 'source'.to_repr => "madohomu".to_repr }) })
-    st['/'] = st
-
+    st = construct_test_root("madohomu")
     ev = Evaluator.new(st)
     
     prog = Repr::begin(
@@ -275,10 +272,7 @@ class TC_Repr < Test::Unit::TestCase
 
   def test_many
     prog = Repr::many(Repr::quote(Repr::terminal("homu".to_repr)))
-    st = Repr::store({ 'source'.to_repr =>
-                                Repr::store({ 'source'.to_repr => "homuhomuhomu".to_repr })
-                     })
-    st['/'] = st
+    st = construct_test_root("homuhomuhomu")
     ev = Evaluator.new(st)
     result = Repr::store({ 0.to_repr => "homu".to_repr,
                            1.to_repr => "homu".to_repr,
@@ -286,7 +280,7 @@ class TC_Repr < Test::Unit::TestCase
 
     assert_equal(result, ev.evaluate(prog))
 
-    st['source']['source'] = "hoge".to_repr
+    st = construct_test_root("hoge")
 
     ev = Evaluator.new(st)
     assert_equal(Repr::store({}), ev.evaluate(prog))

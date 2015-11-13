@@ -15,7 +15,7 @@ grammar.rules[:number] = Rule::many_one(Rule::one_of("0123456789")).map {|as|
 }.token
 
 # 識別子を定義 (hoge, poyo)
-grammar.rules[:identifier] = Rule::many_one(Rule::one_of("abcdefghijklmnopqrstuvwxyz.")).map {|as|
+grammar.rules[:identifier] = Rule::many_one(Rule::one_of("@abcdefghijklmnopqrstuvwxyz.")).map {|as|
   as.map(&:value).join.to_repr
 }.token
 #}
@@ -165,34 +165,55 @@ grammar.rules[:sentence].children << [Rule::token('if'), :condition,
 # スコープの導入。これは、空の引数を取る関数を呼び出すこととする。
 #{
 grammar.rules[:sentence].children << [Rule::token("{"), Rule::many(:sentence), Rule::token("}")].sequence { |_, lst, _|
-  body = Repr::begin(Lib::make_list(*lst))
-  Repr::call(Repr::lambda(Repr::getenv, body), Repr::Store.new({}))
+  body = Repr::scope(Lib::make_list(*lst))
 }
 #}
+#  Repr::call(Repr::lambda(Repr::getenv, body), Repr::Store.new({}))
+
 
 # 式の末尾にセミコロンをつけると文になるやつ
 #{
 grammar.rules[:sentence].children << [:expression, Rule::token(";")].sequence {|e, _| e}
 #}  
 
-# 代入できます
-i = 0
-a = 0
-b = 1
+#{
+grammar.rules[:expression].children << ["'".to_rule, :sentence].sequence {|_, s|
+  Repr::quote(s)
+}
+#}
 
-print "fibonacci numbers"
+#{
+grammar.rules[:expression].children << ["%".to_rule, :expression].sequence {|_, s|
+  Repr::eval(Repr::getenv, s)
+}
+#}
 
-# フィボナッチ数を出力する
-while i != 10 {
-  $i=$i+1
-  tmp=$b
-  $b=$a+$b
-  $a=tmp
-  print $a
+
+print 'parser/symbol = '{
+  cs = /oneof([string: "abcdefg"])
+  %/parser/whitespace;
+  cs;
 }
 
-print "----------"
 
+# 代入できます
+# i = 0
+# a = 0
+# b = 1
+# 
+# print "fibonacci numbers"
+# 
+# フィボナッチ数を出力する
+# while i != 10 {
+#  $i=$i+1
+#   tmp=$b
+#   $b=$a+$b
+#   $a=tmp
+#   print $a
+# }
+# 
+# print "----------"
+# 
 # 
 # if 1==2 {
 #   print "true"

@@ -19,7 +19,7 @@ module Garbanzo
       end
       
       def source_vars
-        if exist('source') and exist('line') and exist('column')
+        if exist('source') and exist('line') and exist('column') and exist('index')
           return self['source'].value, self['index'].num,
                  self['line'].num, self['column'].num
         else
@@ -87,9 +87,11 @@ module Garbanzo
       end
 
       def set_state(array)
-        puts array
-        
         self['source'], self['index'], self['line'], self['column'] = array
+      end
+
+      def is_eof?
+        return self['source'].value.length == self['index'].num
       end
     end
   end

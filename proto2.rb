@@ -31,10 +31,10 @@ module Garbanzo
 
     def execute(src)
       # 入力ソースコードを評価器にセットする。
-      @evaluator.dot['/']['source'] = Repr::store('source'.to_repr => src.to_repr)
+      @evaluator.dot['/']['source'] = Repr::Store.create_source(src)
 
       # 設定したソースコードが残っている限り
-      while @evaluator.dot['/']['source']['source'].value.size > 0
+      while !@evaluator.dot['/']['source'].is_eof?
         sentence = parse
         puts("> #{sentence.inspect}") if debug
         res = evaluate(sentence)
@@ -48,7 +48,7 @@ module Garbanzo
       stringp = Repr::procedure(
         lambda { |e, env|
           source = env["/"]["source"]["source"]
-          if source.value =~ /^"((?:[a-z\/@.$' ]|\n)*)"(.*)$/m
+          if source.value =~ /^"((?:[a-z0-9\/@.$' ]|\n)*)"(.*)$/m
             env['/']['source']['source'] = $2.to_repr
 
             puts "string: #{$1.to_s}"
@@ -202,7 +202,7 @@ module Garbanzo
         Repr::begin(
           { "init_i" => Repr::set(Repr::getenv, "i".to_repr, 0.to_repr),
             "init_store" => Repr::set(Repr::getenv, "store".to_repr, Repr::datastore({}.to_repr)),
-
+#            "debug" => Repr::print("debug".to_repr),
             "loop" => Repr::while(
               Repr::notequal(Repr::get(Repr::getenv, "i".to_repr),
                              Repr::length(Repr::get(Repr::getenv, "string".to_repr))),

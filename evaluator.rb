@@ -401,25 +401,6 @@ module Garbanzo
 
     def show(p)
       return p.inspect
-      
-      case p
-      when Num
-        p.num.to_s
-      when Bool
-        p.value.to_s
-      when String
-        p.value
-      when Store
-        "{" + p.table.map {|k, v|
-          show(k)
-        }.to_a.join("\n") + "}"
-      when Function
-        "^{ #{show(p.body)} }"
-      when Procedure
-        "<proc>"
-      else
-        raise "SHOW: argument is not a repr: #{p.inspect}"
-      end
     end
   end
 end

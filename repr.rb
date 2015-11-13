@@ -110,7 +110,6 @@ EOS
       def to_s
         self.value.to_s
       end
-
     end
 
     class Bool
@@ -242,8 +241,28 @@ EOS
         end
       end
 
+      # recには，もうすでにでてきたデータストアを記録し，再帰的に出力しないようにする．
+      # indentは，そのデータストアの字下げ．
+      def inspect_rec(rec = [], indent = 0)
+        return ' ' * indent + "<<rec>>" if rec.include?(self)
+        contents = []
+        
+        self.each_key do |k, v|
+          value =
+            if v.is_a? Store
+              ":\n#{v.inspect_rec([self] + rec, indent + 2)}"
+            else
+              ": #{v.inspect}"
+            end
+          
+          contents << k.inspect + value
+        end
+
+        return ' ' * indent + '{' + contents.join(",\n #{' ' * indent}") + "\n" + ' ' * indent + '}'
+      end
+      
       def inspect
-        @table.inspect
+        inspect_rec()
       end
     end
     

@@ -47,33 +47,29 @@ module Garbanzo
     def install_string_rule(root)
       stringp = Repr::procedure(
         lambda { |e, env|
-          source = env["/"]["source"]["source"]
-          if source.value =~ /^"((?:[a-z0-9\/@.$' ]|\n)*)"(.*)$/m
-            env['/']['source']['source'] = $2.to_repr
+          source = env["/"]["source"]
+          source.parse_terminal('"'.to_repr)
 
-            puts "string: #{$1.to_s}"
-            $1.to_repr
-          else
-            raise Rule::ParseError, "string"
+          result = ""
+
+          while (t = source.parse_token) != '"'.to_repr
+            result += t.value
           end
+
+          result.to_repr
         })
       root['parser']['string'] = Repr::call(
         Repr::quote(stringp), {}.to_repr)
     end
 
     def install_whitespaces_rule(root)
-      whitep = Repr::procedure(
-        lambda { |e, env|
-          source = env["/"]["source"]["source"]
-          source.value =~ /^([[:space:]]*)(.*)$/m
-
-#          puts "whitespace: #{$1.length}"
-          
-          env["/"]["source"]["source"] = $2.to_repr
-          $1.to_repr
-        })
-      root['parser']['whitespaces'] = Repr::call(
-        Repr::quote(whitep), {}.to_repr)
+      root['parser']['whitespaces'] =
+        Repr::many(
+          Repr::quote(
+            Repr::choice(
+              { "space" => Repr::terminal(" ".to_repr),
+                "newline" => Repr::terminal("\n".to_repr),
+                "tab" => Repr::terminal("\t".to_repr) }.to_repr)))
     end
 
     def install_pair_rule(root)

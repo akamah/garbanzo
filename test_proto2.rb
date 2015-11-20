@@ -25,7 +25,7 @@ class TC_Proto2 < Test::Unit::TestCase
 
     int.evaluator.dot['/']['parser']['sentence']['children']['white'] =
       int.evaluator.dot['/']['parser']['whitespaces']
-    assert_equal("   ".to_repr, int.execute("   "))
+    assert_equal(3.to_repr, int.execute("   ").size)
   end
 
   def test_pair

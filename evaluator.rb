@@ -280,7 +280,11 @@ module Garbanzo
       end
         
       operator("fail", "message", Object) do |message|
-        raise Rule::ParseError.new(message)
+        s = @dot['/']['source']
+        line = s['line']
+        column = s['column']
+        
+        raise Rule::ParseError.new(message, line, column)
       end
 
       command("choice", "children") do |children|
@@ -293,18 +297,19 @@ module Garbanzo
 #          puts state
           
           children.each_key { |k, v|
-            p k, v
+#            p k, v
             begin
               s.set_state(state)
               res = self.evaluate(v)
 #              puts "result : #{res}"
               return res
             rescue Rule::ParseError => e
-              errors << e.message
+              errors << e
             end
           }
 
-          raise Rule::ParseError, errors.join(', ')
+          deepest = errors.max_by {|a| [a.line, a.column]}
+          raise deepest
         }.call
       end
 

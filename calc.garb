@@ -189,11 +189,39 @@ grammar.rules[:expression].children << ["%".to_rule, :expression].sequence {|_, 
 #}
 
 
-print 'parser/symbol = '{
+symbol = 'parser/symbol = '{
   cs = /oneof([string: "abcdefg"])
   %/parser/whitespace;
   cs;
 }
+
+path = 'parser/path = '{
+  s = %/parser/symbol
+  cs = [@: "many", parser: '{
+    [@: "terminal", string: "."];
+    %/parser/symbol;
+  }]
+  [@: "insertbefore", object: cs, origin: [@: "firstkey", object: cs], key: "head", value: s];
+  cs;
+}
+
+eval = 'parser/eval = '{
+  [@: "terminal", string: "$"];
+  %/parser/expression;
+}
+
+command = 'parser/command = '{
+  comname = %/parser/symbol
+  args = %/parser/datastore
+  args/@ = comname
+  args;
+}
+
+
+print symbol
+print path
+print eval
+print command
 
 
 # 代入できます

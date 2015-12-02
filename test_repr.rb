@@ -228,7 +228,7 @@ class TC_Repr < Test::Unit::TestCase
   end
 
   def test_fail
-    ev = Evaluator.new
+    ev = Evaluator.new(construct_test_root("dummy"))
 
     prog = Repr::fail("error".to_repr)
 

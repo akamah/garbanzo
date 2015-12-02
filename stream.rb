@@ -12,7 +12,8 @@ module Garbanzo
         Repr::store({ "source".to_repr => str.to_repr,
                       "line".to_repr => 1.to_repr,
                       "column".to_repr => 1.to_repr,
-                      "index".to_repr => 0.to_repr })
+                      "index".to_repr => 0.to_repr,
+                      "token_called".to_repr => 0.to_repr })
       end
 
       def is_source
@@ -30,6 +31,8 @@ module Garbanzo
       def parse_token
         s, i, l, c = source_vars
 
+        self['token_called'] = (self['token_called'].num + 1).to_repr
+        
         if i >= s.length
           self.fail("there is no character left".to_repr)
         else
@@ -71,13 +74,27 @@ module Garbanzo
         t = parse_token
         s = ""
         
-        self.fail("beginning of string") if t.value != '"'
+        self.fail("beginning of string".to_repr) if t.value != '"'
 
         while true
           t = parse_token
+#          $stderr.puts "escape"
+            
           return s.to_repr  if t.value == '"'
 
-          s += t.value
+          if t.value == "\\"
+            t2 = parse_token
+
+            case t2.value
+            when 'n'
+              s += "\n"
+            else
+              self.fail("unknown escape sequence: #{t2.value}".to_repr)
+            end
+            
+          else
+            s += t.value
+          end
         end
       end
 

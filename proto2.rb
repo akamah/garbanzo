@@ -48,15 +48,7 @@ module Garbanzo
       stringp = Repr::procedure(
         lambda { |e, env|
           source = env["/"]["source"]
-          source.parse_terminal('"'.to_repr)
-
-          result = ""
-
-          while (t = source.parse_token) != '"'.to_repr
-            result += t.value
-          end
-
-          result.to_repr
+          source.parse_string.to_repr
         })
       root['parser']['string'] = Repr::call(
         Repr::quote(stringp), {}.to_repr)

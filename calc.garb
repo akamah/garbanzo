@@ -188,12 +188,30 @@ grammar.rules[:expression].children << ["%".to_rule, :expression].sequence {|_, 
 }
 #}
 
+newline = '/parser/sentence/children/newline = '{
+  [@: "terminal", string:"
+"];
+}
+
+print newline
 
 symbol = 'parser/symbol = '{
-  cs = /oneof([string: "abcdefg"])
-  %/parser/whitespace;
-  cs;
+    oo = /oneof([string: "abcdefghijklmnopqrstuvwxyz"])
+    c  = %oo
+    cs = [@: "many", parser: oo]
+    %/parser/whitespaces;
+    [@: "insertprev", object: cs, origin: [@: "firstkey", object: cs], key: "head", value: c];
+    expr = 'print "dummy"
+    expr/value = cs
+    expr;
 }
+
+setsymbol = 'parser/sentence/children/symbol = parser/symbol
+
+print symbol
+# print setsymbol
+
+#  [@: "insertprev", object: cs, origin: [@: "firstkey", object: cs], key: "head", value: s];
 
 path = 'parser/path = '{
   s = %/parser/symbol
@@ -201,14 +219,20 @@ path = 'parser/path = '{
     [@: "terminal", string: "."];
     %/parser/symbol;
   }]
-  [@: "insertbefore", object: cs, origin: [@: "firstkey", object: cs], key: "head", value: s];
   cs;
 }
+
+setpath = '/parser/sentence/children/path = parser/path
+
+print path
+print setpath
 
 eval = 'parser/eval = '{
   [@: "terminal", string: "$"];
   %/parser/expression;
 }
+
+print eval
 
 command = 'parser/command = '{
   comname = %/parser/symbol
@@ -217,10 +241,6 @@ command = 'parser/command = '{
   args;
 }
 
-
-print symbol
-print path
-print eval
 print command
 
 

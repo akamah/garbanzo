@@ -89,41 +89,40 @@ module Garbanzo
     def install_datastore_rule(root)
       datastorep = Repr::Procedure.new(
         lambda { |e, env|
-          pairp = env['/']['parser']['pair']
+          pairp  = env['/']['parser']['pair']
           whitep = env["/"]["parser"]["whitespaces"]
-
-          paircomma = Repr::begin(
-            { "pair" => Repr::set(Repr::getenv, "pair".to_repr,
-                                  Repr::eval(Repr::getenv, Repr::quote(pairp))),
-              "comma" => Repr::terminal(",".to_repr),
-              "whitespaces" => Repr::eval(Repr::getenv, Repr::quote(whitep)),
-              "return" => Repr::get(Repr::getenv, "pair".to_repr)
-            }.to_repr)
-
-          lastp = Repr::choice(
-            { "pair" => Repr::eval(Repr::getenv, Repr::quote(pairp)),
-              "nothing" => false.to_repr }.to_repr)
-          
+          endp = Repr::terminal("}")
           result = {}.to_repr
-          
+
           e.evaluate(Repr::terminal("{".to_repr))
           e.evaluate(whitep)
 
-          assoc = e.evaluate(Repr::many(Repr::quote(paircomma)))
+          head = e.evaluate(
+            Repr::choice(
+              { "pair" => pairp,
+                "exit" => endp }.to_repr))
+          
+          return result if head == "}".to_repr # {}
 
-          assoc.each_key do |_, entry|
+          result = head # { a: b 
+
+          rest = Repr::begin(
+            {
+              "comma" => Repr::terminal(",".to_repr),
+              "whitespaces" => Repr::eval(Repr::getenv, Repr::quote(whitep)),
+              "pair" => Repr::eval(Repr::getenv, Repr::quote(pairp))
+            }.to_repr)
+
+          body = e.evaluate(Repr::many(Repr::quote(rest)))
+
+          body.each_key do |_, entry|
             entry.each_key do |k, v|
               result[k] = v
             end
           end
 
-          l = e.evaluate(lastp)
-
-          if l.is_a?(Repr::Store)
-            result[l.first_key] = l[l.first_key]
-          end
-
           e.evaluate(Repr::terminal("}".to_repr))
+          
           result
         })
       root['parser']['datastore'] = Repr::call(

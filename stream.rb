@@ -35,12 +35,17 @@ module Garbanzo
       end
 
       def debug_log(kind)
-        s, i, l, c = source_vars
+        return
+        
+        _, i, l, c = source_vars
+
         lines = self['whole_lines']
 
-        printf("[%10s] %4d, %4d:%4d: %s\n", kind, i, l, c, lines[l])
-        printf("[%10s] %4d, %4d:%4d:%s\n", kind, i, l, c, " " * c + "^")
-        sleep 0.05
+        if lines.exist(l).value
+          printf("[%10s] %4d, %4d:%4d: %s\n", kind, i, l, c, lines[l])
+          printf("[%10s] %4d, %4d:%4d:%s\n", kind, i, l, c, " " * c + "^")
+          sleep 0.01
+        end
       end
       
       def parse_token

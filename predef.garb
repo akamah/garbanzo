@@ -1,0 +1,472 @@
+{"@": "set",
+ "object":
+  {"@": "get",
+   "object":
+    {"@": "get",
+     "object":
+      {"@": "get",
+       "object":
+        {"@": "get",
+         "object":
+          {"@": "getenv"
+          },
+         "key": "/"
+        },
+       "key": "parser"
+      },
+     "key": "sentence"
+    },
+   "key": "children"
+  },
+ "key": "newline",
+ "value":
+  {"@": "quote",
+   "value":
+    {"@": "scope",
+     "body":
+      {"0":
+        {"@": "terminal",
+         "string": "\n"
+        }
+      }
+    }
+  }
+}
+{"@": "set",
+ "object":
+  {"@": "get",
+   "object":
+    {"@": "getenv"
+    },
+   "key": "parser"
+  },
+ "key": "symbol",
+ "value":
+  {"@": "quote",
+   "value":
+    {"@": "scope",
+     "body":
+      {"0":
+        {"@": "set",
+         "object":
+          {"@": "getenv"
+          },
+         "key": "oo",
+         "value":
+          {"@": "call",
+           "func":
+            {"@": "get",
+             "object":
+              {"@": "get",
+               "object":
+                {"@": "getenv"
+                },
+               "key": "/"
+              },
+             "key": "oneof"
+            },
+           "args":
+            {"string": "abcdefghijklmnopqrstuvwxyz"
+            }
+          }
+        },
+       "1":
+        {"@": "set",
+         "object":
+          {"@": "getenv"
+          },
+         "key": "c",
+         "value":
+          {"@": "eval",
+           "env":
+            {"@": "getenv"
+            },
+           "program":
+            {"@": "get",
+             "object":
+              {"@": "getenv"
+              },
+             "key": "oo"
+            }
+          }
+        },
+       "2":
+        {"@": "set",
+         "object":
+          {"@": "getenv"
+          },
+         "key": "cs",
+         "value":
+          {"@": "many",
+           "parser":
+            {"@": "get",
+             "object":
+              {"@": "getenv"
+              },
+             "key": "oo"
+            }
+          }
+        },
+       "3":
+        {"@": "eval",
+         "env":
+          {"@": "getenv"
+          },
+         "program":
+          {"@": "get",
+           "object":
+            {"@": "get",
+             "object":
+              {"@": "get",
+               "object":
+                {"@": "getenv"
+                },
+               "key": "/"
+              },
+             "key": "parser"
+            },
+           "key": "whitespaces"
+          }
+        },
+       "4":
+        {"@": "insertprev",
+         "object":
+          {"@": "get",
+           "object":
+            {"@": "getenv"
+            },
+           "key": "cs"
+          },
+         "origin":
+          {"@": "firstkey",
+           "object":
+            {"@": "get",
+             "object":
+              {"@": "getenv"
+              },
+             "key": "cs"
+            }
+          },
+         "key": "head",
+         "value":
+          {"@": "get",
+           "object":
+            {"@": "getenv"
+            },
+           "key": "c"
+          }
+        },
+       "5":
+        {"@": "set",
+         "object":
+          {"@": "getenv"
+          },
+         "key": "expr",
+         "value":
+          {"@": "quote",
+           "value":
+            {"@": "print",
+             "value": "dummy"
+            }
+          }
+        },
+       "6":
+        {"@": "set",
+         "object":
+          {"@": "get",
+           "object":
+            {"@": "getenv"
+            },
+           "key": "expr"
+          },
+         "key": "value",
+         "value":
+          {"@": "get",
+           "object":
+            {"@": "getenv"
+            },
+           "key": "cs"
+          }
+        },
+       "7":
+        {"@": "get",
+         "object":
+          {"@": "getenv"
+          },
+         "key": "expr"
+        }
+      }
+    }
+  }
+}
+{"@": "set",
+ "object":
+  {"@": "get",
+   "object":
+    {"@": "getenv"
+    },
+   "key": "parser"
+  },
+ "key": "path",
+ "value":
+  {"@": "quote",
+   "value":
+    {"@": "scope",
+     "body":
+      {"0":
+        {"@": "set",
+         "object":
+          {"@": "getenv"
+          },
+         "key": "s",
+         "value":
+          {"@": "eval",
+           "env":
+            {"@": "getenv"
+            },
+           "program":
+            {"@": "get",
+             "object":
+              {"@": "get",
+               "object":
+                {"@": "get",
+                 "object":
+                  {"@": "getenv"
+                  },
+                 "key": "/"
+                },
+               "key": "parser"
+              },
+             "key": "symbol"
+            }
+          }
+        },
+       "1":
+        {"@": "set",
+         "object":
+          {"@": "getenv"
+          },
+         "key": "cs",
+         "value":
+          {"@": "many",
+           "parser":
+            {"@": "quote",
+             "value":
+              {"@": "scope",
+               "body":
+                {"0":
+                  {"@": "terminal",
+                   "string": "."
+                  },
+                 "1":
+                  {"@": "eval",
+                   "env":
+                    {"@": "getenv"
+                    },
+                   "program":
+                    {"@": "get",
+                     "object":
+                      {"@": "get",
+                       "object":
+                        {"@": "get",
+                         "object":
+                          {"@": "getenv"
+                          },
+                         "key": "/"
+                        },
+                       "key": "parser"
+                      },
+                     "key": "symbol"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+       "2":
+        {"@": "get",
+         "object":
+          {"@": "getenv"
+          },
+         "key": "cs"
+        }
+      }
+    }
+  }
+}
+{"@": "set",
+ "object":
+  {"@": "get",
+   "object":
+    {"@": "get",
+     "object":
+      {"@": "get",
+       "object":
+        {"@": "get",
+         "object":
+          {"@": "getenv"
+          },
+         "key": "/"
+        },
+       "key": "parser"
+      },
+     "key": "sentence"
+    },
+   "key": "children"
+  },
+ "key": "path",
+ "value":
+  {"@": "get",
+   "object":
+    {"@": "get",
+     "object":
+      {"@": "getenv"
+      },
+     "key": "parser"
+    },
+   "key": "path"
+  }
+}
+{"@": "set",
+ "object":
+  {"@": "get",
+   "object":
+    {"@": "getenv"
+    },
+   "key": "parser"
+  },
+ "key": "eval",
+ "value":
+  {"@": "quote",
+   "value":
+    {"@": "scope",
+     "body":
+      {"0":
+        {"@": "terminal",
+         "string": "$"
+        },
+       "1":
+        {"@": "eval",
+         "env":
+          {"@": "getenv"
+          },
+         "program":
+          {"@": "get",
+           "object":
+            {"@": "get",
+             "object":
+              {"@": "get",
+               "object":
+                {"@": "getenv"
+                },
+               "key": "/"
+              },
+             "key": "parser"
+            },
+           "key": "expression"
+          }
+        }
+      }
+    }
+  }
+}
+{"@": "set",
+ "object":
+  {"@": "get",
+   "object":
+    {"@": "getenv"
+    },
+   "key": "parser"
+  },
+ "key": "command",
+ "value":
+  {"@": "quote",
+   "value":
+    {"@": "scope",
+     "body":
+      {"0":
+        {"@": "set",
+         "object":
+          {"@": "getenv"
+          },
+         "key": "comname",
+         "value":
+          {"@": "eval",
+           "env":
+            {"@": "getenv"
+            },
+           "program":
+            {"@": "get",
+             "object":
+              {"@": "get",
+               "object":
+                {"@": "get",
+                 "object":
+                  {"@": "getenv"
+                  },
+                 "key": "/"
+                },
+               "key": "parser"
+              },
+             "key": "symbol"
+            }
+          }
+        },
+       "1":
+        {"@": "set",
+         "object":
+          {"@": "getenv"
+          },
+         "key": "args",
+         "value":
+          {"@": "eval",
+           "env":
+            {"@": "getenv"
+            },
+           "program":
+            {"@": "get",
+             "object":
+              {"@": "get",
+               "object":
+                {"@": "get",
+                 "object":
+                  {"@": "getenv"
+                  },
+                 "key": "/"
+                },
+               "key": "parser"
+              },
+             "key": "datastore"
+            }
+          }
+        },
+       "2":
+        {"@": "set",
+         "object":
+          {"@": "get",
+           "object":
+            {"@": "getenv"
+            },
+           "key": "args"
+          },
+         "key": "@",
+         "value":
+          {"@": "get",
+           "object":
+            {"@": "getenv"
+            },
+           "key": "comname"
+          }
+        },
+       "3":
+        {"@": "get",
+         "object":
+          {"@": "getenv"
+          },
+         "key": "args"
+        }
+      }
+    }
+  }
+}

@@ -15,11 +15,14 @@ module Garbanzo
     def initialize(root = Repr::store({}))
       @dot = root
       @commands = Hash.new
+      @callcount = Hash.new { 0 }
+      
       install_commands
     end
 
     def command(commandname, *arguments, &func)
       @commands[commandname] = lambda { |store|
+        @callcount[commandname] += 1
         func.call(*arguments.map {|aname| store[aname.to_repr] })
       }
     end
@@ -29,6 +32,7 @@ module Garbanzo
     def operator(opname, *args, &func)
       raise "invalid argument list" if args.length % 2 == 1
       @commands[opname] = lambda { |store|
+        @callcount[opname] += 1
         param = args.each_slice(2).map {|name, type|
           e = evaluate(store[name.to_repr])
           unless e.is_a? type
@@ -399,6 +403,11 @@ module Garbanzo
 
     def show(p)
       return p.inspect
+    end
+
+    def debug_print
+      p @callcount
+      
     end
   end
 end

@@ -55,6 +55,7 @@ module Garbanzo
     end
 
     def install_whitespaces_rule(root)
+      #root['parser']['whitespaces'] = false.to_repr
       root['parser']['whitespaces'] =
         Repr::many(
           Repr::quote(
@@ -325,4 +326,6 @@ if __FILE__ == $0
       puts int.evaluator.dot['/']['source']['source'].value.split("\n")[e.line - 1]
     end
   }
+
+  int.evaluator.debug_print
 end

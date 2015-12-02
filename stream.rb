@@ -9,11 +9,17 @@ module Garbanzo
   module Repr
     class Store
       def self.create_source(str)
+        lines = Repr::store({})
+        str.split("\n").each_with_index { |x, i|
+          lines[i + 1] = x.to_repr
+        }
+          
         Repr::store({ "source".to_repr => str.to_repr,
                       "line".to_repr => 1.to_repr,
                       "column".to_repr => 1.to_repr,
                       "index".to_repr => 0.to_repr,
-                      "token_called".to_repr => 0.to_repr })
+                      "token_called".to_repr => 0.to_repr,
+                      "whole_lines".to_repr => lines })
       end
 
       def is_source
@@ -26,6 +32,15 @@ module Garbanzo
         else
           raise "this is not a source"
         end
+      end
+
+      def debug_log(kind)
+        s, i, l, c = source_vars
+        lines = self['whole_lines']
+
+        printf("[%10s] %4d, %4d:%4d: %s\n", kind, i, l, c, lines[l])
+        printf("[%10s] %4d, %4d:%4d:%s\n", kind, i, l, c, " " * c + "^")
+        sleep 0.05
       end
       
       def parse_token
@@ -50,6 +65,8 @@ module Garbanzo
           self['line']   = l.to_repr
           self['column'] = c.to_repr
 
+          debug_log("ADVANCE")
+        
           tok.to_repr
         end
       end
@@ -104,6 +121,7 @@ module Garbanzo
       end
 
       def set_state(array)
+        debug_log("BACKTRACK")
         self['source'], self['index'], self['line'], self['column'] = array
       end
 

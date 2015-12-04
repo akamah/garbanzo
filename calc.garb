@@ -1,5 +1,5 @@
 #{
-grammar.rules[:sentence].children << Rule::many_one(Rule::whitespace).map { false.to_repr }
+grammar.rules[:sentence].children << Rule::many_one(Rule::whitespace).map { "\n".to_repr }
 #}
 #{
 grammar.rules[:eof] = Rule::not(Rule::any)
@@ -82,7 +82,7 @@ grammar.rules[:primitive].children <<
 # 関数呼び出しは、原始式にカッコを後置したもの, func(expr)
 #{
 grammar.rules[:call] = [:primitive, Rule::token("("), :expression, Rule::token(")")].sequence {|func, _, arg, _|
-  Repr::call(func, arg)
+    Repr::call(func, arg)
 } | :primitive
 #}
 
@@ -121,7 +121,8 @@ grammar.rules[:addition] =
 #{
 grammar.rules[:function] =
   [Rule::token("^{"), Rule::many(:sentence), Rule::token("}")].sequence {|_, body, _|
-    Repr::lambda(Repr::getenv, Repr::begin(Lib::make_list(*body)))
+    a = Repr::lambda(Repr::getenv, Repr::begin(Lib::make_list(*body)))
+    a    
   }
 #}
 
@@ -165,7 +166,7 @@ grammar.rules[:sentence].children << [Rule::token('if'), :condition,
 # スコープの導入。これは、空の引数を取る関数を呼び出すこととする。
 #{
 grammar.rules[:sentence].children << [Rule::token("{"), Rule::many(:sentence), Rule::token("}")].sequence { |_, lst, _|
-  body = Repr::scope(Lib::make_list(*lst))
+  Repr::scope(Lib::make_list(*lst))
 }
 #}
 #  Repr::call(Repr::lambda(Repr::getenv, body), Repr::Store.new({}))
@@ -222,26 +223,37 @@ symbol = 'parser/symbol = '{
     /foreach([store: cs, func: ^{
       ../result = [@: "append", left: ../result, right: value]
     }]);
+
     result;
 }
 
-setsymbol = 'parser/expression/children/symbol = parser/symbol
-
+setsymbol = 'parser/expression/children/symbol = /parser/symbol
 print symbol
 # print setsymbol
 
-#  [@: "insertprev", object: cs, origin: [@: "firstkey", object: cs], key: "head", value: s];
-
 path = 'parser/path = '{
-  s = %/parser/symbol
-  cs = [@: "many", parser: '{
-    [@: "terminal", string: "."];
-    %/parser/symbol;
-  }]
-  cs;
+    p = %/parser/symbol
+
+    ps = [@: "many", parser: '{
+        [@: "terminal", string: "."];
+        %/parser/symbol;
+    }]
+
+    result = []
+    result/head = p
+
+    "hoge";
+
+    /foreach([store: ps, func: ^{
+      [@: "set", object: ../result, key: key, value: value];
+    }]);
+
+
+    result;
 }
 
-setpath = '/parser/sentence/children/path = parser/path
+
+setpath = '/parser/expression/children/path = /parser/path
 
 print path
 print setpath
@@ -261,7 +273,6 @@ command = 'parser/command = '{
 }
 
 print command
-
 
 # 代入できます
 # i = 0

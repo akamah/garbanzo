@@ -33,7 +33,7 @@ module Garbanzo
     def execute(src)
       while src != ""
         prog, src = parse(src)
-#        puts "program: #{@evaluator.show(prog)}"
+#        $stderr.puts "program: #{@evaluator.show(prog)}"
         evaluate(prog)
       end
     end

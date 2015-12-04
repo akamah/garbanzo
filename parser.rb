@@ -40,7 +40,7 @@ module Garbanzo
           end
         end
 
-        raise ParseError, errs.join(', ')
+        raise ParseError, errs[0]
       when String
         if source.start_with?(rule.string)
           return Repr::String.new(rule.string), source[rule.string.length .. -1]

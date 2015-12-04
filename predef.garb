@@ -169,16 +169,6 @@
           }
         },
        "5":
-        {"@": "print",
-         "value":
-          {"@": "get",
-           "object":
-            {"@": "getenv"
-            },
-           "key": "val"
-          }
-        },
-       "6":
         {"@": "get",
          "object":
           {"@": "getenv"
@@ -189,7 +179,7 @@
     }
   }
 }
-{"@": "set",
+{"@": "insertprev",
  "object":
   {"@": "get",
    "object":
@@ -208,6 +198,28 @@
      "key": "sentence"
     },
    "key": "children"
+  },
+ "origin":
+  {"@": "firstkey",
+   "object":
+    {"@": "get",
+     "object":
+      {"@": "get",
+       "object":
+        {"@": "get",
+         "object":
+          {"@": "get",
+           "object":
+            {"@": "getenv"
+            },
+           "key": "/"
+          },
+         "key": "parser"
+        },
+       "key": "sentence"
+      },
+     "key": "children"
+    }
   },
  "key": "print",
  "value":
@@ -269,7 +281,7 @@
          "object":
           {"@": "getenv"
           },
-         "key": "c",
+         "key": "result",
          "value":
           {"@": "eval",
            "env":
@@ -323,71 +335,77 @@
           }
         },
        "4":
-        {"@": "insertprev",
-         "object":
+        {"@": "call",
+         "func":
           {"@": "get",
-           "object":
-            {"@": "getenv"
-            },
-           "key": "cs"
-          },
-         "origin":
-          {"@": "firstkey",
            "object":
             {"@": "get",
              "object":
               {"@": "getenv"
               },
-             "key": "cs"
-            }
-          },
-         "key": "head",
-         "value":
-          {"@": "get",
-           "object":
-            {"@": "getenv"
+             "key": "/"
             },
-           "key": "c"
+           "key": "foreach"
+          },
+         "args":
+          {"store":
+            {"@": "get",
+             "object":
+              {"@": "getenv"
+              },
+             "key": "cs"
+            },
+           "func":
+            {"@": "lambda",
+             "env":
+              {"@": "getenv"
+              },
+             "body":
+              {"@": "begin",
+               "body":
+                {"0":
+                  {"@": "set",
+                   "object":
+                    {"@": "get",
+                     "object":
+                      {"@": "getenv"
+                      },
+                     "key": ".."
+                    },
+                   "key": "result",
+                   "value":
+                    {"@": "append",
+                     "left":
+                      {"@": "get",
+                       "object":
+                        {"@": "get",
+                         "object":
+                          {"@": "getenv"
+                          },
+                         "key": ".."
+                        },
+                       "key": "result"
+                      },
+                     "right":
+                      {"@": "get",
+                       "object":
+                        {"@": "getenv"
+                        },
+                       "key": "value"
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
         },
        "5":
-        {"@": "set",
-         "object":
-          {"@": "getenv"
-          },
-         "key": "expr",
-         "value":
-          {"@": "quote",
-           "value":
-            {"@": "print",
-             "value": "dummy"
-            }
-          }
-        },
-       "6":
-        {"@": "set",
-         "object":
-          {"@": "get",
-           "object":
-            {"@": "getenv"
-            },
-           "key": "expr"
-          },
-         "key": "value",
-         "value":
-          {"@": "get",
-           "object":
-            {"@": "getenv"
-            },
-           "key": "cs"
-          }
-        },
-       "7":
         {"@": "get",
          "object":
           {"@": "getenv"
           },
-         "key": "expr"
+         "key": "result"
         }
       }
     }
@@ -412,7 +430,7 @@
          "object":
           {"@": "getenv"
           },
-         "key": "s",
+         "key": "p",
          "value":
           {"@": "eval",
            "env":
@@ -440,7 +458,7 @@
          "object":
           {"@": "getenv"
           },
-         "key": "cs",
+         "key": "ps",
          "value":
           {"@": "many",
            "parser":
@@ -479,11 +497,102 @@
           }
         },
        "2":
+        {"@": "set",
+         "object":
+          {"@": "getenv"
+          },
+         "key": "result",
+         "value":
+          {
+          }
+        },
+       "3":
+        {"@": "set",
+         "object":
+          {"@": "get",
+           "object":
+            {"@": "getenv"
+            },
+           "key": "result"
+          },
+         "key": "head",
+         "value":
+          {"@": "get",
+           "object":
+            {"@": "getenv"
+            },
+           "key": "p"
+          }
+        },
+       "4": "hoge",
+       "5":
+        {"@": "call",
+         "func":
+          {"@": "get",
+           "object":
+            {"@": "get",
+             "object":
+              {"@": "getenv"
+              },
+             "key": "/"
+            },
+           "key": "foreach"
+          },
+         "args":
+          {"store":
+            {"@": "get",
+             "object":
+              {"@": "getenv"
+              },
+             "key": "ps"
+            },
+           "func":
+            {"@": "lambda",
+             "env":
+              {"@": "getenv"
+              },
+             "body":
+              {"@": "begin",
+               "body":
+                {"0":
+                  {"@": "set",
+                   "object":
+                    {"@": "get",
+                     "object":
+                      {"@": "get",
+                       "object":
+                        {"@": "getenv"
+                        },
+                       "key": ".."
+                      },
+                     "key": "result"
+                    },
+                   "key":
+                    {"@": "get",
+                     "object":
+                      {"@": "getenv"
+                      },
+                     "key": "key"
+                    },
+                   "value":
+                    {"@": "get",
+                     "object":
+                      {"@": "getenv"
+                      },
+                     "key": "value"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+       "6":
         {"@": "get",
          "object":
           {"@": "getenv"
           },
-         "key": "cs"
+         "key": "result"
         }
       }
     }
@@ -505,7 +614,7 @@
         },
        "key": "parser"
       },
-     "key": "sentence"
+     "key": "expression"
     },
    "key": "children"
   },
@@ -515,7 +624,11 @@
    "object":
     {"@": "get",
      "object":
-      {"@": "getenv"
+      {"@": "get",
+       "object":
+        {"@": "getenv"
+        },
+       "key": "/"
       },
      "key": "parser"
     },

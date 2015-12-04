@@ -315,7 +315,7 @@ end
 
 if __FILE__ == $0
   include Garbanzo
-  int = Interpreter2.new(true)
+  int = Interpreter2.new(false)
 
   File.open(ARGV[0] || "calc2.garb", "rb") { |f|
     begin

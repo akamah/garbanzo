@@ -120,8 +120,8 @@ grammar.rules[:addition] =
 # 関数は、いまのところ^{ <sentence> }と書く
 #{
 grammar.rules[:function] =
-  [Rule::token("^{"), :sentence, Rule::token("}")].sequence {|_, body, _|
-    Repr::lambda(Repr::getenv, body)
+  [Rule::token("^{"), Rule::many(:sentence), Rule::token("}")].sequence {|_, body, _|
+    Repr::lambda(Repr::getenv, Repr::begin(Lib::make_list(*body)))
   }
 #}
 

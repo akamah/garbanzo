@@ -205,25 +205,27 @@ printdef = 'parser/print = '{
     expr = %/parser/expression
     val = 'print "dummy"
     val/value = expr
-    print val
     val;
 }
 
 print printdef
-print '/parser/sentence/children/print = /parser/print
+print '[@: "insertprev", object: /parser/sentence/children, origin: [@: "firstkey", object: /parser/sentence/children], key: "print", value: /parser/print];
 
+# [@: "insertprev", object: cs, origin: [@: "firstkey", object: cs], key: "head", value: c];
 
 symbol = 'parser/symbol = '{
     oo = /oneof([string: "abcdefghijklmnopqrstuvwxyz"])
-    c  = %oo
+    result  = %oo
     cs = [@: "many", parser: oo]
     %/parser/whitespaces;
-    [@: "insertprev", object: cs, origin: [@: "firstkey", object: cs], key: "head", value: c];
-    expr/value = cs
-    expr;
+
+    /foreach([store: cs, func: ^{
+      ../result = [@: "append", left: ../result, right: value]
+    }]);
+    result;
 }
 
-setsymbol = 'parser/sentence/children/symbol = parser/symbol
+setsymbol = 'parser/expression/children/symbol = parser/symbol
 
 print symbol
 # print setsymbol

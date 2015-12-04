@@ -49,10 +49,10 @@ class TC_Proto2 < Test::Unit::TestCase
 
     assert_equal({ 'hoge' => 'hige',
                     'homu' => 'mado' }.to_repr,
-                 int.execute('{"hoge" : "hige", "homu" : "mado", }'))
+                 int.execute('{"hoge" : "hige", "homu" : "mado" }'))
 
     assert_equal({ 'hoge' => {'homu' => 'mado'}.to_repr }.to_repr,
-                 int.execute('{"hoge":{"homu": "mado",},}'))
+                 int.execute('{"hoge":{"homu": "mado" }}'))
 
     assert_raise(Rule::ParseError) {
       int.execute('{"hoge":"hige",,}')

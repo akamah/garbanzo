@@ -91,7 +91,7 @@ module Garbanzo
         lambda { |e, env|
           pairp  = env['/']['parser']['pair']
           whitep = env["/"]["parser"]["whitespaces"]
-          endp = Repr::terminal("}")
+          endp = Repr::terminal("}".to_repr)
           result = {}.to_repr
 
           e.evaluate(Repr::terminal("{".to_repr))

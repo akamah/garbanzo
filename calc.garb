@@ -193,7 +193,25 @@ newline = '/parser/sentence/children/newline = '{
 "];
 }
 
+setnewline = '/parser/newline = /parser/sentence/children/newline
+
 print newline
+print setnewline
+
+# print文．
+printdef = 'parser/print = '{
+    [@: "terminal", string: "print"];
+    %/parser/whitespaces;
+    expr = %/parser/expression
+    val = 'print "dummy"
+    val/value = expr
+    print val
+    val;
+}
+
+print printdef
+print '/parser/sentence/children/print = /parser/print
+
 
 symbol = 'parser/symbol = '{
     oo = /oneof([string: "abcdefghijklmnopqrstuvwxyz"])
@@ -201,7 +219,6 @@ symbol = 'parser/symbol = '{
     cs = [@: "many", parser: oo]
     %/parser/whitespaces;
     [@: "insertprev", object: cs, origin: [@: "firstkey", object: cs], key: "head", value: c];
-    expr = 'print "dummy"
     expr/value = cs
     expr;
 }

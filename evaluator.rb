@@ -313,7 +313,7 @@ module Garbanzo
           }
 
           deepest = errors.max_by {|a| [a.line, a.column]}
-          raise deepest
+          raise (deepest || Rule::ParseError.new("empty argument in choice"))
         }.call
       end
 

@@ -260,17 +260,12 @@ print path
 
 variable = 'parser/variable = '{
     name = %/parser/path
-
     result = '[@: "getenv"];
-
-    print name
     "hoge";
    
     /foreach([store: name, func: ^{
-        tmp = '[@: "get", object: "dummy"];
-	tmp/object = ../result
-	tmp/key   = value
-        ../result = tmp
+#        print "-----"
+        ../result = [@: "datastore", object: [@: "get", object: ../result, key: value]]
     }]);
 
     result;

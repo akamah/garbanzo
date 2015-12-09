@@ -1,3 +1,5 @@
+set -e
+
 ruby proto1.rb > predef.garb
 cat predef.garb program.garb > test.garb
 

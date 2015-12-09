@@ -32,9 +32,13 @@ module Garbanzo
     
     def execute(src)
       while src != ""
-        prog, src = parse(src)
+        begin
+          prog, src = parse(src)
 #        $stderr.puts "program: #{@evaluator.show(prog)}"
-        evaluate(prog)
+          evaluate(prog)
+        rescue e
+          $stderr.puts e.message
+        end
       end
     end
     

@@ -201,7 +201,7 @@ print setnewline
 
 # print文．
 printdef = 'parser/print = '{
-    [@: "terminal", string: "print"];
+    [@: "terminal", string: "!print"];
     %/parser/whitespaces;
     expr = %/parser/expression
     val = 'print "dummy"
@@ -256,7 +256,31 @@ path = 'parser/path = '{
 setpath = '/parser/expression/children/path = /parser/path
 
 print path
-print setpath
+# print setpath
+
+variable = 'parser/variable = '{
+    name = %/parser/path
+
+    result = '[@: "getenv"];
+
+    print name
+    "hoge";
+   
+    /foreach([store: name, func: ^{
+        tmp = '[@: "get", object: "dummy"];
+	tmp/object = ../result
+	tmp/key   = value
+        ../result = tmp
+    }]);
+
+    result;
+}
+
+setvariable = '/parser/expression/children/variable = /parser/variable
+
+print variable
+print setvariable
+
 
 eval = 'parser/eval = '{
   [@: "terminal", string: "$"];

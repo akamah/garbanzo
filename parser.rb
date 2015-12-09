@@ -45,7 +45,7 @@ module Garbanzo
         if source.start_with?(rule.string)
           return Repr::String.new(rule.string), source[rule.string.length .. -1]
         else
-          raise ParseError, "#{rule.message}"
+          raise ParseError, "#{rule.message} at #{source[0..10]}"
         end
       when Function
         rule.function.call(source)

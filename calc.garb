@@ -335,7 +335,11 @@ command = 'parser/command = '{
   args;
 }
 
+setcommand = '/parser/sentence/children/command = /parser/command
+
 print command
+print setcommand
+
 
 # 代入できます
 # i = 0

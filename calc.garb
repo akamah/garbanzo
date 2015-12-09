@@ -296,6 +296,31 @@ setassign = '/parser/sentence/children/assign = /parser/assign
 print assign
 print setassign
 
+
+do = '/parser/do = '{
+    [@: "terminal", string: "do"];
+    quoted = [@: "many", parser: '{
+      %/parser/whitespaces;
+      %/parser/sentence;
+    }]
+
+    %/parser/whitespaces;
+    [@: "terminal", string: "end"];
+
+    result = [@: "datastore", object: [@: "quote"]]
+    result/value = [@: "datastore", object: [@: "scope", body: quoted]]
+
+    result;
+}
+
+setdo = '[@: "insertprev", object: /parser/expression/children,
+          origin: [@: "firstkey", object: /parser/expression/children],
+	  key: "do", value: /parser/do];
+
+print do
+print setdo
+
+
 eval = 'parser/eval = '{
   [@: "terminal", string: "$"];
   %/parser/expression;

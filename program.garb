@@ -5,3 +5,13 @@ a = {"b": {"c": "abcdefg" } }
 print homuhomu
 print bouzu.man
 print a.b.c
+
+print parser.expression.children
+
+hoge = do
+  a = "hoge"
+  b = "hige"
+end
+
+
+print hoge

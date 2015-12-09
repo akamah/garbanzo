@@ -357,6 +357,14 @@ module Garbanzo
           raise "EVALUATE2: #{feature.inspect} is not a valid feature name"
         end
 
+        if @dot['/'].exist('verbose').value && @dot['/']['verbose'] == 'on'.to_repr
+          puts "-[EVAL: #{feature.inspect}]--------------------"
+          puts s.inspect
+          #        puts "[DOT] "
+          #        puts @dot.inspect
+        end
+      
+
         @commands[feature.value].call(s)
       else
         # 命令が書かれていなかった場合は，内側の要素を全て評価することとした．

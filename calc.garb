@@ -204,7 +204,7 @@ printdef = 'parser/print = '{
     [@: "terminal", string: "print"];
     %/parser/whitespaces;
     expr = %/parser/expression
-    val = 'print "dummy"
+    val = [@:"datastore", object: [@:"print"]]
     val/value = expr
     val;
 }
@@ -260,7 +260,7 @@ print path
 
 variable = 'parser/variable = '{
     name = %/parser/path
-    result = '[@: "getenv"];
+    result = [@: "datastore", object: [@: "getenv"]]
     "hoge";
    
     /foreach([store: name, func: ^{
@@ -321,12 +321,18 @@ print do
 print setdo
 
 
-eval = 'parser/eval = '{
+eval = '/parser/eval = '{
   [@: "terminal", string: "$"];
-  %/parser/expression;
+  result = [@:"copy", object: '[@:"eval", env: [@:"getenv"]];]
+  result/program = %/parser/expression
+
+  result;
 }
 
+seteval = '/parser/expression/children/eval = /parser/eval
+
 print eval
+print seteval
 
 command = 'parser/command = '{
   comname = %/parser/symbol

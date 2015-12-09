@@ -143,10 +143,9 @@
           },
          "key": "val",
          "value":
-          {"@": "quote",
-           "value":
-            {"@": "print",
-             "value": "dummy"
+          {"@": "datastore",
+           "object":
+            {"@": "print"
             }
           }
         },
@@ -647,8 +646,8 @@
           },
          "key": "result",
          "value":
-          {"@": "quote",
-           "value":
+          {"@": "datastore",
+           "object":
             {"@": "getenv"
             }
           }
@@ -996,18 +995,10 @@
     {"@": "scope",
      "body":
       {"0":
-        {"@": "print",
-         "value": "trying do"
-        },
-       "1":
         {"@": "terminal",
          "string": "do"
         },
-       "2":
-        {"@": "print",
-         "value": "parsed do"
-        },
-       "3":
+       "1":
         {"@": "set",
          "object":
           {"@": "getenv"
@@ -1067,11 +1058,7 @@
             }
           }
         },
-       "4":
-        {"@": "print",
-         "value": "parsed subsentences"
-        },
-       "5":
+       "2":
         {"@": "eval",
          "env":
           {"@": "getenv"
@@ -1092,15 +1079,11 @@
            "key": "whitespaces"
           }
         },
-       "6":
+       "3":
         {"@": "terminal",
          "string": "end"
         },
-       "7":
-        {"@": "print",
-         "value": "parsed end"
-        },
-       "8":
+       "4":
         {"@": "set",
          "object":
           {"@": "getenv"
@@ -1113,7 +1096,7 @@
             }
           }
         },
-       "9":
+       "5":
         {"@": "set",
          "object":
           {"@": "get",
@@ -1126,7 +1109,7 @@
          "value":
           {"@": "datastore",
            "object":
-            {"@": "begin",
+            {"@": "scope",
              "body":
               {"@": "get",
                "object":
@@ -1137,7 +1120,7 @@
             }
           }
         },
-       "10":
+       "6":
         {"@": "get",
          "object":
           {"@": "getenv"
@@ -1211,7 +1194,11 @@
  "object":
   {"@": "get",
    "object":
-    {"@": "getenv"
+    {"@": "get",
+     "object":
+      {"@": "getenv"
+      },
+     "key": "/"
     },
    "key": "parser"
   },
@@ -1226,28 +1213,102 @@
          "string": "$"
         },
        "1":
-        {"@": "eval",
-         "env":
+        {"@": "set",
+         "object":
           {"@": "getenv"
           },
-         "program":
+         "key": "result",
+         "value":
+          {"@": "copy",
+           "object":
+            {"@": "quote",
+             "value":
+              {"@": "eval",
+               "env":
+                {"@": "getenv"
+                }
+              }
+            }
+          }
+        },
+       "2":
+        {"@": "set",
+         "object":
           {"@": "get",
            "object":
+            {"@": "getenv"
+            },
+           "key": "result"
+          },
+         "key": "program",
+         "value":
+          {"@": "eval",
+           "env":
+            {"@": "getenv"
+            },
+           "program":
             {"@": "get",
              "object":
               {"@": "get",
                "object":
-                {"@": "getenv"
+                {"@": "get",
+                 "object":
+                  {"@": "getenv"
+                  },
+                 "key": "/"
                 },
-               "key": "/"
+               "key": "parser"
               },
-             "key": "parser"
-            },
-           "key": "expression"
+             "key": "expression"
+            }
           }
+        },
+       "3":
+        {"@": "get",
+         "object":
+          {"@": "getenv"
+          },
+         "key": "result"
         }
       }
     }
+  }
+}
+{"@": "set",
+ "object":
+  {"@": "get",
+   "object":
+    {"@": "get",
+     "object":
+      {"@": "get",
+       "object":
+        {"@": "get",
+         "object":
+          {"@": "getenv"
+          },
+         "key": "/"
+        },
+       "key": "parser"
+      },
+     "key": "expression"
+    },
+   "key": "children"
+  },
+ "key": "eval",
+ "value":
+  {"@": "get",
+   "object":
+    {"@": "get",
+     "object":
+      {"@": "get",
+       "object":
+        {"@": "getenv"
+        },
+       "key": "/"
+      },
+     "key": "parser"
+    },
+   "key": "eval"
   }
 }
 {"@": "set",
@@ -1349,6 +1410,43 @@
     }
   }
 }
+{"@": "set",
+ "object":
+  {"@": "get",
+   "object":
+    {"@": "get",
+     "object":
+      {"@": "get",
+       "object":
+        {"@": "get",
+         "object":
+          {"@": "getenv"
+          },
+         "key": "/"
+        },
+       "key": "parser"
+      },
+     "key": "sentence"
+    },
+   "key": "children"
+  },
+ "key": "command",
+ "value":
+  {"@": "get",
+   "object":
+    {"@": "get",
+     "object":
+      {"@": "get",
+       "object":
+        {"@": "getenv"
+        },
+       "key": "/"
+      },
+     "key": "parser"
+    },
+   "key": "command"
+  }
+}
 homuhomu = "homu"
 bouzu = {"man": "bouzuman"}
 a = {"b": {"c": "abcdefg" } }
@@ -1357,12 +1455,17 @@ print homuhomu
 print bouzu.man
 print a.b.c
 
-print parser.expression.children
-
-hoge = do
-  a = "hoge"
-  b = "hige"
+hogepoyo = do
+  fst = "hoge"
+  snd = "hige"
+  print fst
+  print snd
 end
 
+insertprev { "object": a, "origin": "b", "key": "g", "value": "hoge" }
 
-print hoge
+print a
+
+
+print hogepoyo
+print $hogepoyo

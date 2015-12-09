@@ -6,12 +6,17 @@ print homuhomu
 print bouzu.man
 print a.b.c
 
-print parser.expression.children
-
-hoge = do
-  a = "hoge"
-  b = "hige"
+hogepoyo = do
+  fst = "hoge"
+  snd = "hige"
+  print fst
+  print snd
 end
 
+insertprev { "object": a, "origin": "b", "key": "g", "value": "hoge" }
 
-print hoge
+print a
+
+
+print hogepoyo
+print $hogepoyo

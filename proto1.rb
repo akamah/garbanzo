@@ -36,8 +36,9 @@ module Garbanzo
           prog, src = parse(src)
 #        $stderr.puts "program: #{@evaluator.show(prog)}"
           evaluate(prog)
-        rescue e
+        rescue => e
           $stderr.puts e.message
+          raise e
         end
       end
     end

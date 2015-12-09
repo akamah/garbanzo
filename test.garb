@@ -85,7 +85,7 @@
      "body":
       {"0":
         {"@": "terminal",
-         "string": "!print"
+         "string": "print"
         },
        "1":
         {"@": "eval",
@@ -653,18 +653,8 @@
             }
           }
         },
-       "2":
-        {"@": "print",
-         "value":
-          {"@": "get",
-           "object":
-            {"@": "getenv"
-            },
-           "key": "name"
-          }
-        },
-       "3": "hoge",
-       "4":
+       "2": "hoge",
+       "3":
         {"@": "call",
          "func":
           {"@": "get",
@@ -693,61 +683,9 @@
              "body":
               {"@": "begin",
                "body":
-                {"0":
-                  {"@": "set",
-                   "object":
-                    {"@": "getenv"
-                    },
-                   "key": "tmp",
-                   "value":
-                    {"@": "quote",
-                     "value":
-                      {"@": "get",
-                       "object": "dummy"
-                      }
-                    }
-                  },
-                 "1":
-                  {"@": "set",
-                   "object":
-                    {"@": "get",
-                     "object":
-                      {"@": "getenv"
-                      },
-                     "key": "tmp"
-                    },
-                   "key": "object",
-                   "value":
-                    {"@": "get",
-                     "object":
-                      {"@": "get",
-                       "object":
-                        {"@": "getenv"
-                        },
-                       "key": ".."
-                      },
-                     "key": "result"
-                    }
-                  },
+                {"0": "\n",
+                 "1": "\n",
                  "2":
-                  {"@": "set",
-                   "object":
-                    {"@": "get",
-                     "object":
-                      {"@": "getenv"
-                      },
-                     "key": "tmp"
-                    },
-                   "key": "key",
-                   "value":
-                    {"@": "get",
-                     "object":
-                      {"@": "getenv"
-                      },
-                     "key": "value"
-                    }
-                  },
-                 "3":
                   {"@": "set",
                    "object":
                     {"@": "get",
@@ -758,11 +696,28 @@
                     },
                    "key": "result",
                    "value":
-                    {"@": "get",
+                    {"@": "datastore",
                      "object":
-                      {"@": "getenv"
-                      },
-                     "key": "tmp"
+                      {"@": "get",
+                       "object":
+                        {"@": "get",
+                         "object":
+                          {"@": "get",
+                           "object":
+                            {"@": "getenv"
+                            },
+                           "key": ".."
+                          },
+                         "key": "result"
+                        },
+                       "key":
+                        {"@": "get",
+                         "object":
+                          {"@": "getenv"
+                          },
+                         "key": "value"
+                        }
+                      }
                     }
                   }
                 }
@@ -770,7 +725,7 @@
             }
           }
         },
-       "5":
+       "4":
         {"@": "get",
          "object":
           {"@": "getenv"
@@ -816,6 +771,210 @@
      "key": "parser"
     },
    "key": "variable"
+  }
+}
+{"@": "set",
+ "object":
+  {"@": "get",
+   "object":
+    {"@": "get",
+     "object":
+      {"@": "getenv"
+      },
+     "key": "/"
+    },
+   "key": "parser"
+  },
+ "key": "assign",
+ "value":
+  {"@": "quote",
+   "value":
+    {"@": "scope",
+     "body":
+      {"0":
+        {"@": "set",
+         "object":
+          {"@": "getenv"
+          },
+         "key": "ws",
+         "value":
+          {"@": "get",
+           "object":
+            {"@": "get",
+             "object":
+              {"@": "get",
+               "object":
+                {"@": "getenv"
+                },
+               "key": "/"
+              },
+             "key": "parser"
+            },
+           "key": "whitespaces"
+          }
+        },
+       "1":
+        {"@": "set",
+         "object":
+          {"@": "getenv"
+          },
+         "key": "path",
+         "value":
+          {"@": "eval",
+           "env":
+            {"@": "getenv"
+            },
+           "program":
+            {"@": "get",
+             "object":
+              {"@": "get",
+               "object":
+                {"@": "get",
+                 "object":
+                  {"@": "getenv"
+                  },
+                 "key": "/"
+                },
+               "key": "parser"
+              },
+             "key": "variable"
+            }
+          }
+        },
+       "2":
+        {"@": "eval",
+         "env":
+          {"@": "getenv"
+          },
+         "program":
+          {"@": "get",
+           "object":
+            {"@": "getenv"
+            },
+           "key": "ws"
+          }
+        },
+       "3":
+        {"@": "terminal",
+         "string": "="
+        },
+       "4":
+        {"@": "eval",
+         "env":
+          {"@": "getenv"
+          },
+         "program":
+          {"@": "get",
+           "object":
+            {"@": "getenv"
+            },
+           "key": "ws"
+          }
+        },
+       "5":
+        {"@": "set",
+         "object":
+          {"@": "getenv"
+          },
+         "key": "rhe",
+         "value":
+          {"@": "eval",
+           "env":
+            {"@": "getenv"
+            },
+           "program":
+            {"@": "get",
+             "object":
+              {"@": "get",
+               "object":
+                {"@": "get",
+                 "object":
+                  {"@": "getenv"
+                  },
+                 "key": "/"
+                },
+               "key": "parser"
+              },
+             "key": "expression"
+            }
+          }
+        },
+       "6":
+        {"@": "set",
+         "object":
+          {"@": "get",
+           "object":
+            {"@": "getenv"
+            },
+           "key": "path"
+          },
+         "key": "@",
+         "value": "set"
+        },
+       "7":
+        {"@": "set",
+         "object":
+          {"@": "get",
+           "object":
+            {"@": "getenv"
+            },
+           "key": "path"
+          },
+         "key": "value",
+         "value":
+          {"@": "get",
+           "object":
+            {"@": "getenv"
+            },
+           "key": "rhe"
+          }
+        },
+       "8":
+        {"@": "get",
+         "object":
+          {"@": "getenv"
+          },
+         "key": "path"
+        }
+      }
+    }
+  }
+}
+{"@": "set",
+ "object":
+  {"@": "get",
+   "object":
+    {"@": "get",
+     "object":
+      {"@": "get",
+       "object":
+        {"@": "get",
+         "object":
+          {"@": "getenv"
+          },
+         "key": "/"
+        },
+       "key": "parser"
+      },
+     "key": "sentence"
+    },
+   "key": "children"
+  },
+ "key": "assign",
+ "value":
+  {"@": "get",
+   "object":
+    {"@": "get",
+     "object":
+      {"@": "get",
+       "object":
+        {"@": "getenv"
+        },
+       "key": "/"
+      },
+     "key": "parser"
+    },
+   "key": "assign"
   }
 }
 {"@": "set",
@@ -960,6 +1119,10 @@
     }
   }
 }
-!print homuhomu
-!print bouzu.man
-!print a.b.c
+homuhomu = "homu"
+bouzu = {"man": "bouzuman"}
+a = {"b": {"c": "abcdefg" } }
+
+print homuhomu
+print bouzu.man
+print a.b.c

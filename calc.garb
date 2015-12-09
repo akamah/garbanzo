@@ -201,7 +201,7 @@ print setnewline
 
 # print文．
 printdef = 'parser/print = '{
-    [@: "terminal", string: "!print"];
+    [@: "terminal", string: "print"];
     %/parser/whitespaces;
     expr = %/parser/expression
     val = 'print "dummy"
@@ -276,6 +276,25 @@ setvariable = '/parser/expression/children/variable = /parser/variable
 print variable
 print setvariable
 
+
+assign = '/parser/assign = '{
+    ws = /parser/whitespaces
+    path = %/parser/variable
+    %ws;
+    [@: "terminal", string: "="];
+    %ws;
+    rhe = %/parser/expression
+
+    path/@ = "set"
+    path/value = rhe
+
+    path;
+}
+
+setassign = '/parser/sentence/children/assign = /parser/assign
+
+print assign
+print setassign
 
 eval = 'parser/eval = '{
   [@: "terminal", string: "$"];

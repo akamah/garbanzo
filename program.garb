@@ -1,3 +1,7 @@
-!print homuhomu
-!print bouzu.man
-!print a.b.c
+homuhomu = "homu"
+bouzu = {"man": "bouzuman"}
+a = {"b": {"c": "abcdefg" } }
+
+print homuhomu
+print bouzu.man
+print a.b.c

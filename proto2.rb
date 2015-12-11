@@ -1,12 +1,14 @@
 #!/usr/local/bin/ruby
 # coding: utf-8
 
+require 'stackprof'
 
 require './repr.rb'
 require './lib.rb'
 require './rule.rb'
 require './evaluator.rb'
 require './parser.rb'
+
 
 module Garbanzo
   include Repr
@@ -319,7 +321,9 @@ if __FILE__ == $0
 
   File.open(ARGV[0] || "calc2.garb", "rb") { |f|
     begin
-      int.execute(f.read)
+      StackProf.run(mode: :cpu, out: 'proto2.dump') do
+        int.execute(f.read)
+      end
     rescue Rule::ParseError => e
       puts "parse error, expecting #{e.message}"
       puts int.evaluator.dot['/']['source']['source'].value.split("\n")[e.line - 1]

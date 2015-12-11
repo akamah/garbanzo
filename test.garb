@@ -1447,6 +1447,15 @@
    "key": "command"
   }
 }
+parser.digit = do
+  terminal { "string": "1" }
+  sub { "left":  {"@": "tocode", "string": "B" },
+        "right": {"@": "tocode", "string": "A" } }
+end
+
+parser.expression.children.digit = parser.digit
+
+
 homuhomu = "homu"
 bouzu = {"man": "bouzuman"}
 a = {"b": {"c": "abcdefg" } }
@@ -1469,3 +1478,5 @@ print a
 
 print hogepoyo
 print $hogepoyo
+
+print 1

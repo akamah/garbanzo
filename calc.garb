@@ -276,6 +276,20 @@ setvariable = '/parser/expression/children/variable = /parser/variable
 print variable
 print setvariable
 
+rootvar = 'parser/rootvar = '{
+    name = %/parser/path
+    result = [@: "copy", object: '[@: "get", object: [@: "getenv"], key: "/"];]
+    "hoge";
+   
+    /foreach([store: name, func: ^{
+#        print "-----"
+        ../result = [@: "datastore", object: [@: "get", object: ../result, key: value]]
+    }]);
+
+    result;
+}
+
+print rootvar
 
 assign = '/parser/assign = '{
     ws = /parser/whitespaces
@@ -323,8 +337,8 @@ print setdo
 
 eval = '/parser/eval = '{
   [@: "terminal", string: "$"];
-  result = [@:"copy", object: '[@:"eval", env: [@:"getenv"]];]
-  result/program = %/parser/expression
+  result = [@:"copy", object: '[@:"eval", env: [@: "get", object: [@:"getenv"], key: "/"]];]
+  result/program = %/parser/rootvar
 
   result;
 }

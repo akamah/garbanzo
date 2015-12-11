@@ -6,6 +6,20 @@ end
 
 parser.expression.children.digit = parser.digit
 
+parser.unquote = do
+  terminal { "string": "%(" }
+  expr = $parser.expression
+  terminal { "string": ")"  }
+
+  datastore {"object": {"@": "unquote", "value": expr }}
+end
+
+tmp = {"@": "datastore", "object": {"@": "choice", "children": {}}}
+tmp.children.symbol = parser.symbol
+parser.symbol = tmp
+
+parser.symbol.children.unquote = parser.unquote
+
 parser.addition = do
   x = $parser.digit
   terminal { "string": "+" }
@@ -20,6 +34,7 @@ insertprev { "object": parser.expression.children,
              "origin": {"@":"firstkey", "object": parser.expression.children},
 	     "key":    "addition",
 	     "value":  parser.addition }
+
 
 homuhomu = "homu"
 bouzu = {"man": "bouzuman"}
@@ -49,3 +64,10 @@ print 1
 print parser.addition
 
 print 1+1+1
+print {"@": "quote", "value": %(a).%(b).%(c)}
+
+print quasiquote
+
+print `hoge = 1`
+print `poyo = %(a)`
+

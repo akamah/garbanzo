@@ -1596,6 +1596,393 @@
    "key": "command"
   }
 }
+{"@": "set",
+ "object":
+  {"@": "get",
+   "object":
+    {"@": "getenv"
+    },
+   "key": "/"
+  },
+ "key": "quasiquote",
+ "value":
+  {"@": "lambda",
+   "env":
+    {"@": "getenv"
+    },
+   "body":
+    {"@": "begin",
+     "body":
+      {"0":
+        {"@": "if",
+         "condition":
+          {"@": "isdatastore",
+           "value":
+            {"@": "get",
+             "object":
+              {"@": "getenv"
+              },
+             "key": "object"
+            }
+          },
+         "consequence":
+          {"@": "scope",
+           "body":
+            {"0":
+              {"@": "set",
+               "object":
+                {"@": "getenv"
+                },
+               "key": "object",
+               "value":
+                {"@": "get",
+                 "object":
+                  {"@": "get",
+                   "object":
+                    {"@": "getenv"
+                    },
+                   "key": ".."
+                  },
+                 "key": "object"
+                }
+              },
+             "1":
+              {"@": "if",
+               "condition":
+                {"@": "and",
+                 "left":
+                  {"@": "exist",
+                   "object":
+                    {"@": "get",
+                     "object":
+                      {"@": "getenv"
+                      },
+                     "key": "object"
+                    },
+                   "key": "@"
+                  },
+                 "right":
+                  {"@": "equal",
+                   "left":
+                    {"@": "get",
+                     "object":
+                      {"@": "get",
+                       "object":
+                        {"@": "getenv"
+                        },
+                       "key": "object"
+                      },
+                     "key": "@"
+                    },
+                   "right": "unquote"
+                  }
+                },
+               "consequence":
+                {"@": "scope",
+                 "body":
+                  {"0":
+                    {"@": "get",
+                     "object":
+                      {"@": "get",
+                       "object":
+                        {"@": "get",
+                         "object":
+                          {"@": "getenv"
+                          },
+                         "key": ".."
+                        },
+                       "key": "object"
+                      },
+                     "key": "value"
+                    }
+                  }
+                },
+               "alternative":
+                {"@": "scope",
+                 "body":
+                  {"0":
+                    {"@": "set",
+                     "object":
+                      {"@": "getenv"
+                      },
+                     "key": "result",
+                     "value":
+                      {"@": "datastore",
+                       "object":
+                        {
+                        }
+                      }
+                    },
+                   "1": "hoge",
+                   "2":
+                    {"@": "call",
+                     "func":
+                      {"@": "get",
+                       "object":
+                        {"@": "get",
+                         "object":
+                          {"@": "getenv"
+                          },
+                         "key": "/"
+                        },
+                       "key": "foreach"
+                      },
+                     "args":
+                      {"store":
+                        {"@": "get",
+                         "object":
+                          {"@": "get",
+                           "object":
+                            {"@": "getenv"
+                            },
+                           "key": ".."
+                          },
+                         "key": "object"
+                        },
+                       "func":
+                        {"@": "lambda",
+                         "env":
+                          {"@": "getenv"
+                          },
+                         "body":
+                          {"@": "begin",
+                           "body":
+                            {"0":
+                              {"@": "set",
+                               "object":
+                                {"@": "get",
+                                 "object":
+                                  {"@": "get",
+                                   "object":
+                                    {"@": "getenv"
+                                    },
+                                   "key": ".."
+                                  },
+                                 "key": "result"
+                                },
+                               "key":
+                                {"@": "get",
+                                 "object":
+                                  {"@": "getenv"
+                                  },
+                                 "key": "key"
+                                },
+                               "value":
+                                {"@": "call",
+                                 "func":
+                                  {"@": "get",
+                                   "object":
+                                    {"@": "get",
+                                     "object":
+                                      {"@": "getenv"
+                                      },
+                                     "key": "/"
+                                    },
+                                   "key": "quasiquote"
+                                  },
+                                 "args":
+                                  {"@": "datastore",
+                                   "object":
+                                    {"object":
+                                      {"@": "get",
+                                       "object":
+                                        {"@": "getenv"
+                                        },
+                                       "key": "value"
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                   "3":
+                    {"@": "datastore",
+                     "object":
+                      {"@": "datastore",
+                       "object":
+                        {"@": "get",
+                         "object":
+                          {"@": "getenv"
+                          },
+                         "key": "result"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+         "alternative":
+          {"@": "scope",
+           "body":
+            {"0":
+              {"@": "datastore",
+               "object":
+                {"@": "quote",
+                 "value":
+                  {"@": "get",
+                   "object":
+                    {"@": "get",
+                     "object":
+                      {"@": "getenv"
+                      },
+                     "key": ".."
+                    },
+                   "key": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+{"@": "set",
+ "object":
+  {"@": "get",
+   "object":
+    {"@": "get",
+     "object":
+      {"@": "getenv"
+      },
+     "key": "/"
+    },
+   "key": "parser"
+  },
+ "key": "quasiquote",
+ "value":
+  {"@": "quote",
+   "value":
+    {"@": "scope",
+     "body":
+      {"0":
+        {"@": "terminal",
+         "string": "`"
+        },
+       "1":
+        {"@": "set",
+         "object":
+          {"@": "getenv"
+          },
+         "key": "st",
+         "value":
+          {"@": "eval",
+           "env":
+            {"@": "getenv"
+            },
+           "program":
+            {"@": "get",
+             "object":
+              {"@": "get",
+               "object":
+                {"@": "get",
+                 "object":
+                  {"@": "getenv"
+                  },
+                 "key": "/"
+                },
+               "key": "parser"
+              },
+             "key": "sentence"
+            }
+          }
+        },
+       "2":
+        {"@": "terminal",
+         "string": "`"
+        },
+       "3":
+        {"@": "eval",
+         "env":
+          {"@": "getenv"
+          },
+         "program":
+          {"@": "get",
+           "object":
+            {"@": "get",
+             "object":
+              {"@": "get",
+               "object":
+                {"@": "getenv"
+                },
+               "key": "/"
+              },
+             "key": "parser"
+            },
+           "key": "whitespaces"
+          }
+        },
+       "4":
+        {"@": "call",
+         "func":
+          {"@": "get",
+           "object":
+            {"@": "get",
+             "object":
+              {"@": "getenv"
+              },
+             "key": "/"
+            },
+           "key": "quasiquote"
+          },
+         "args":
+          {"object":
+            {"@": "get",
+             "object":
+              {"@": "getenv"
+              },
+             "key": "st"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+{"@": "set",
+ "object":
+  {"@": "get",
+   "object":
+    {"@": "get",
+     "object":
+      {"@": "get",
+       "object":
+        {"@": "get",
+         "object":
+          {"@": "getenv"
+          },
+         "key": "/"
+        },
+       "key": "parser"
+      },
+     "key": "sentence"
+    },
+   "key": "children"
+  },
+ "key": "quasiquote",
+ "value":
+  {"@": "get",
+   "object":
+    {"@": "get",
+     "object":
+      {"@": "get",
+       "object":
+        {"@": "getenv"
+        },
+       "key": "/"
+      },
+     "key": "parser"
+    },
+   "key": "quasiquote"
+  }
+}
 parser.digit = do
   terminal { "string": "1" }
   sub { "left":  {"@": "tocode", "string": "1" },
@@ -1603,6 +1990,20 @@ parser.digit = do
 end
 
 parser.expression.children.digit = parser.digit
+
+parser.unquote = do
+  terminal { "string": "%(" }
+  expr = $parser.expression
+  terminal { "string": ")"  }
+
+  datastore {"object": {"@": "unquote", "value": expr }}
+end
+
+tmp = {"@": "datastore", "object": {"@": "choice", "children": {}}}
+tmp.children.symbol = parser.symbol
+parser.symbol = tmp
+
+parser.symbol.children.unquote = parser.unquote
 
 parser.addition = do
   x = $parser.digit
@@ -1618,6 +2019,7 @@ insertprev { "object": parser.expression.children,
              "origin": {"@":"firstkey", "object": parser.expression.children},
 	     "key":    "addition",
 	     "value":  parser.addition }
+
 
 homuhomu = "homu"
 bouzu = {"man": "bouzuman"}
@@ -1647,3 +2049,10 @@ print 1
 print parser.addition
 
 print 1+1+1
+print {"@": "quote", "value": %(a).%(b).%(c)}
+
+print quasiquote
+
+print `hoge = 1`
+print `poyo = %(a)`
+

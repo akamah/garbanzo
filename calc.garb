@@ -131,12 +131,10 @@ grammar.rules[:expression] = [:addition, :function].choice
 #}
 
 #{
-grammar.rules[:condition] = [[:expression, Rule::token("=="), :expression].sequence {|l, _, r|
-                               Repr::equal(l, r)
-                             }, [:expression, Rule::token("!="), :expression].sequence {|l, _, r|
-                               Repr::notequal(l, r)
-                             }].choice
+grammar.rules[:condition] = :expression.to_rule
 #}
+
+
 
 # 代入構文
 #{
@@ -155,7 +153,7 @@ grammar.rules[:sentence].children << [Rule::token("while"), :condition, :sentenc
 
 # if文
 #{
-grammar.rules[:sentence].children << [Rule::token('if'), :condition,
+grammar.rules[:sentence].children << [Rule::token('if'), :expression,
 				     :sentence,
 				     Rule::token('else'),
 				     :sentence].sequence { |_, cond, csq, _, alt|
@@ -359,6 +357,48 @@ setcommand = '/parser/sentence/children/command = /parser/command
 
 print command
 print setcommand
+
+
+### QUASIQUOTE ##################
+
+
+
+
+qqfunc = '/quasiquote = ^{
+  if [@: "isdatastore", value: object] {
+    object = ../object
+
+    if [@: "and", left:  [@: "exist", object: object, key: "@"],
+                  right: [@: "equal",
+		    left: [@: "get", object: object, key: "@"], right: "unquote"]] {
+        [@: "get", object: ../object, key: "value"];
+    } else {
+      result = [@: "datastore", object:[]]
+      "hoge";
+      /foreach([store: ../object, func: ^{
+        [@: "set", object: ../result, key: key,
+	  value: /quasiquote([@: "datastore", object: [object: value]])];
+      }]);
+      [@: "datastore", object: [@: "datastore", object: result]];
+    }
+  } else {
+    [@: "datastore", object: [@: "quote", value: ../object]];
+  }
+}
+
+quasiquote = '/parser/quasiquote = '{
+  [@: "terminal", string: "`"];
+  st = %/parser/sentence
+  [@: "terminal", string: "`"];  
+  %/parser/whitespaces;
+  /quasiquote([object: st]);
+}
+
+setquasiquote = '/parser/sentence/children/quasiquote = /parser/quasiquote
+
+print qqfunc
+print quasiquote
+print setquasiquote
 
 
 # 代入できます

@@ -342,7 +342,7 @@ EOS
     define_command("LastKey", "object") # 最後のキーを取得
 
     define_command("DataStore", "object") # データストアオブジェクトを作成。
-    
+    define_command("IsDataStore", "value") # データストアオブジェクトかどうか判定。    
     
     ## 制御構文
     define_command("Quote", "value");                # 評価の抑制

@@ -154,7 +154,10 @@ module Garbanzo
         store
       end
 
-      
+      operator("isdatastore", "value", Object) do |value|
+        (value.is_a? Store).to_repr
+      end
+
       command("quote", "value") do |value|
         value
       end

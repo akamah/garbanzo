@@ -348,6 +348,16 @@ module Garbanzo
       end
     end
 
+    def trace_log(feature, s)
+      if @dot.exist('/').value &&
+         @dot['/'].exist('verbose').value &&
+         @dot['/']['verbose'] == 'on'.to_repr
+        puts "-[EVAL: #{feature.inspect}]--------------------"
+        puts s.inspect
+        #        puts "[DOT] "
+        #        puts @dot.inspect
+      end
+    end
     
     def eval_store(s)
       if s.exist("@").value
@@ -356,14 +366,8 @@ module Garbanzo
         unless @commands.include?(feature.value)
           raise "EVALUATE2: #{feature.inspect} is not a valid feature name"
         end
-
-        if @dot['/'].exist('verbose').value && @dot['/']['verbose'] == 'on'.to_repr
-          puts "-[EVAL: #{feature.inspect}]--------------------"
-          puts s.inspect
-          #        puts "[DOT] "
-          #        puts @dot.inspect
-        end
-      
+        
+        trace_log(feature, s)
 
         @commands[feature.value].call(s)
       else

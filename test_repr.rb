@@ -75,7 +75,7 @@ class TC_Repr < Test::Unit::TestCase
   end
 
   def test_function
-    ev = Evaluator.new({'/' => 0}.to_repr)
+    ev = Evaluator.new({'/' => {}}.to_repr)
     
     func = Repr::function(Store.new({}), Repr::add(Repr::get(Repr::getenv, String.new("a")), Num.new(10)))
     c = Repr::call(func, Store.new({String.new('a') => Num.new(32)}))
@@ -110,7 +110,7 @@ class TC_Repr < Test::Unit::TestCase
   end
 
   def test_proc
-    ev = Evaluator.new({'/' => false.to_repr}.to_repr)
+    ev = Evaluator.new({'/' => {}}.to_repr)
 
     pr = Repr::procedure(lambda {|e, a|
                            (a['right'].num + a['left'].num).to_repr
@@ -297,7 +297,7 @@ class TC_Repr < Test::Unit::TestCase
   end
 
   def test_scope
-    st = { "a" => "hoge", "/" => "root" }.to_repr
+    st = { "a" => "hoge", "/" => {} }.to_repr
     ev = Evaluator.new(st)
 
     prog1 = Repr::scope(Repr::set(Repr::getenv, "a".to_repr, 42.to_repr))

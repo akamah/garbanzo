@@ -68,6 +68,17 @@ print {"@": "quote", "value": %(a).%(b).%(c)}
 
 print quasiquote
 
-print `hoge = 1`
-print `poyo = %(a)`
+parser.increment = do
+  name = $parser.symbol
+  terminal { "string": "++" }
+  `%(name) = 1 + %(name)`
+end
 
+parser.sentence.children.increment = parser.increment
+
+a = 1
+a++
+a++
+
+print a
+parser.primitive = `{"@": "choice", "children": {"digit": %(parser.digit)}}`

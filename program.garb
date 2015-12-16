@@ -1,5 +1,6 @@
 parser.digit = do
   terminal { "string": "1" }
+  w = $parser.whitespaces
   sub { "left":  {"@": "tocode", "string": "1" },
         "right": {"@": "tocode", "string": "0" } }
 end
@@ -26,6 +27,7 @@ print parser.key
 parser.addition = do
   x = $parser.digit
   terminal { "string": "+" }
+  w = $parser.whitespaces
   e = $parser.expression
   result = {"@": "datastore", "object": {"@": "add"}}
   result.left = x
@@ -69,7 +71,8 @@ print parser.addition
 print 1+1+1
 print {"@": "quote", "value": %(a).%(b).%(c)}
 
-print quasiquote
+name = "poyoshi"
+`%(name) = 1 + %(name)`
 
 parser.increment = do
   name = $parser.symbol
@@ -84,4 +87,4 @@ a++
 a++
 
 print a
-parser.primitive = `{"@": "choice", "children": {"digit": %(parser.digit)}}`
+

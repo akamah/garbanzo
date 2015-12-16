@@ -330,6 +330,10 @@ if __FILE__ == $0
     rescue Rule::ParseError => e
       puts "parse error, expecting #{e.message}"
       puts int.evaluator.dot['/']['source']['source'].value.split("\n")[e.line - 1]
+    rescue => e
+      line = int.evaluator.dot['/']['source']['line'].num - 1
+      puts "some error, on #{line}: #{e.message}"
+      puts int.evaluator.dot['/']['source']['source'].value.split("\n")[line]
     end
   }
 

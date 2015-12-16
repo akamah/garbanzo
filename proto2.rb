@@ -68,6 +68,8 @@ module Garbanzo
     end
 
     def install_pair_rule(root)
+      keyp = Repr::choice({ "string" => Repr::quote(root["parser"]["string"]) }.to_repr)
+        
       pairp = Repr::Procedure.new(
         lambda { |e, env|
           keyp = env["/"]["parser"]["string"]
@@ -84,6 +86,7 @@ module Garbanzo
           Repr::store({ k => v })
         })
 
+      root['parser']['key'] = keyp
       root['parser']['pair'] = Repr::call(
         Repr::quote(pairp), {}.to_repr)
     end

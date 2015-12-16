@@ -19,6 +19,9 @@ tmp.children.symbol = parser.symbol
 parser.symbol = tmp
 
 parser.symbol.children.unquote = parser.unquote
+parser.key.children.symbol = parser.symbol
+
+print parser.key
 
 parser.addition = do
   x = $parser.digit

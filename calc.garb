@@ -214,6 +214,7 @@ print '[@: "insertprev", object: /parser/sentence/children, origin: [@: "firstke
 
 symbol = 'parser/symbol = '{
     oo = /oneof([string: "abcdefghijklmnopqrstuvwxyz"])
+    %/parser/whitespaces;
     result  = %oo
     cs = [@: "many", parser: oo]
     %/parser/whitespaces;

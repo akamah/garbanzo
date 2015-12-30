@@ -90,7 +90,7 @@ end
 
 parser.sentence.children.addrule = parser.addrule
 
-parser.sentence|=increment
+parser.sentence |= increment
 
 a = 1
 a++

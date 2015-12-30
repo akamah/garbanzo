@@ -276,43 +276,6 @@
           }
         },
        "1":
-        {"@": "set",
-         "object":
-          {"@": "getenv"
-          },
-         "key": "result",
-         "value":
-          {"@": "eval",
-           "env":
-            {"@": "getenv"
-            },
-           "program":
-            {"@": "get",
-             "object":
-              {"@": "getenv"
-              },
-             "key": "oo"
-            }
-          }
-        },
-       "2":
-        {"@": "set",
-         "object":
-          {"@": "getenv"
-          },
-         "key": "cs",
-         "value":
-          {"@": "many",
-           "parser":
-            {"@": "get",
-             "object":
-              {"@": "getenv"
-              },
-             "key": "oo"
-            }
-          }
-        },
-       "3":
         {"@": "eval",
          "env":
           {"@": "getenv"
@@ -333,7 +296,65 @@
            "key": "whitespaces"
           }
         },
+       "2":
+        {"@": "set",
+         "object":
+          {"@": "getenv"
+          },
+         "key": "result",
+         "value":
+          {"@": "eval",
+           "env":
+            {"@": "getenv"
+            },
+           "program":
+            {"@": "get",
+             "object":
+              {"@": "getenv"
+              },
+             "key": "oo"
+            }
+          }
+        },
+       "3":
+        {"@": "set",
+         "object":
+          {"@": "getenv"
+          },
+         "key": "cs",
+         "value":
+          {"@": "many",
+           "parser":
+            {"@": "get",
+             "object":
+              {"@": "getenv"
+              },
+             "key": "oo"
+            }
+          }
+        },
        "4":
+        {"@": "eval",
+         "env":
+          {"@": "getenv"
+          },
+         "program":
+          {"@": "get",
+           "object":
+            {"@": "get",
+             "object":
+              {"@": "get",
+               "object":
+                {"@": "getenv"
+                },
+               "key": "/"
+              },
+             "key": "parser"
+            },
+           "key": "whitespaces"
+          }
+        },
+       "5":
         {"@": "call",
          "func":
           {"@": "get",
@@ -399,7 +420,7 @@
             }
           }
         },
-       "5":
+       "6":
         {"@": "get",
          "object":
           {"@": "getenv"

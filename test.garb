@@ -2024,9 +2024,18 @@ end
 tmp = {"@": "datastore", "object": {"@": "choice", "children": {}}}
 tmp.children.symbol = parser.symbol
 parser.symbol = tmp
-
 parser.symbol.children.unquote = parser.unquote
-parser.key.children.symbol = parser.symbol
+
+
+
+tmp = {"@": "datastore", "object": {"@": "choice", "children": {}}}
+tmp.children.string = parser.string
+tmp.children.symbol = parser.symbol
+
+parser.key = tmp
+
+print {hoge: "string"}
+
 
 print parser.key
 
@@ -2082,14 +2091,14 @@ name = "poyoshi"
 
 parser.increment = do
   name = $parser.symbol
-  terminal { "string": "++" }
+  terminal { string: "++" }
   `%(name) = 1 + %(name)`
 end
 
 
 parser.addrule = do
   target = $parser.path
-  terminal { "string": "|=" }
+  terminal { string: "|=" }
   name = $parser.symbol
   `%(target).children.%(name) = parser.%(name)`
 end

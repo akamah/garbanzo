@@ -2065,7 +2065,7 @@ parser.increment = do
   `%(name) = 1 + %(name)`
 end
 
-parser.sentence|=increment
+parser.sentence|=
 
 a = 1
 a++

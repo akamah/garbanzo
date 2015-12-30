@@ -80,7 +80,17 @@ parser.increment = do
   `%(name) = 1 + %(name)`
 end
 
-parser.sentence|=
+
+parser.addrule = do
+  target = $parser.path
+  terminal { "string": "|=" }
+  name = $parser.symbol
+  `%(target).children.%(name) = parser.%(name)`
+end
+
+parser.sentence.children.addrule = parser.addrule
+
+parser.sentence|=increment
 
 a = 1
 a++

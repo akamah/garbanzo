@@ -306,4 +306,11 @@ class TC_Repr < Test::Unit::TestCase
 
     assert_equal("hoge".to_repr, ev.evaluate(prog2))
   end
+
+  def test_datastore_subscription
+    st = { "a" => { "b" => "correct" } }.to_repr
+    ix = { "fst" => "a", "snd" => "b" }.to_repr
+
+    assert_equal("correct".to_repr, st[ix])
+  end
 end

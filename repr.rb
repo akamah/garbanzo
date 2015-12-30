@@ -167,13 +167,36 @@ EOS
       def find_entry_index(key)
         @table.find_index { |e| e[0] == key.to_repr }
       end
-      
-      def [](key)
+
+      def lookup(key)
         val = @cache[key.to_repr]
         if val != nil
           val
         else
           raise "no entry found: #{key.to_repr.inspect} in #{self.table.map {|e| e[0]}.inspect}"
+        end
+      end
+      
+      def [](key)
+        if key.is_a? Store
+          if key.size.num == 0
+            self
+          else
+            k = key.first_key
+            path = key.copy
+            path.remove k
+
+            actualkey = key[k]
+            nextds = self[actualkey]
+
+            if path.size.num == 0
+              nextds
+            else
+              nextds[path]
+            end
+          end
+        else
+          lookup(key)
         end
       end
 

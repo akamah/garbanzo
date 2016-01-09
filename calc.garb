@@ -333,6 +333,32 @@ setdo = '[@: "insertprev", object: /parser/expression/children,
 print do
 print setdo
 
+loop = '/parser/while = '{
+    [@: "terminal", string: "while"];
+    %/parser/whitespaces;
+    cond = %/parser/expression
+
+
+    sts = [@: "many", parser: '{
+      %/parser/whitespaces;
+      %/parser/sentence;
+    }]
+
+    %/parser/whitespaces;
+    [@: "terminal", string: "end"];
+
+    result = [@: "datastore", object: [@: "while", condition: cond, body: sts]]
+
+    result;
+}
+
+setloop = '[@: "insertprev", object: /parser/sentence/children,
+            origin: [@: "firstkey", object: /parser/sentence/children],
+	    key: "do", value: /parser/while];
+
+print loop
+print setloop
+
 
 eval = '/parser/eval = '{
   [@: "terminal", string: "$"];

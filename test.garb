@@ -1368,6 +1368,259 @@
     },
    "key": "parser"
   },
+ "key": "while",
+ "value":
+  {"@": "quote",
+   "value":
+    {"@": "scope",
+     "body":
+      {"0":
+        {"@": "terminal",
+         "string": "while"
+        },
+       "1":
+        {"@": "eval",
+         "env":
+          {"@": "getenv"
+          },
+         "program":
+          {"@": "get",
+           "object":
+            {"@": "get",
+             "object":
+              {"@": "get",
+               "object":
+                {"@": "getenv"
+                },
+               "key": "/"
+              },
+             "key": "parser"
+            },
+           "key": "whitespaces"
+          }
+        },
+       "2":
+        {"@": "set",
+         "object":
+          {"@": "getenv"
+          },
+         "key": "cond",
+         "value":
+          {"@": "eval",
+           "env":
+            {"@": "getenv"
+            },
+           "program":
+            {"@": "get",
+             "object":
+              {"@": "get",
+               "object":
+                {"@": "get",
+                 "object":
+                  {"@": "getenv"
+                  },
+                 "key": "/"
+                },
+               "key": "parser"
+              },
+             "key": "expression"
+            }
+          }
+        },
+       "3":
+        {"@": "set",
+         "object":
+          {"@": "getenv"
+          },
+         "key": "sts",
+         "value":
+          {"@": "many",
+           "parser":
+            {"@": "quote",
+             "value":
+              {"@": "scope",
+               "body":
+                {"0":
+                  {"@": "eval",
+                   "env":
+                    {"@": "getenv"
+                    },
+                   "program":
+                    {"@": "get",
+                     "object":
+                      {"@": "get",
+                       "object":
+                        {"@": "get",
+                         "object":
+                          {"@": "getenv"
+                          },
+                         "key": "/"
+                        },
+                       "key": "parser"
+                      },
+                     "key": "whitespaces"
+                    }
+                  },
+                 "1":
+                  {"@": "eval",
+                   "env":
+                    {"@": "getenv"
+                    },
+                   "program":
+                    {"@": "get",
+                     "object":
+                      {"@": "get",
+                       "object":
+                        {"@": "get",
+                         "object":
+                          {"@": "getenv"
+                          },
+                         "key": "/"
+                        },
+                       "key": "parser"
+                      },
+                     "key": "sentence"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+       "4":
+        {"@": "eval",
+         "env":
+          {"@": "getenv"
+          },
+         "program":
+          {"@": "get",
+           "object":
+            {"@": "get",
+             "object":
+              {"@": "get",
+               "object":
+                {"@": "getenv"
+                },
+               "key": "/"
+              },
+             "key": "parser"
+            },
+           "key": "whitespaces"
+          }
+        },
+       "5":
+        {"@": "terminal",
+         "string": "end"
+        },
+       "6":
+        {"@": "set",
+         "object":
+          {"@": "getenv"
+          },
+         "key": "result",
+         "value":
+          {"@": "datastore",
+           "object":
+            {"@": "while",
+             "condition":
+              {"@": "get",
+               "object":
+                {"@": "getenv"
+                },
+               "key": "cond"
+              },
+             "body":
+              {"@": "get",
+               "object":
+                {"@": "getenv"
+                },
+               "key": "sts"
+              }
+            }
+          }
+        },
+       "7":
+        {"@": "get",
+         "object":
+          {"@": "getenv"
+          },
+         "key": "result"
+        }
+      }
+    }
+  }
+}
+{"@": "insertprev",
+ "object":
+  {"@": "get",
+   "object":
+    {"@": "get",
+     "object":
+      {"@": "get",
+       "object":
+        {"@": "get",
+         "object":
+          {"@": "getenv"
+          },
+         "key": "/"
+        },
+       "key": "parser"
+      },
+     "key": "sentence"
+    },
+   "key": "children"
+  },
+ "origin":
+  {"@": "firstkey",
+   "object":
+    {"@": "get",
+     "object":
+      {"@": "get",
+       "object":
+        {"@": "get",
+         "object":
+          {"@": "get",
+           "object":
+            {"@": "getenv"
+            },
+           "key": "/"
+          },
+         "key": "parser"
+        },
+       "key": "sentence"
+      },
+     "key": "children"
+    }
+  },
+ "key": "do",
+ "value":
+  {"@": "get",
+   "object":
+    {"@": "get",
+     "object":
+      {"@": "get",
+       "object":
+        {"@": "getenv"
+        },
+       "key": "/"
+      },
+     "key": "parser"
+    },
+   "key": "while"
+  }
+}
+{"@": "set",
+ "object":
+  {"@": "get",
+   "object":
+    {"@": "get",
+     "object":
+      {"@": "getenv"
+      },
+     "key": "/"
+    },
+   "key": "parser"
+  },
  "key": "eval",
  "value":
   {"@": "quote",
@@ -2095,6 +2348,12 @@ parser.increment = do
   `%(name) = 1 + %(name)`
 end
 
+parser.donothing = do
+  name = $parser.symbol
+  terminal { string: "++" }
+  `%(name) = %(name)`
+end
+
 
 parser.addrule = do
   target = $parser.path
@@ -2113,3 +2372,37 @@ a++
 
 print a
 
+parser.notone = do
+  terminal { string: "=1" }
+  print "notone"
+  w = $parser.whitespaces
+  e = $parser.expression
+  datastore { object: {"@": "notequal", left: 1, right: e } }
+end
+
+parser.expression |= notone
+
+print parser.notone
+print parser.expression
+
+print =1 1
+print =1 a
+
+
+i = 1+1+1+1+1
+x = 1
+
+while =1 i
+  print x
+  x++
+  i = {"@": "sub", "left": i, "right": 1 }
+  parser.sentence.children.increment = parser.donothing
+end
+
+print "endloop"
+
+print x
+x++
+print x
+x++
+print x

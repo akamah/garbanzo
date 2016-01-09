@@ -89,6 +89,12 @@ parser.increment = do
   `%(name) = 1 + %(name)`
 end
 
+parser.donothing = do
+  name = $parser.symbol
+  terminal { string: "++" }
+  `%(name) = %(name)`
+end
+
 
 parser.addrule = do
   target = $parser.path
@@ -107,3 +113,37 @@ a++
 
 print a
 
+parser.notone = do
+  terminal { string: "=1" }
+  print "notone"
+  w = $parser.whitespaces
+  e = $parser.expression
+  datastore { object: {"@": "notequal", left: 1, right: e } }
+end
+
+parser.expression |= notone
+
+print parser.notone
+print parser.expression
+
+print =1 1
+print =1 a
+
+
+i = 1+1+1+1+1
+x = 1
+
+while =1 i
+  print x
+  x++
+  i = {"@": "sub", "left": i, "right": 1 }
+  parser.sentence.children.increment = parser.donothing
+end
+
+print "endloop"
+
+print x
+x++
+print x
+x++
+print x

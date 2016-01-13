@@ -16,11 +16,29 @@ module Garbanzo
 
       factory_name = classname.downcase
 
+#      at_exit {
+#        const_get(classname).debug_print
+#      }
+      
       str = <<"EOS"
 class #{classname} < #{superclass}
   #{attr_def}
+##  @@creation_count = 0
+##  @@callers = {}
+
   def initialize(#{arguments})
     #{assignment}
+#    @@creation_count += 1
+#    ca = caller[3]
+#    @@callers[ca] ||= 0
+#    @@callers[ca] += 1
+  end
+
+  def self.debug_print
+    $stderr.puts #{classname}, @@creation_count
+    @@callers.each do |caller, count|
+      $stderr.puts [caller, count]
+    end
   end
 
   def hash
@@ -144,6 +162,11 @@ EOS
     
     class Store
       def initialize(obj)
+#        @@creation_count += 1
+#        ca = caller[3]
+#        @@callers[ca] ||= 0
+#        @@callers[ca] += 1
+
         case obj
         when Hash
           @table = obj.to_a
@@ -159,7 +182,9 @@ EOS
       end
 
       def find_entry(key)
-        @table.find { |e| e[0] == key.to_repr }
+        realkey = key.to_repr
+          
+        @table.find { |e| e[0] == realkey }
       end
 
       def find_entry_index(key)

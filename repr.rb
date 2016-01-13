@@ -147,10 +147,8 @@ EOS
         case obj
         when Hash
           @table = obj.to_a
-          @cache = obj.clone
         when Array
           @table = obj
-          @cache = obj.to_h
         else
           raise "cannot construct a datastore from: #{obj}"
         end
@@ -169,12 +167,8 @@ EOS
       end
 
       def lookup(key)
-        val = @cache[key.to_repr]
-        if val != nil
-          val
-        else
+        find_entry(key)[1] or
           raise "no entry found: #{key.to_repr.inspect} in #{self.table.map {|e| e[0]}.inspect}"
-        end
       end
       
       def [](key)
@@ -204,10 +198,8 @@ EOS
         entry = find_entry(key)
         if entry != nil
           entry[1] = value
-          @cache[key.to_repr] = value
         else
           @table << [key.to_repr, value]
-          @cache[key.to_repr] = value
         end
       end
       
@@ -219,7 +211,6 @@ EOS
       def remove(key)
         entry = find_entry(key)
         @table.delete(entry)
-        @cache.delete(entry[0])
         entry[1]
       end
 
@@ -240,13 +231,11 @@ EOS
       def insert_prev(origin, key, value)
         index = find_entry_index(origin)
 
-        @cache[key] = value
         @table.insert(index, [key, value])
       end
 
       def insert_next(origin, key, value)
         index = find_entry_index(origin)
-        @cache[key] = value
         @table.insert(index + 1, [key, value])
       end
 

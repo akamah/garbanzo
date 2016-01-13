@@ -2364,7 +2364,11 @@ end
 
 parser.sentence.children.addrule = parser.addrule
 
+parser.sentence.children.increment = parser.increment
 parser.sentence |= increment
+
+
+
 
 a = 1
 a++

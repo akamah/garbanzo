@@ -4,6 +4,14 @@
 module Garbanzo
     # 内部表現
   module Repr
+    class ::Object
+      def is_repr?
+        return false
+      end
+    end
+
+
+    
     # 内部表現のオブジェクトを適当に定義してくれるメソッド。
     def self.define_repr_class(classname, superclass, *attrs)
       attr_list  = attrs.map {|x| ":" + x.inspect }.join(', ')
@@ -23,22 +31,9 @@ module Garbanzo
       str = <<"EOS"
 class #{classname} < #{superclass}
   #{attr_def}
-##  @@creation_count = 0
-##  @@callers = {}
 
   def initialize(#{arguments})
     #{assignment}
-#    @@creation_count += 1
-#    ca = caller[3]
-#    @@callers[ca] ||= 0
-#    @@callers[ca] += 1
-  end
-
-  def self.debug_print
-    $stderr.puts #{classname}, @@creation_count
-    @@callers.each do |caller, count|
-      $stderr.puts [caller, count]
-    end
   end
 
   def hash
@@ -55,6 +50,10 @@ class #{classname} < #{superclass}
 
   def to_repr
     self
+  end
+
+  def is_repr?
+    return true
   end
 end
 
@@ -169,30 +168,38 @@ EOS
 
         case obj
         when Hash
-          @table = obj.to_a
+          @table = obj.clone
+          @keys  = obj.keys
         when Array
-          @table = obj
+          @table = obj.to_h
+          @keys  = obj.map {|k| k[0] }
         else
           raise "cannot construct a datastore from: #{obj}"
         end
       end
 
       def copy
-        Store.new(@table.to_a.map {|k, v| [k.copy, v.copy] })
+        Store.new(@keys.map {|k| [k.copy, @table[k].copy] })
       end
 
-      def find_entry(key)
-        realkey = key.to_repr
-          
-        @table.find { |e| e[0] == realkey }
+      def find_index(key)
+        @keys.index(key)
       end
 
-      def find_entry_index(key)
-        @table.find_index { |e| e[0] == key.to_repr }
+      def as_key(key)
+        r = key.to_repr
+        case r
+        when Repr::String
+          r.value.to_sym
+        when Repr::Num
+          r.num
+        when Repr::Bool
+          r.value
+        end
       end
-
+      
       def lookup(key)
-        find_entry(key)[1] or
+        @table[key] or
           raise "no entry found: #{key.to_repr.inspect} in #{self.table.map {|e| e[0]}.inspect}"
       end
       
@@ -215,66 +222,73 @@ EOS
             end
           end
         else
-          lookup(key)
+          lookup(key.to_repr)
         end
       end
 
       def []=(key, value)
-        entry = find_entry(key)
-        if entry != nil
-          entry[1] = value
+        realkey = key.to_repr
+        
+        if @keys.include?(realkey)
+          @table[realkey] = value.to_repr
         else
-          @table << [key.to_repr, value]
+          @table[realkey] = value.to_repr
+          @keys << realkey
         end
       end
-      
 
       def size
         @table.size.to_repr
       end
 
       def remove(key)
-        entry = find_entry(key)
-        @table.delete(entry)
-        entry[1]
+        realkey = key.to_repr
+        result = lookup(realkey)
+        
+        @table.delete(realkey)
+        @keys.delete(realkey)
+        result
       end
 
       def exist(key)
-        (find_entry(key) != nil).to_repr
+        @table.include?(key.to_repr).to_repr
       end
 
       def get_prev_key(origin)
-        index = find_entry_index(origin)
-        return @table[index - 1][0]
+        index = find_index(origin.to_repr)
+        return @keys[index - 1]
       end
 
       def get_next_key(origin)
-        index = find_entry_index(origin)
-        return @table[index + 1][0]
+        index = find_index(origin.to_repr)
+        return @keys[index + 1]
       end
 
       def insert_prev(origin, key, value)
-        index = find_entry_index(origin)
+        index = find_index(origin.to_repr)
 
-        @table.insert(index, [key, value])
+        @table[key] = value.to_repr
+        @keys.insert(index, key.to_repr)
       end
 
       def insert_next(origin, key, value)
-        index = find_entry_index(origin)
-        @table.insert(index + 1, [key, value])
+        index = find_index(origin.to_repr)
+
+        @table[key] = value.to_repr
+        @keys.insert(index + 1, key.to_repr)
       end
 
       def first_key
-        @table[0][0]
+        @keys.first
       end
 
       def last_key
-        @table[-1][0]
+        @keys.last
       end
 
       def each_key
-        @table.each do |kv|
-          yield(kv[0], kv[1])
+        @keys.each do |k|
+          yield(k, @table[k])
         end
       end
 

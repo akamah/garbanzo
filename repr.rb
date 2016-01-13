@@ -121,11 +121,11 @@ EOS
       end
       
       def inspect
-        self.value.inspect
+        "<#{self.value.inspect}>"
       end
 
       def to_s
-        self.value.to_s
+        inspect
       end
     end
 
@@ -168,22 +168,18 @@ EOS
 
         case obj
         when Hash
-          @table = obj.clone
-          @keys  = obj.keys
+          @keys  = obj.keys.map {|k| as_key k }
+          @table = obj.map {|k, v| [as_key(k), v] }.to_h
         when Array
-          @table = obj.to_h
-          @keys  = obj.map {|k| k[0] }
+          @keys  = obj.map {|k| as_key k[0] }
+          @table = obj.map {|k| [as_key(k[0]), k[1]] }.to_h
         else
           raise "cannot construct a datastore from: #{obj}"
         end
       end
 
       def copy
-        Store.new(@keys.map {|k| [k.copy, @table[k].copy] })
-      end
-
-      def find_index(key)
-        @keys.index(key)
+        Store.new(@keys.map {|k| [from_key(k), @table[k].copy] })
       end
 
       def as_key(key)
@@ -195,12 +191,33 @@ EOS
           r.num
         when Repr::Bool
           r.value
+        else
+          raise "this is not a key #{key}"
+        end
+      end
+
+      def from_key(inner)
+        case inner
+        when Numeric
+          inner.to_repr
+        when Symbol
+          inner.to_s.to_repr
         end
       end
       
+      def find_index(key)
+        @keys.index(as_key key)
+      end
+      
       def lookup(key)
-        @table[key] or
-          raise "no entry found: #{key.to_repr.inspect} in #{self.table.map {|e| e[0]}.inspect}"
+        realkey = as_key key.to_repr
+        result = @table[realkey]
+
+#        p @table
+        
+        raise "no entry found: #{realkey}:#{realkey.class} in #{@keys.inspect}" if result == nil
+
+        result
       end
       
       def [](key)
@@ -222,12 +239,12 @@ EOS
             end
           end
         else
-          lookup(key.to_repr)
+          lookup(key)
         end
       end
 
       def []=(key, value)
-        realkey = key.to_repr
+        realkey = as_key key
         
         if @keys.include?(realkey)
           @table[realkey] = value.to_repr
@@ -242,8 +259,8 @@ EOS
       end
 
       def remove(key)
-        realkey = key.to_repr
-        result = lookup(realkey)
+        realkey = as_key key
+        result = lookup(key)
         
         @table.delete(realkey)
         @keys.delete(realkey)
@@ -251,44 +268,44 @@ EOS
       end
 
       def exist(key)
-        @table.include?(key.to_repr).to_repr
+        @table.include?(as_key key).to_repr
       end
 
       def get_prev_key(origin)
-        index = find_index(origin.to_repr)
-        return @keys[index - 1]
+        index = find_index(origin)
+        return from_key @keys[index - 1]
       end
 
       def get_next_key(origin)
-        index = find_index(origin.to_repr)
-        return @keys[index + 1]
+        index = find_index(origin)
+        return from_key @keys[index + 1]
       end
 
       def insert_prev(origin, key, value)
-        index = find_index(origin.to_repr)
-
-        @table[key] = value.to_repr
-        @keys.insert(index, key.to_repr)
+        index = find_index(origin)
+        realkey = as_key key
+        @table[realkey] = value.to_repr
+        @keys.insert(index, realkey)
       end
 
       def insert_next(origin, key, value)
-        index = find_index(origin.to_repr)
-
-        @table[key] = value.to_repr
-        @keys.insert(index + 1, key.to_repr)
+        index = find_index(origin)
+        realkey = as_key key
+        @table[realkey] = value.to_repr
+        @keys.insert(index + 1, realkey)
       end
 
       def first_key
-        @keys.first
+        from_key @keys.first
       end
 
       def last_key
-        @keys.last
+        from_key @keys.last
       end
 
       def each_key
         @keys.each do |k|
-          yield(k, @table[k])
+          yield(from_key(k), @table[k])
         end
       end
 

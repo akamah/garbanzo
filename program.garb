@@ -105,7 +105,11 @@ end
 
 parser.sentence.children.addrule = parser.addrule
 
+parser.sentence.children.increment = parser.increment
 parser.sentence |= increment
+
+
+
 
 a = 1
 a++
@@ -114,7 +118,7 @@ a++
 print a
 
 parser.notone = do
-  terminal { string: "=1" }
+  terminal { string: "!=1" }
   print "notone"
   w = $parser.whitespaces
   e = $parser.expression
@@ -126,14 +130,14 @@ parser.expression |= notone
 print parser.notone
 print parser.expression
 
-print =1 1
-print =1 a
+print !=1 1
+print !=1 a
 
 
 i = 1+1+1+1+1
 x = 1
 
-while =1 i
+while !=1 i
   print x
   x++
   i = {"@": "sub", "left": i, "right": 1 }

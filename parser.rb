@@ -1,5 +1,7 @@
 # coding: utf-8
 
+# このパーサオブジェクトは，プロトタイプ1でのみ使用している．
+
 require './repr.rb'
 require './rule.rb'
 

@@ -1,6 +1,12 @@
 #!/usr/local/bin/ruby
 # coding: utf-8
 
+=begin
+構文拡張可能な言語プロトタイプver.2
+Garbanzoの文法をGarbanzoのプログラムで記述できる．
+
+=end
+
 require 'stackprof'
 
 require './repr.rb'

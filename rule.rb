@@ -1,4 +1,6 @@
 # coding: utf-8
+# これらのルールも，プロトタイプバージョン1でのみ用いている．
+
 module Garbanzo
   module Rule
     # 構文。つまり、名前をつけたルールの集合を持つもの。

@@ -68,11 +68,11 @@ module Garbanzo
 
       
       operator("equal", "left", Object, "right", Object) do |left, right|
-        Repr::bool(left.eql?(right))
+        Repr::bool(left == right)
       end
 
       operator("notequal", "left", Object, "right", Object) do |left, right|
-        Repr::bool(!left.eql?(right))
+        Repr::bool(left != right)
       end
 
       operator("lessthan", "left", Num, "right", Num) do |left, right|

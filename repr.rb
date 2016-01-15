@@ -10,65 +10,21 @@ module Garbanzo
       end
     end
 
+    ## Garbanzoのオブジェクトとしてのトップ
+    ## サブクラスでは，属性宣言とinitializeとeql?とcopyを実装．
+    class GarbObject
+      def to_repr; self; end
+      def is_repr?; true; end
 
-    
-    # 内部表現のオブジェクトを適当に定義してくれるメソッド。
-    def self.define_repr_class(classname, superclass, *attrs)
-      attr_list  = attrs.map {|x| ":" + x.inspect }.join(', ')
-      attr_def   = attrs.length > 0 ? "attr_accessor " + attr_list : ""
-      arguments  = attrs.join(', ')
-      assignment = attrs.map {|x| "@#{x} = #{x}" }.join('; ')
-
-      hash_def   = attrs.map   {|x| "#{x}.hash" }.join(' ^ ')
-      eql_def    = (["class"] + attrs).map {|x| "self.#{x}.eql?(other.#{x})" }.join(' && ')
-
-      factory_name = classname.downcase
-
-#      at_exit {
-#        const_get(classname).debug_print
-#      }
-      
-      str = <<"EOS"
-class #{classname} < #{superclass}
-  #{attr_def}
-
-  def initialize(#{arguments})
-    #{assignment}
-  end
-
-  def hash
-    #{hash_def}
-  end
-
-  def eql?(other)
-    #{eql_def}
-  end
-
-  def ==(other)
-    eql?(other)
-  end
-
-  def to_repr
-    self
-  end
-
-  def is_repr?
-    return true
-  end
-end
-
-def self.#{factory_name}(#{arguments})
-  #{classname}.new(#{arguments})
-end
-EOS
-      if $DEBUG
-        puts str
-        p opts
+      def eql?(other)
+        raise "eql? is not defined for #{self.class}"
       end
-      
-      self.module_eval(str, classname)
-    end
 
+      def hash
+        raise "hash is not defined for #{self.class}. It cannot be a key."
+      end
+    end
+    
     def self.define_command(name, *arguments)
       str = <<"EOS"
 def self.#{name.downcase}(#{arguments.join(', ')})
@@ -89,57 +45,101 @@ EOS
     end
     
     ## 主にデータを表すオブジェクト
-    define_repr_class("Num", Object, "num")               # 言語の内部表現としての整数
-    define_repr_class("String", Object, "value")          # 内部表現としての文字列
-    define_repr_class("Bool", Object, "value")            # 内部表現としての文字列
-    define_repr_class("Store", Object, "table")           # データストアオブジェクト
-    define_repr_class("Callable", Object)                  # 呼び出し可能なオブジェクト、という意味で
-    define_repr_class("Function", Callable, "env", "body")  # 関数
-    define_repr_class("Procedure", Callable, "proc")        # ネイティブの関数
+#    define_repr_class("Num", Object, "num")               # 言語の内部表現としての整数
+#    define_repr_class("String", Object, "value")          # 内部表現としての文字列
+#    define_repr_class("Bool", Object, "value")            # 内部表現としての文字列
+#    define_repr_class("Store", Object, "table")           # データストアオブジェクト
+#    define_repr_class("Callable", Object)                  # 呼び出し可能なオブジェクト、という意味で
+#    define_repr_class("Function", Callable, "env", "body")  # 関数
+#    define_repr_class("Procedure", Callable, "proc")        # ネイティブの関数
 
-    class Num
+    class Num < GarbObject
+      attr_accessor :num
+      
+      def initialize(num)
+        @num = num
+      end
+      
       def copy
-        Num.new(self.num)
+        self
       end
 
       def inspect
         self.num.inspect
       end
 
+      def eql?(other)
+        other.class == Num && self.num.eql?(other.num)
+      end
+
+      def ==(other)
+        other.class == Num && self.num == other.num
+      end
+      
+      def hash
+        num.hash
+      end
+      
       def to_s
         self.num.to_s
       end
     end
 
-    class String
-      def copy
-        String.new(::String.new(self.value))
-      end
+    def self.num(num)
+      Num.new(num)
+    end
 
-      def eql?(other)
-        return other.class == String && other.value == self.value
+    class String < GarbObject
+      attr_accessor :value
+
+      def initialize(value); @value = value; end
+      def copy; String.new(::String.new(self.value)); end
+      def ==(other); other.class == String && other.value == self.value; end
+      def eql?(other); other.class == String && other.value.eql?(self.value); end      
+      def inspect; self.value.inspect; end
+      def to_s; inspect; end
+
+      def hash; value.hash; end
+    end
+
+    def self.string(value)
+      String.new(value)
+    end
+    
+    class Bool < GarbObject
+      attr_accessor :value
+
+      def initialize(value); @value = value; end      
+      def copy; self; end
+      def inspect; self.value.inspect; end
+
+      def self.true_object;  @@true_object;  end
+      def self.false_object; @@false_object; end
+
+      def hash; self.value.hash; end
+
+      def ==(other)
+        other.class == Bool && self.value == other.value
       end
       
-      def inspect
-        self.value.inspect
-      end
-
-      def to_s
-        inspect
-      end
+      @@true_object = self.new(true)
+      @@false_object = self.new(false)
     end
 
-    class Bool
-      def copy
-        Bool.new(self.value)
-      end
-
-      def inspect
-        self.value.inspect
-      end
+    def self.bool(value)
+      value ? Bool.true_object : Bool.false_object
     end
 
-    class Function
+    class Callable < GarbObject
+    end
+    
+    class Function < Callable
+      attr_accessor :env, :body
+
+      def initialize(env, body)
+        @env = env; @body = body
+      end
+      
       def copy
         Function.new(self.env.copy, self.body.copy)
       end
@@ -147,9 +147,23 @@ EOS
       def inspect
         "^ (#{self.body.inspect})"
       end
+
+      def ==(other)
+        other.class == Function && other.env == self.env && other.body == self.body
+      end
+    end
+
+    def self.function(env, body)
+      Function.new(env, body)
     end
     
-    class Procedure
+    class Procedure < Callable
+      attr_accessor :proc
+
+      def initialize(proc)
+        @proc = proc
+      end
+      
       def copy
         Procedure.new(self.proc)
       end
@@ -157,9 +171,19 @@ EOS
       def inspect
         "#<proc>"
       end
+
+      def ==(other)
+        other.class == Procedure && other.proc == self.proc
+      end
+    end
+
+    def self.procedure(proc)
+      Procedure.new(proc)
     end
     
-    class Store
+    class Store < GarbObject
+      attr_accessor :keys, :table
+      
       def initialize(obj)
 #        @@creation_count += 1
 #        ca = caller[3]
@@ -332,6 +356,14 @@ EOS
       def inspect
         inspect_rec()
       end
+
+      def ==(other)
+        other.class == Store && self.table == other.table && self.keys == other.keys
+      end
+    end
+
+    def self.store(store)
+      Store.new(store)
     end
     
     ## 算術演算

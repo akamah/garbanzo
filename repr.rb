@@ -121,7 +121,7 @@ EOS
       end
       
       def inspect
-        "<#{self.value.inspect}>"
+        self.value.inspect
       end
 
       def to_s

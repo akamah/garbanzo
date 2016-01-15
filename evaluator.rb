@@ -31,11 +31,16 @@ module Garbanzo
     # 名前と型を書いて並べると、自動的に評価したのちにブロックに渡してくれる。
     def operator(opname, *args, &func)
       raise "invalid argument list" if args.length % 2 == 1
+
+      arglist = args.each_slice(2).map {|name, type|
+        [name.to_repr, type]
+      }
+      
       @commands[opname] = lambda { |store|
         @callcount[opname] += 1
-        param = args.each_slice(2).map {|name, type|
-          e = evaluate(store[name.to_repr])
-          unless e.is_a? type
+        param = arglist.map {|name_type|
+          e = evaluate(store[name_type[0]])
+          unless e.is_a? name_type[1]
             raise "operator `#{opname}' wants `#{name}' to be #{type}, not #{e.class}"
           end
           e

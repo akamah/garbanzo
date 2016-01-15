@@ -92,7 +92,33 @@ EOS
     class String < GarbObject
       attr_accessor :value
 
-      def initialize(value); @value = value; end
+      @@creation = 0
+      @@created_in = Hash.new { 0 }
+      
+      at_exit {
+        puts "string is created #{@@creation} times"
+
+        locations = @@created_in.keys.sort { |a, b|
+          @@created_in[a] <=> @@created_in[b]
+        }
+        
+        locations.each do |k|
+          puts "#{@@created_in[k]} => #{k}"
+        end
+      }
+      
+      def initialize(value)
+        @value = value
+
+        @@creation += 1
+
+#        if @@creation % 113 == 0        
+#          @@created_in[caller(1..5)] += 1
+#        end
+        
+        puts @@creation if @@creation % 100000 == 0
+      end
+      
       def copy; String.new(::String.new(self.value)); end
       def ==(other); other.class == String && other.value == self.value; end
       def eql?(other); other.class == String && other.value.eql?(self.value); end      
@@ -207,8 +233,14 @@ EOS
       end
 
       def as_key(key)
-        r = key.to_repr
+        r = key
         case r
+        when ::String
+          r.to_sym
+        when ::Symbol
+          r
+        when ::Numeric
+          r
         when Repr::String
           r.value.to_sym
         when Repr::Num
@@ -234,7 +266,7 @@ EOS
       end
       
       def lookup(key)
-        realkey = as_key key.to_repr
+        realkey = as_key key
         result = @table[realkey]
 
 #        p @table

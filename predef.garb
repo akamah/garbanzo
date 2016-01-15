@@ -1,417 +1,417 @@
-{<"@">: <"set">,
- <"object">:
-  {<"@">: <"get">,
-   <"object">:
-    {<"@">: <"get">,
-     <"object">:
-      {<"@">: <"get">,
-       <"object">:
-        {<"@">: <"get">,
-         <"object">:
-          {<"@">: <"getenv">
+{"@": "set",
+ "object":
+  {"@": "get",
+   "object":
+    {"@": "get",
+     "object":
+      {"@": "get",
+       "object":
+        {"@": "get",
+         "object":
+          {"@": "getenv"
           },
-         <"key">: <"/">
+         "key": "/"
         },
-       <"key">: <"parser">
+       "key": "parser"
       },
-     <"key">: <"sentence">
+     "key": "sentence"
     },
-   <"key">: <"children">
+   "key": "children"
   },
- <"key">: <"newline">,
- <"value">:
-  {<"@">: <"quote">,
-   <"value">:
-    {<"@">: <"scope">,
-     <"body">:
-      {<"0">:
-        {<"@">: <"terminal">,
-         <"string">: <"\n">
+ "key": "newline",
+ "value":
+  {"@": "quote",
+   "value":
+    {"@": "scope",
+     "body":
+      {"0":
+        {"@": "terminal",
+         "string": "\n"
         }
       }
     }
   }
 }
-{<"@">: <"set">,
- <"object">:
-  {<"@">: <"get">,
-   <"object">:
-    {<"@">: <"get">,
-     <"object">:
-      {<"@">: <"getenv">
+{"@": "set",
+ "object":
+  {"@": "get",
+   "object":
+    {"@": "get",
+     "object":
+      {"@": "getenv"
       },
-     <"key">: <"/">
+     "key": "/"
     },
-   <"key">: <"parser">
+   "key": "parser"
   },
- <"key">: <"newline">,
- <"value">:
-  {<"@">: <"get">,
-   <"object">:
-    {<"@">: <"get">,
-     <"object">:
-      {<"@">: <"get">,
-       <"object">:
-        {<"@">: <"get">,
-         <"object">:
-          {<"@">: <"get">,
-           <"object">:
-            {<"@">: <"getenv">
+ "key": "newline",
+ "value":
+  {"@": "get",
+   "object":
+    {"@": "get",
+     "object":
+      {"@": "get",
+       "object":
+        {"@": "get",
+         "object":
+          {"@": "get",
+           "object":
+            {"@": "getenv"
             },
-           <"key">: <"/">
+           "key": "/"
           },
-         <"key">: <"parser">
+         "key": "parser"
         },
-       <"key">: <"sentence">
+       "key": "sentence"
       },
-     <"key">: <"children">
+     "key": "children"
     },
-   <"key">: <"newline">
+   "key": "newline"
   }
 }
-{<"@">: <"set">,
- <"object">:
-  {<"@">: <"get">,
-   <"object">:
-    {<"@">: <"getenv">
+{"@": "set",
+ "object":
+  {"@": "get",
+   "object":
+    {"@": "getenv"
     },
-   <"key">: <"parser">
+   "key": "parser"
   },
- <"key">: <"print">,
- <"value">:
-  {<"@">: <"quote">,
-   <"value">:
-    {<"@">: <"scope">,
-     <"body">:
-      {<"0">:
-        {<"@">: <"terminal">,
-         <"string">: <"print">
+ "key": "print",
+ "value":
+  {"@": "quote",
+   "value":
+    {"@": "scope",
+     "body":
+      {"0":
+        {"@": "terminal",
+         "string": "print"
         },
-       <"1">:
-        {<"@">: <"eval">,
-         <"env">:
-          {<"@">: <"getenv">
+       "1":
+        {"@": "eval",
+         "env":
+          {"@": "getenv"
           },
-         <"program">:
-          {<"@">: <"get">,
-           <"object">:
-            {<"@">: <"get">,
-             <"object">:
-              {<"@">: <"get">,
-               <"object">:
-                {<"@">: <"getenv">
+         "program":
+          {"@": "get",
+           "object":
+            {"@": "get",
+             "object":
+              {"@": "get",
+               "object":
+                {"@": "getenv"
                 },
-               <"key">: <"/">
+               "key": "/"
               },
-             <"key">: <"parser">
+             "key": "parser"
             },
-           <"key">: <"whitespaces">
+           "key": "whitespaces"
           }
         },
-       <"2">:
-        {<"@">: <"set">,
-         <"object">:
-          {<"@">: <"getenv">
+       "2":
+        {"@": "set",
+         "object":
+          {"@": "getenv"
           },
-         <"key">: <"expr">,
-         <"value">:
-          {<"@">: <"eval">,
-           <"env">:
-            {<"@">: <"getenv">
+         "key": "expr",
+         "value":
+          {"@": "eval",
+           "env":
+            {"@": "getenv"
             },
-           <"program">:
-            {<"@">: <"get">,
-             <"object">:
-              {<"@">: <"get">,
-               <"object">:
-                {<"@">: <"get">,
-                 <"object">:
-                  {<"@">: <"getenv">
+           "program":
+            {"@": "get",
+             "object":
+              {"@": "get",
+               "object":
+                {"@": "get",
+                 "object":
+                  {"@": "getenv"
                   },
-                 <"key">: <"/">
+                 "key": "/"
                 },
-               <"key">: <"parser">
+               "key": "parser"
               },
-             <"key">: <"expression">
+             "key": "expression"
             }
           }
         },
-       <"3">:
-        {<"@">: <"set">,
-         <"object">:
-          {<"@">: <"getenv">
+       "3":
+        {"@": "set",
+         "object":
+          {"@": "getenv"
           },
-         <"key">: <"val">,
-         <"value">:
-          {<"@">: <"datastore">,
-           <"object">:
-            {<"@">: <"print">
+         "key": "val",
+         "value":
+          {"@": "datastore",
+           "object":
+            {"@": "print"
             }
           }
         },
-       <"4">:
-        {<"@">: <"set">,
-         <"object">:
-          {<"@">: <"get">,
-           <"object">:
-            {<"@">: <"getenv">
+       "4":
+        {"@": "set",
+         "object":
+          {"@": "get",
+           "object":
+            {"@": "getenv"
             },
-           <"key">: <"val">
+           "key": "val"
           },
-         <"key">: <"value">,
-         <"value">:
-          {<"@">: <"get">,
-           <"object">:
-            {<"@">: <"getenv">
+         "key": "value",
+         "value":
+          {"@": "get",
+           "object":
+            {"@": "getenv"
             },
-           <"key">: <"expr">
+           "key": "expr"
           }
         },
-       <"5">:
-        {<"@">: <"get">,
-         <"object">:
-          {<"@">: <"getenv">
+       "5":
+        {"@": "get",
+         "object":
+          {"@": "getenv"
           },
-         <"key">: <"val">
+         "key": "val"
         }
       }
     }
   }
 }
-{<"@">: <"insertprev">,
- <"object">:
-  {<"@">: <"get">,
-   <"object">:
-    {<"@">: <"get">,
-     <"object">:
-      {<"@">: <"get">,
-       <"object">:
-        {<"@">: <"get">,
-         <"object">:
-          {<"@">: <"getenv">
+{"@": "insertprev",
+ "object":
+  {"@": "get",
+   "object":
+    {"@": "get",
+     "object":
+      {"@": "get",
+       "object":
+        {"@": "get",
+         "object":
+          {"@": "getenv"
           },
-         <"key">: <"/">
+         "key": "/"
         },
-       <"key">: <"parser">
+       "key": "parser"
       },
-     <"key">: <"sentence">
+     "key": "sentence"
     },
-   <"key">: <"children">
+   "key": "children"
   },
- <"origin">:
-  {<"@">: <"firstkey">,
-   <"object">:
-    {<"@">: <"get">,
-     <"object">:
-      {<"@">: <"get">,
-       <"object">:
-        {<"@">: <"get">,
-         <"object">:
-          {<"@">: <"get">,
-           <"object">:
-            {<"@">: <"getenv">
+ "origin":
+  {"@": "firstkey",
+   "object":
+    {"@": "get",
+     "object":
+      {"@": "get",
+       "object":
+        {"@": "get",
+         "object":
+          {"@": "get",
+           "object":
+            {"@": "getenv"
             },
-           <"key">: <"/">
+           "key": "/"
           },
-         <"key">: <"parser">
+         "key": "parser"
         },
-       <"key">: <"sentence">
+       "key": "sentence"
       },
-     <"key">: <"children">
+     "key": "children"
     }
   },
- <"key">: <"print">,
- <"value">:
-  {<"@">: <"get">,
-   <"object">:
-    {<"@">: <"get">,
-     <"object">:
-      {<"@">: <"get">,
-       <"object">:
-        {<"@">: <"getenv">
+ "key": "print",
+ "value":
+  {"@": "get",
+   "object":
+    {"@": "get",
+     "object":
+      {"@": "get",
+       "object":
+        {"@": "getenv"
         },
-       <"key">: <"/">
+       "key": "/"
       },
-     <"key">: <"parser">
+     "key": "parser"
     },
-   <"key">: <"print">
+   "key": "print"
   }
 }
-{<"@">: <"set">,
- <"object">:
-  {<"@">: <"get">,
-   <"object">:
-    {<"@">: <"getenv">
+{"@": "set",
+ "object":
+  {"@": "get",
+   "object":
+    {"@": "getenv"
     },
-   <"key">: <"parser">
+   "key": "parser"
   },
- <"key">: <"symbol">,
- <"value">:
-  {<"@">: <"quote">,
-   <"value">:
-    {<"@">: <"scope">,
-     <"body">:
-      {<"0">:
-        {<"@">: <"set">,
-         <"object">:
-          {<"@">: <"getenv">
+ "key": "symbol",
+ "value":
+  {"@": "quote",
+   "value":
+    {"@": "scope",
+     "body":
+      {"0":
+        {"@": "set",
+         "object":
+          {"@": "getenv"
           },
-         <"key">: <"oo">,
-         <"value">:
-          {<"@">: <"call">,
-           <"func">:
-            {<"@">: <"get">,
-             <"object">:
-              {<"@">: <"get">,
-               <"object">:
-                {<"@">: <"getenv">
+         "key": "oo",
+         "value":
+          {"@": "call",
+           "func":
+            {"@": "get",
+             "object":
+              {"@": "get",
+               "object":
+                {"@": "getenv"
                 },
-               <"key">: <"/">
+               "key": "/"
               },
-             <"key">: <"oneof">
+             "key": "oneof"
             },
-           <"args">:
-            {<"string">: <"abcdefghijklmnopqrstuvwxyz">
+           "args":
+            {"string": "abcdefghijklmnopqrstuvwxyz"
             }
           }
         },
-       <"1">:
-        {<"@">: <"eval">,
-         <"env">:
-          {<"@">: <"getenv">
+       "1":
+        {"@": "eval",
+         "env":
+          {"@": "getenv"
           },
-         <"program">:
-          {<"@">: <"get">,
-           <"object">:
-            {<"@">: <"get">,
-             <"object">:
-              {<"@">: <"get">,
-               <"object">:
-                {<"@">: <"getenv">
+         "program":
+          {"@": "get",
+           "object":
+            {"@": "get",
+             "object":
+              {"@": "get",
+               "object":
+                {"@": "getenv"
                 },
-               <"key">: <"/">
+               "key": "/"
               },
-             <"key">: <"parser">
+             "key": "parser"
             },
-           <"key">: <"whitespaces">
+           "key": "whitespaces"
           }
         },
-       <"2">:
-        {<"@">: <"set">,
-         <"object">:
-          {<"@">: <"getenv">
+       "2":
+        {"@": "set",
+         "object":
+          {"@": "getenv"
           },
-         <"key">: <"result">,
-         <"value">:
-          {<"@">: <"eval">,
-           <"env">:
-            {<"@">: <"getenv">
+         "key": "result",
+         "value":
+          {"@": "eval",
+           "env":
+            {"@": "getenv"
             },
-           <"program">:
-            {<"@">: <"get">,
-             <"object">:
-              {<"@">: <"getenv">
+           "program":
+            {"@": "get",
+             "object":
+              {"@": "getenv"
               },
-             <"key">: <"oo">
+             "key": "oo"
             }
           }
         },
-       <"3">:
-        {<"@">: <"set">,
-         <"object">:
-          {<"@">: <"getenv">
+       "3":
+        {"@": "set",
+         "object":
+          {"@": "getenv"
           },
-         <"key">: <"cs">,
-         <"value">:
-          {<"@">: <"many">,
-           <"parser">:
-            {<"@">: <"get">,
-             <"object">:
-              {<"@">: <"getenv">
+         "key": "cs",
+         "value":
+          {"@": "many",
+           "parser":
+            {"@": "get",
+             "object":
+              {"@": "getenv"
               },
-             <"key">: <"oo">
+             "key": "oo"
             }
           }
         },
-       <"4">:
-        {<"@">: <"eval">,
-         <"env">:
-          {<"@">: <"getenv">
+       "4":
+        {"@": "eval",
+         "env":
+          {"@": "getenv"
           },
-         <"program">:
-          {<"@">: <"get">,
-           <"object">:
-            {<"@">: <"get">,
-             <"object">:
-              {<"@">: <"get">,
-               <"object">:
-                {<"@">: <"getenv">
+         "program":
+          {"@": "get",
+           "object":
+            {"@": "get",
+             "object":
+              {"@": "get",
+               "object":
+                {"@": "getenv"
                 },
-               <"key">: <"/">
+               "key": "/"
               },
-             <"key">: <"parser">
+             "key": "parser"
             },
-           <"key">: <"whitespaces">
+           "key": "whitespaces"
           }
         },
-       <"5">:
-        {<"@">: <"call">,
-         <"func">:
-          {<"@">: <"get">,
-           <"object">:
-            {<"@">: <"get">,
-             <"object">:
-              {<"@">: <"getenv">
+       "5":
+        {"@": "call",
+         "func":
+          {"@": "get",
+           "object":
+            {"@": "get",
+             "object":
+              {"@": "getenv"
               },
-             <"key">: <"/">
+             "key": "/"
             },
-           <"key">: <"foreach">
+           "key": "foreach"
           },
-         <"args">:
-          {<"store">:
-            {<"@">: <"get">,
-             <"object">:
-              {<"@">: <"getenv">
+         "args":
+          {"store":
+            {"@": "get",
+             "object":
+              {"@": "getenv"
               },
-             <"key">: <"cs">
+             "key": "cs"
             },
-           <"func">:
-            {<"@">: <"lambda">,
-             <"env">:
-              {<"@">: <"getenv">
+           "func":
+            {"@": "lambda",
+             "env":
+              {"@": "getenv"
               },
-             <"body">:
-              {<"@">: <"begin">,
-               <"body">:
-                {<"0">:
-                  {<"@">: <"set">,
-                   <"object">:
-                    {<"@">: <"get">,
-                     <"object">:
-                      {<"@">: <"getenv">
+             "body":
+              {"@": "begin",
+               "body":
+                {"0":
+                  {"@": "set",
+                   "object":
+                    {"@": "get",
+                     "object":
+                      {"@": "getenv"
                       },
-                     <"key">: <"..">
+                     "key": ".."
                     },
-                   <"key">: <"result">,
-                   <"value">:
-                    {<"@">: <"append">,
-                     <"left">:
-                      {<"@">: <"get">,
-                       <"object">:
-                        {<"@">: <"get">,
-                         <"object">:
-                          {<"@">: <"getenv">
+                   "key": "result",
+                   "value":
+                    {"@": "append",
+                     "left":
+                      {"@": "get",
+                       "object":
+                        {"@": "get",
+                         "object":
+                          {"@": "getenv"
                           },
-                         <"key">: <"..">
+                         "key": ".."
                         },
-                       <"key">: <"result">
+                       "key": "result"
                       },
-                     <"right">:
-                      {<"@">: <"get">,
-                       <"object">:
-                        {<"@">: <"getenv">
+                     "right":
+                      {"@": "get",
+                       "object":
+                        {"@": "getenv"
                         },
-                       <"key">: <"value">
+                       "key": "value"
                       }
                     }
                   }
@@ -420,95 +420,95 @@
             }
           }
         },
-       <"6">:
-        {<"@">: <"get">,
-         <"object">:
-          {<"@">: <"getenv">
+       "6":
+        {"@": "get",
+         "object":
+          {"@": "getenv"
           },
-         <"key">: <"result">
+         "key": "result"
         }
       }
     }
   }
 }
-{<"@">: <"set">,
- <"object">:
-  {<"@">: <"get">,
-   <"object">:
-    {<"@">: <"getenv">
+{"@": "set",
+ "object":
+  {"@": "get",
+   "object":
+    {"@": "getenv"
     },
-   <"key">: <"parser">
+   "key": "parser"
   },
- <"key">: <"path">,
- <"value">:
-  {<"@">: <"quote">,
-   <"value">:
-    {<"@">: <"scope">,
-     <"body">:
-      {<"0">:
-        {<"@">: <"set">,
-         <"object">:
-          {<"@">: <"getenv">
+ "key": "path",
+ "value":
+  {"@": "quote",
+   "value":
+    {"@": "scope",
+     "body":
+      {"0":
+        {"@": "set",
+         "object":
+          {"@": "getenv"
           },
-         <"key">: <"p">,
-         <"value">:
-          {<"@">: <"eval">,
-           <"env">:
-            {<"@">: <"getenv">
+         "key": "p",
+         "value":
+          {"@": "eval",
+           "env":
+            {"@": "getenv"
             },
-           <"program">:
-            {<"@">: <"get">,
-             <"object">:
-              {<"@">: <"get">,
-               <"object">:
-                {<"@">: <"get">,
-                 <"object">:
-                  {<"@">: <"getenv">
+           "program":
+            {"@": "get",
+             "object":
+              {"@": "get",
+               "object":
+                {"@": "get",
+                 "object":
+                  {"@": "getenv"
                   },
-                 <"key">: <"/">
+                 "key": "/"
                 },
-               <"key">: <"parser">
+               "key": "parser"
               },
-             <"key">: <"symbol">
+             "key": "symbol"
             }
           }
         },
-       <"1">:
-        {<"@">: <"set">,
-         <"object">:
-          {<"@">: <"getenv">
+       "1":
+        {"@": "set",
+         "object":
+          {"@": "getenv"
           },
-         <"key">: <"ps">,
-         <"value">:
-          {<"@">: <"many">,
-           <"parser">:
-            {<"@">: <"quote">,
-             <"value">:
-              {<"@">: <"scope">,
-               <"body">:
-                {<"0">:
-                  {<"@">: <"terminal">,
-                   <"string">: <".">
+         "key": "ps",
+         "value":
+          {"@": "many",
+           "parser":
+            {"@": "quote",
+             "value":
+              {"@": "scope",
+               "body":
+                {"0":
+                  {"@": "terminal",
+                   "string": "."
                   },
-                 <"1">:
-                  {<"@">: <"eval">,
-                   <"env">:
-                    {<"@">: <"getenv">
+                 "1":
+                  {"@": "eval",
+                   "env":
+                    {"@": "getenv"
                     },
-                   <"program">:
-                    {<"@">: <"get">,
-                     <"object">:
-                      {<"@">: <"get">,
-                       <"object">:
-                        {<"@">: <"get">,
-                         <"object">:
-                          {<"@">: <"getenv">
+                   "program":
+                    {"@": "get",
+                     "object":
+                      {"@": "get",
+                       "object":
+                        {"@": "get",
+                         "object":
+                          {"@": "getenv"
                           },
-                         <"key">: <"/">
+                         "key": "/"
                         },
-                       <"key">: <"parser">
+                       "key": "parser"
                       },
-                     <"key">: <"symbol">
+                     "key": "symbol"
                     }
                   }
                 }
@@ -516,90 +516,90 @@
             }
           }
         },
-       <"2">:
-        {<"@">: <"set">,
-         <"object">:
-          {<"@">: <"getenv">
+       "2":
+        {"@": "set",
+         "object":
+          {"@": "getenv"
           },
-         <"key">: <"result">,
-         <"value">:
+         "key": "result",
+         "value":
           {
           }
         },
-       <"3">:
-        {<"@">: <"set">,
-         <"object">:
-          {<"@">: <"get">,
-           <"object">:
-            {<"@">: <"getenv">
+       "3":
+        {"@": "set",
+         "object":
+          {"@": "get",
+           "object":
+            {"@": "getenv"
             },
-           <"key">: <"result">
+           "key": "result"
           },
-         <"key">: <"head">,
-         <"value">:
-          {<"@">: <"get">,
-           <"object">:
-            {<"@">: <"getenv">
+         "key": "head",
+         "value":
+          {"@": "get",
+           "object":
+            {"@": "getenv"
             },
-           <"key">: <"p">
+           "key": "p"
           }
         },
-       <"4">: <"hoge">,
-       <"5">:
-        {<"@">: <"call">,
-         <"func">:
-          {<"@">: <"get">,
-           <"object">:
-            {<"@">: <"get">,
-             <"object">:
-              {<"@">: <"getenv">
+       "4": "hoge",
+       "5":
+        {"@": "call",
+         "func":
+          {"@": "get",
+           "object":
+            {"@": "get",
+             "object":
+              {"@": "getenv"
               },
-             <"key">: <"/">
+             "key": "/"
             },
-           <"key">: <"foreach">
+           "key": "foreach"
           },
-         <"args">:
-          {<"store">:
-            {<"@">: <"get">,
-             <"object">:
-              {<"@">: <"getenv">
+         "args":
+          {"store":
+            {"@": "get",
+             "object":
+              {"@": "getenv"
               },
-             <"key">: <"ps">
+             "key": "ps"
             },
-           <"func">:
-            {<"@">: <"lambda">,
-             <"env">:
-              {<"@">: <"getenv">
+           "func":
+            {"@": "lambda",
+             "env":
+              {"@": "getenv"
               },
-             <"body">:
-              {<"@">: <"begin">,
-               <"body">:
-                {<"0">:
-                  {<"@">: <"set">,
-                   <"object">:
-                    {<"@">: <"get">,
-                     <"object">:
-                      {<"@">: <"get">,
-                       <"object">:
-                        {<"@">: <"getenv">
+             "body":
+              {"@": "begin",
+               "body":
+                {"0":
+                  {"@": "set",
+                   "object":
+                    {"@": "get",
+                     "object":
+                      {"@": "get",
+                       "object":
+                        {"@": "getenv"
                         },
-                       <"key">: <"..">
+                       "key": ".."
                       },
-                     <"key">: <"result">
+                     "key": "result"
                     },
-                   <"key">:
-                    {<"@">: <"get">,
-                     <"object">:
-                      {<"@">: <"getenv">
+                   "key":
+                    {"@": "get",
+                     "object":
+                      {"@": "getenv"
                       },
-                     <"key">: <"key">
+                     "key": "key"
                     },
-                   <"value">:
-                    {<"@">: <"get">,
-                     <"object">:
-                      {<"@">: <"getenv">
+                   "value":
+                    {"@": "get",
+                     "object":
+                      {"@": "getenv"
                       },
-                     <"key">: <"value">
+                     "key": "value"
                     }
                   }
                 }
@@ -607,135 +607,135 @@
             }
           }
         },
-       <"6">:
-        {<"@">: <"get">,
-         <"object">:
-          {<"@">: <"getenv">
+       "6":
+        {"@": "get",
+         "object":
+          {"@": "getenv"
           },
-         <"key">: <"result">
+         "key": "result"
         }
       }
     }
   }
 }
-{<"@">: <"set">,
- <"object">:
-  {<"@">: <"get">,
-   <"object">:
-    {<"@">: <"getenv">
+{"@": "set",
+ "object":
+  {"@": "get",
+   "object":
+    {"@": "getenv"
     },
-   <"key">: <"parser">
+   "key": "parser"
   },
- <"key">: <"variable">,
- <"value">:
-  {<"@">: <"quote">,
-   <"value">:
-    {<"@">: <"scope">,
-     <"body">:
-      {<"0">:
-        {<"@">: <"set">,
-         <"object">:
-          {<"@">: <"getenv">
+ "key": "variable",
+ "value":
+  {"@": "quote",
+   "value":
+    {"@": "scope",
+     "body":
+      {"0":
+        {"@": "set",
+         "object":
+          {"@": "getenv"
           },
-         <"key">: <"name">,
-         <"value">:
-          {<"@">: <"eval">,
-           <"env">:
-            {<"@">: <"getenv">
+         "key": "name",
+         "value":
+          {"@": "eval",
+           "env":
+            {"@": "getenv"
             },
-           <"program">:
-            {<"@">: <"get">,
-             <"object">:
-              {<"@">: <"get">,
-               <"object">:
-                {<"@">: <"get">,
-                 <"object">:
-                  {<"@">: <"getenv">
+           "program":
+            {"@": "get",
+             "object":
+              {"@": "get",
+               "object":
+                {"@": "get",
+                 "object":
+                  {"@": "getenv"
                   },
-                 <"key">: <"/">
+                 "key": "/"
                 },
-               <"key">: <"parser">
+               "key": "parser"
               },
-             <"key">: <"path">
+             "key": "path"
             }
           }
         },
-       <"1">:
-        {<"@">: <"set">,
-         <"object">:
-          {<"@">: <"getenv">
+       "1":
+        {"@": "set",
+         "object":
+          {"@": "getenv"
           },
-         <"key">: <"result">,
-         <"value">:
-          {<"@">: <"datastore">,
-           <"object">:
-            {<"@">: <"getenv">
+         "key": "result",
+         "value":
+          {"@": "datastore",
+           "object":
+            {"@": "getenv"
             }
           }
         },
-       <"2">: <"hoge">,
-       <"3">:
-        {<"@">: <"call">,
-         <"func">:
-          {<"@">: <"get">,
-           <"object">:
-            {<"@">: <"get">,
-             <"object">:
-              {<"@">: <"getenv">
+       "2": "hoge",
+       "3":
+        {"@": "call",
+         "func":
+          {"@": "get",
+           "object":
+            {"@": "get",
+             "object":
+              {"@": "getenv"
               },
-             <"key">: <"/">
+             "key": "/"
             },
-           <"key">: <"foreach">
+           "key": "foreach"
           },
-         <"args">:
-          {<"store">:
-            {<"@">: <"get">,
-             <"object">:
-              {<"@">: <"getenv">
+         "args":
+          {"store":
+            {"@": "get",
+             "object":
+              {"@": "getenv"
               },
-             <"key">: <"name">
+             "key": "name"
             },
-           <"func">:
-            {<"@">: <"lambda">,
-             <"env">:
-              {<"@">: <"getenv">
+           "func":
+            {"@": "lambda",
+             "env":
+              {"@": "getenv"
               },
-             <"body">:
-              {<"@">: <"begin">,
-               <"body">:
-                {<"0">: <"\n">,
-                 <"1">: <"\n">,
-                 <"2">:
-                  {<"@">: <"set">,
-                   <"object">:
-                    {<"@">: <"get">,
-                     <"object">:
-                      {<"@">: <"getenv">
+             "body":
+              {"@": "begin",
+               "body":
+                {"0": "\n",
+                 "1": "\n",
+                 "2":
+                  {"@": "set",
+                   "object":
+                    {"@": "get",
+                     "object":
+                      {"@": "getenv"
                       },
-                     <"key">: <"..">
+                     "key": ".."
                     },
-                   <"key">: <"result">,
-                   <"value">:
-                    {<"@">: <"datastore">,
-                     <"object">:
-                      {<"@">: <"get">,
-                       <"object">:
-                        {<"@">: <"get">,
-                         <"object">:
-                          {<"@">: <"get">,
-                           <"object">:
-                            {<"@">: <"getenv">
+                   "key": "result",
+                   "value":
+                    {"@": "datastore",
+                     "object":
+                      {"@": "get",
+                       "object":
+                        {"@": "get",
+                         "object":
+                          {"@": "get",
+                           "object":
+                            {"@": "getenv"
                             },
-                           <"key">: <"..">
+                           "key": ".."
                           },
-                         <"key">: <"result">
+                         "key": "result"
                         },
-                       <"key">:
-                        {<"@">: <"get">,
-                         <"object">:
-                          {<"@">: <"getenv">
+                       "key":
+                        {"@": "get",
+                         "object":
+                          {"@": "getenv"
                           },
-                         <"key">: <"value">
+                         "key": "value"
                         }
                       }
                     }
@@ -745,179 +745,179 @@
             }
           }
         },
-       <"4">:
-        {<"@">: <"get">,
-         <"object">:
-          {<"@">: <"getenv">
+       "4":
+        {"@": "get",
+         "object":
+          {"@": "getenv"
           },
-         <"key">: <"result">
+         "key": "result"
         }
       }
     }
   }
 }
-{<"@">: <"set">,
- <"object">:
-  {<"@">: <"get">,
-   <"object">:
-    {<"@">: <"get">,
-     <"object">:
-      {<"@">: <"get">,
-       <"object">:
-        {<"@">: <"get">,
-         <"object">:
-          {<"@">: <"getenv">
+{"@": "set",
+ "object":
+  {"@": "get",
+   "object":
+    {"@": "get",
+     "object":
+      {"@": "get",
+       "object":
+        {"@": "get",
+         "object":
+          {"@": "getenv"
           },
-         <"key">: <"/">
+         "key": "/"
         },
-       <"key">: <"parser">
+       "key": "parser"
       },
-     <"key">: <"expression">
+     "key": "expression"
     },
-   <"key">: <"children">
+   "key": "children"
   },
- <"key">: <"variable">,
- <"value">:
-  {<"@">: <"get">,
-   <"object">:
-    {<"@">: <"get">,
-     <"object">:
-      {<"@">: <"get">,
-       <"object">:
-        {<"@">: <"getenv">
+ "key": "variable",
+ "value":
+  {"@": "get",
+   "object":
+    {"@": "get",
+     "object":
+      {"@": "get",
+       "object":
+        {"@": "getenv"
         },
-       <"key">: <"/">
+       "key": "/"
       },
-     <"key">: <"parser">
+     "key": "parser"
     },
-   <"key">: <"variable">
+   "key": "variable"
   }
 }
-{<"@">: <"set">,
- <"object">:
-  {<"@">: <"get">,
-   <"object">:
-    {<"@">: <"getenv">
+{"@": "set",
+ "object":
+  {"@": "get",
+   "object":
+    {"@": "getenv"
     },
-   <"key">: <"parser">
+   "key": "parser"
   },
- <"key">: <"rootvar">,
- <"value">:
-  {<"@">: <"quote">,
-   <"value">:
-    {<"@">: <"scope">,
-     <"body">:
-      {<"0">:
-        {<"@">: <"set">,
-         <"object">:
-          {<"@">: <"getenv">
+ "key": "rootvar",
+ "value":
+  {"@": "quote",
+   "value":
+    {"@": "scope",
+     "body":
+      {"0":
+        {"@": "set",
+         "object":
+          {"@": "getenv"
           },
-         <"key">: <"name">,
-         <"value">:
-          {<"@">: <"eval">,
-           <"env">:
-            {<"@">: <"getenv">
+         "key": "name",
+         "value":
+          {"@": "eval",
+           "env":
+            {"@": "getenv"
             },
-           <"program">:
-            {<"@">: <"get">,
-             <"object">:
-              {<"@">: <"get">,
-               <"object">:
-                {<"@">: <"get">,
-                 <"object">:
-                  {<"@">: <"getenv">
+           "program":
+            {"@": "get",
+             "object":
+              {"@": "get",
+               "object":
+                {"@": "get",
+                 "object":
+                  {"@": "getenv"
                   },
-                 <"key">: <"/">
+                 "key": "/"
                 },
-               <"key">: <"parser">
+               "key": "parser"
               },
-             <"key">: <"path">
+             "key": "path"
             }
           }
         },
-       <"1">:
-        {<"@">: <"set">,
-         <"object">:
-          {<"@">: <"getenv">
+       "1":
+        {"@": "set",
+         "object":
+          {"@": "getenv"
           },
-         <"key">: <"result">,
-         <"value">:
-          {<"@">: <"copy">,
-           <"object">:
-            {<"@">: <"quote">,
-             <"value">:
-              {<"@">: <"get">,
-               <"object">:
-                {<"@">: <"getenv">
+         "key": "result",
+         "value":
+          {"@": "copy",
+           "object":
+            {"@": "quote",
+             "value":
+              {"@": "get",
+               "object":
+                {"@": "getenv"
                 },
-               <"key">: <"/">
+               "key": "/"
               }
             }
           }
         },
-       <"2">: <"hoge">,
-       <"3">:
-        {<"@">: <"call">,
-         <"func">:
-          {<"@">: <"get">,
-           <"object">:
-            {<"@">: <"get">,
-             <"object">:
-              {<"@">: <"getenv">
+       "2": "hoge",
+       "3":
+        {"@": "call",
+         "func":
+          {"@": "get",
+           "object":
+            {"@": "get",
+             "object":
+              {"@": "getenv"
               },
-             <"key">: <"/">
+             "key": "/"
             },
-           <"key">: <"foreach">
+           "key": "foreach"
           },
-         <"args">:
-          {<"store">:
-            {<"@">: <"get">,
-             <"object">:
-              {<"@">: <"getenv">
+         "args":
+          {"store":
+            {"@": "get",
+             "object":
+              {"@": "getenv"
               },
-             <"key">: <"name">
+             "key": "name"
             },
-           <"func">:
-            {<"@">: <"lambda">,
-             <"env">:
-              {<"@">: <"getenv">
+           "func":
+            {"@": "lambda",
+             "env":
+              {"@": "getenv"
               },
-             <"body">:
-              {<"@">: <"begin">,
-               <"body">:
-                {<"0">: <"\n">,
-                 <"1">: <"\n">,
-                 <"2">:
-                  {<"@">: <"set">,
-                   <"object">:
-                    {<"@">: <"get">,
-                     <"object">:
-                      {<"@">: <"getenv">
+             "body":
+              {"@": "begin",
+               "body":
+                {"0": "\n",
+                 "1": "\n",
+                 "2":
+                  {"@": "set",
+                   "object":
+                    {"@": "get",
+                     "object":
+                      {"@": "getenv"
                       },
-                     <"key">: <"..">
+                     "key": ".."
                     },
-                   <"key">: <"result">,
-                   <"value">:
-                    {<"@">: <"datastore">,
-                     <"object">:
-                      {<"@">: <"get">,
-                       <"object">:
-                        {<"@">: <"get">,
-                         <"object">:
-                          {<"@">: <"get">,
-                           <"object">:
-                            {<"@">: <"getenv">
+                   "key": "result",
+                   "value":
+                    {"@": "datastore",
+                     "object":
+                      {"@": "get",
+                       "object":
+                        {"@": "get",
+                         "object":
+                          {"@": "get",
+                           "object":
+                            {"@": "getenv"
                             },
-                           <"key">: <"..">
+                           "key": ".."
                           },
-                         <"key">: <"result">
+                         "key": "result"
                         },
-                       <"key">:
-                        {<"@">: <"get">,
-                         <"object">:
-                          {<"@">: <"getenv">
+                       "key":
+                        {"@": "get",
+                         "object":
+                          {"@": "getenv"
                           },
-                         <"key">: <"value">
+                         "key": "value"
                         }
                       }
                     }
@@ -927,559 +927,296 @@
             }
           }
         },
-       <"4">:
-        {<"@">: <"get">,
-         <"object">:
-          {<"@">: <"getenv">
+       "4":
+        {"@": "get",
+         "object":
+          {"@": "getenv"
           },
-         <"key">: <"result">
+         "key": "result"
         }
       }
     }
   }
 }
-{<"@">: <"set">,
- <"object">:
-  {<"@">: <"get">,
-   <"object">:
-    {<"@">: <"get">,
-     <"object">:
-      {<"@">: <"getenv">
+{"@": "set",
+ "object":
+  {"@": "get",
+   "object":
+    {"@": "get",
+     "object":
+      {"@": "getenv"
       },
-     <"key">: <"/">
+     "key": "/"
     },
-   <"key">: <"parser">
+   "key": "parser"
   },
- <"key">: <"assign">,
- <"value">:
-  {<"@">: <"quote">,
-   <"value">:
-    {<"@">: <"scope">,
-     <"body">:
-      {<"0">:
-        {<"@">: <"set">,
-         <"object">:
-          {<"@">: <"getenv">
+ "key": "assign",
+ "value":
+  {"@": "quote",
+   "value":
+    {"@": "scope",
+     "body":
+      {"0":
+        {"@": "set",
+         "object":
+          {"@": "getenv"
           },
-         <"key">: <"ws">,
-         <"value">:
-          {<"@">: <"get">,
-           <"object">:
-            {<"@">: <"get">,
-             <"object">:
-              {<"@">: <"get">,
-               <"object">:
-                {<"@">: <"getenv">
+         "key": "ws",
+         "value":
+          {"@": "get",
+           "object":
+            {"@": "get",
+             "object":
+              {"@": "get",
+               "object":
+                {"@": "getenv"
                 },
-               <"key">: <"/">
+               "key": "/"
               },
-             <"key">: <"parser">
+             "key": "parser"
             },
-           <"key">: <"whitespaces">
+           "key": "whitespaces"
           }
         },
-       <"1">:
-        {<"@">: <"set">,
-         <"object">:
-          {<"@">: <"getenv">
+       "1":
+        {"@": "set",
+         "object":
+          {"@": "getenv"
           },
-         <"key">: <"path">,
-         <"value">:
-          {<"@">: <"eval">,
-           <"env">:
-            {<"@">: <"getenv">
+         "key": "path",
+         "value":
+          {"@": "eval",
+           "env":
+            {"@": "getenv"
             },
-           <"program">:
-            {<"@">: <"get">,
-             <"object">:
-              {<"@">: <"get">,
-               <"object">:
-                {<"@">: <"get">,
-                 <"object">:
-                  {<"@">: <"getenv">
+           "program":
+            {"@": "get",
+             "object":
+              {"@": "get",
+               "object":
+                {"@": "get",
+                 "object":
+                  {"@": "getenv"
                   },
-                 <"key">: <"/">
+                 "key": "/"
                 },
-               <"key">: <"parser">
+               "key": "parser"
               },
-             <"key">: <"variable">
+             "key": "variable"
             }
           }
         },
-       <"2">:
-        {<"@">: <"eval">,
-         <"env">:
-          {<"@">: <"getenv">
+       "2":
+        {"@": "eval",
+         "env":
+          {"@": "getenv"
           },
-         <"program">:
-          {<"@">: <"get">,
-           <"object">:
-            {<"@">: <"getenv">
+         "program":
+          {"@": "get",
+           "object":
+            {"@": "getenv"
             },
-           <"key">: <"ws">
+           "key": "ws"
           }
         },
-       <"3">:
-        {<"@">: <"terminal">,
-         <"string">: <"=">
+       "3":
+        {"@": "terminal",
+         "string": "="
         },
-       <"4">:
-        {<"@">: <"eval">,
-         <"env">:
-          {<"@">: <"getenv">
+       "4":
+        {"@": "eval",
+         "env":
+          {"@": "getenv"
           },
-         <"program">:
-          {<"@">: <"get">,
-           <"object">:
-            {<"@">: <"getenv">
+         "program":
+          {"@": "get",
+           "object":
+            {"@": "getenv"
             },
-           <"key">: <"ws">
+           "key": "ws"
           }
         },
-       <"5">:
-        {<"@">: <"set">,
-         <"object">:
-          {<"@">: <"getenv">
+       "5":
+        {"@": "set",
+         "object":
+          {"@": "getenv"
           },
-         <"key">: <"rhe">,
-         <"value">:
-          {<"@">: <"eval">,
-           <"env">:
-            {<"@">: <"getenv">
+         "key": "rhe",
+         "value":
+          {"@": "eval",
+           "env":
+            {"@": "getenv"
             },
-           <"program">:
-            {<"@">: <"get">,
-             <"object">:
-              {<"@">: <"get">,
-               <"object">:
-                {<"@">: <"get">,
-                 <"object">:
-                  {<"@">: <"getenv">
+           "program":
+            {"@": "get",
+             "object":
+              {"@": "get",
+               "object":
+                {"@": "get",
+                 "object":
+                  {"@": "getenv"
                   },
-                 <"key">: <"/">
+                 "key": "/"
                 },
-               <"key">: <"parser">
+               "key": "parser"
               },
-             <"key">: <"expression">
+             "key": "expression"
             }
           }
         },
-       <"6">:
-        {<"@">: <"set">,
-         <"object">:
-          {<"@">: <"get">,
-           <"object">:
-            {<"@">: <"getenv">
+       "6":
+        {"@": "set",
+         "object":
+          {"@": "get",
+           "object":
+            {"@": "getenv"
             },
-           <"key">: <"path">
+           "key": "path"
           },
-         <"key">: <"@">,
-         <"value">: <"set">
+         "key": "@",
+         "value": "set"
         },
-       <"7">:
-        {<"@">: <"set">,
-         <"object">:
-          {<"@">: <"get">,
-           <"object">:
-            {<"@">: <"getenv">
+       "7":
+        {"@": "set",
+         "object":
+          {"@": "get",
+           "object":
+            {"@": "getenv"
             },
-           <"key">: <"path">
+           "key": "path"
           },
-         <"key">: <"value">,
-         <"value">:
-          {<"@">: <"get">,
-           <"object">:
-            {<"@">: <"getenv">
+         "key": "value",
+         "value":
+          {"@": "get",
+           "object":
+            {"@": "getenv"
             },
-           <"key">: <"rhe">
+           "key": "rhe"
           }
         },
-       <"8">:
-        {<"@">: <"get">,
-         <"object">:
-          {<"@">: <"getenv">
+       "8":
+        {"@": "get",
+         "object":
+          {"@": "getenv"
           },
-         <"key">: <"path">
+         "key": "path"
         }
       }
     }
   }
 }
-{<"@">: <"set">,
- <"object">:
-  {<"@">: <"get">,
-   <"object">:
-    {<"@">: <"get">,
-     <"object">:
-      {<"@">: <"get">,
-       <"object">:
-        {<"@">: <"get">,
-         <"object">:
-          {<"@">: <"getenv">
+{"@": "set",
+ "object":
+  {"@": "get",
+   "object":
+    {"@": "get",
+     "object":
+      {"@": "get",
+       "object":
+        {"@": "get",
+         "object":
+          {"@": "getenv"
           },
-         <"key">: <"/">
+         "key": "/"
         },
-       <"key">: <"parser">
+       "key": "parser"
       },
-     <"key">: <"sentence">
+     "key": "sentence"
     },
-   <"key">: <"children">
+   "key": "children"
   },
- <"key">: <"assign">,
- <"value">:
-  {<"@">: <"get">,
-   <"object">:
-    {<"@">: <"get">,
-     <"object">:
-      {<"@">: <"get">,
-       <"object">:
-        {<"@">: <"getenv">
+ "key": "assign",
+ "value":
+  {"@": "get",
+   "object":
+    {"@": "get",
+     "object":
+      {"@": "get",
+       "object":
+        {"@": "getenv"
         },
-       <"key">: <"/">
+       "key": "/"
       },
-     <"key">: <"parser">
+     "key": "parser"
     },
-   <"key">: <"assign">
+   "key": "assign"
   }
 }
-{<"@">: <"set">,
- <"object">:
-  {<"@">: <"get">,
-   <"object">:
-    {<"@">: <"get">,
-     <"object">:
-      {<"@">: <"getenv">
+{"@": "set",
+ "object":
+  {"@": "get",
+   "object":
+    {"@": "get",
+     "object":
+      {"@": "getenv"
       },
-     <"key">: <"/">
+     "key": "/"
     },
-   <"key">: <"parser">
+   "key": "parser"
   },
- <"key">: <"do">,
- <"value">:
-  {<"@">: <"quote">,
-   <"value">:
-    {<"@">: <"scope">,
-     <"body">:
-      {<"0">:
-        {<"@">: <"terminal">,
-         <"string">: <"do">
+ "key": "do",
+ "value":
+  {"@": "quote",
+   "value":
+    {"@": "scope",
+     "body":
+      {"0":
+        {"@": "terminal",
+         "string": "do"
         },
-       <"1">:
-        {<"@">: <"set">,
-         <"object">:
-          {<"@">: <"getenv">
+       "1":
+        {"@": "set",
+         "object":
+          {"@": "getenv"
           },
-         <"key">: <"quoted">,
-         <"value">:
-          {<"@">: <"many">,
-           <"parser">:
-            {<"@">: <"quote">,
-             <"value">:
-              {<"@">: <"scope">,
-               <"body">:
-                {<"0">:
-                  {<"@">: <"eval">,
-                   <"env">:
-                    {<"@">: <"getenv">
+         "key": "quoted",
+         "value":
+          {"@": "many",
+           "parser":
+            {"@": "quote",
+             "value":
+              {"@": "scope",
+               "body":
+                {"0":
+                  {"@": "eval",
+                   "env":
+                    {"@": "getenv"
                     },
-                   <"program">:
-                    {<"@">: <"get">,
-                     <"object">:
-                      {<"@">: <"get">,
-                       <"object">:
-                        {<"@">: <"get">,
-                         <"object">:
-                          {<"@">: <"getenv">
+                   "program":
+                    {"@": "get",
+                     "object":
+                      {"@": "get",
+                       "object":
+                        {"@": "get",
+                         "object":
+                          {"@": "getenv"
                           },
-                         <"key">: <"/">
+                         "key": "/"
                         },
-                       <"key">: <"parser">
+                       "key": "parser"
                       },
-                     <"key">: <"whitespaces">
+                     "key": "whitespaces"
                     }
                   },
-                 <"1">:
-                  {<"@">: <"eval">,
-                   <"env">:
-                    {<"@">: <"getenv">
+                 "1":
+                  {"@": "eval",
+                   "env":
+                    {"@": "getenv"
                     },
-                   <"program">:
-                    {<"@">: <"get">,
-                     <"object">:
-                      {<"@">: <"get">,
-                       <"object">:
-                        {<"@">: <"get">,
-                         <"object">:
-                          {<"@">: <"getenv">
+                   "program":
+                    {"@": "get",
+                     "object":
+                      {"@": "get",
+                       "object":
+                        {"@": "get",
+                         "object":
+                          {"@": "getenv"
                           },
-                         <"key">: <"/">
+                         "key": "/"
                         },
-                       <"key">: <"parser">
+                       "key": "parser"
                       },
-                     <"key">: <"sentence">
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-       <"2">:
-        {<"@">: <"eval">,
-         <"env">:
-          {<"@">: <"getenv">
-          },
-         <"program">:
-          {<"@">: <"get">,
-           <"object">:
-            {<"@">: <"get">,
-             <"object">:
-              {<"@">: <"get">,
-               <"object">:
-                {<"@">: <"getenv">
-                },
-               <"key">: <"/">
-              },
-             <"key">: <"parser">
-            },
-           <"key">: <"whitespaces">
-          }
-        },
-       <"3">:
-        {<"@">: <"terminal">,
-         <"string">: <"end">
-        },
-       <"4">:
-        {<"@">: <"set">,
-         <"object">:
-          {<"@">: <"getenv">
-          },
-         <"key">: <"result">,
-         <"value">:
-          {<"@">: <"datastore">,
-           <"object">:
-            {<"@">: <"quote">
-            }
-          }
-        },
-       <"5">:
-        {<"@">: <"set">,
-         <"object">:
-          {<"@">: <"get">,
-           <"object">:
-            {<"@">: <"getenv">
-            },
-           <"key">: <"result">
-          },
-         <"key">: <"value">,
-         <"value">:
-          {<"@">: <"datastore">,
-           <"object">:
-            {<"@">: <"scope">,
-             <"body">:
-              {<"@">: <"get">,
-               <"object">:
-                {<"@">: <"getenv">
-                },
-               <"key">: <"quoted">
-              }
-            }
-          }
-        },
-       <"6">:
-        {<"@">: <"get">,
-         <"object">:
-          {<"@">: <"getenv">
-          },
-         <"key">: <"result">
-        }
-      }
-    }
-  }
-}
-{<"@">: <"insertprev">,
- <"object">:
-  {<"@">: <"get">,
-   <"object">:
-    {<"@">: <"get">,
-     <"object">:
-      {<"@">: <"get">,
-       <"object">:
-        {<"@">: <"get">,
-         <"object">:
-          {<"@">: <"getenv">
-          },
-         <"key">: <"/">
-        },
-       <"key">: <"parser">
-      },
-     <"key">: <"expression">
-    },
-   <"key">: <"children">
-  },
- <"origin">:
-  {<"@">: <"firstkey">,
-   <"object">:
-    {<"@">: <"get">,
-     <"object">:
-      {<"@">: <"get">,
-       <"object">:
-        {<"@">: <"get">,
-         <"object">:
-          {<"@">: <"get">,
-           <"object">:
-            {<"@">: <"getenv">
-            },
-           <"key">: <"/">
-          },
-         <"key">: <"parser">
-        },
-       <"key">: <"expression">
-      },
-     <"key">: <"children">
-    }
-  },
- <"key">: <"do">,
- <"value">:
-  {<"@">: <"get">,
-   <"object">:
-    {<"@">: <"get">,
-     <"object">:
-      {<"@">: <"get">,
-       <"object">:
-        {<"@">: <"getenv">
-        },
-       <"key">: <"/">
-      },
-     <"key">: <"parser">
-    },
-   <"key">: <"do">
-  }
-}
-{<"@">: <"set">,
- <"object">:
-  {<"@">: <"get">,
-   <"object">:
-    {<"@">: <"get">,
-     <"object">:
-      {<"@">: <"getenv">
-      },
-     <"key">: <"/">
-    },
-   <"key">: <"parser">
-  },
- <"key">: <"while">,
- <"value">:
-  {<"@">: <"quote">,
-   <"value">:
-    {<"@">: <"scope">,
-     <"body">:
-      {<"0">:
-        {<"@">: <"terminal">,
-         <"string">: <"while">
-        },
-       <"1">:
-        {<"@">: <"eval">,
-         <"env">:
-          {<"@">: <"getenv">
-          },
-         <"program">:
-          {<"@">: <"get">,
-           <"object">:
-            {<"@">: <"get">,
-             <"object">:
-              {<"@">: <"get">,
-               <"object">:
-                {<"@">: <"getenv">
-                },
-               <"key">: <"/">
-              },
-             <"key">: <"parser">
-            },
-           <"key">: <"whitespaces">
-          }
-        },
-       <"2">:
-        {<"@">: <"set">,
-         <"object">:
-          {<"@">: <"getenv">
-          },
-         <"key">: <"cond">,
-         <"value">:
-          {<"@">: <"eval">,
-           <"env">:
-            {<"@">: <"getenv">
-            },
-           <"program">:
-            {<"@">: <"get">,
-             <"object">:
-              {<"@">: <"get">,
-               <"object">:
-                {<"@">: <"get">,
-                 <"object">:
-                  {<"@">: <"getenv">
-                  },
-                 <"key">: <"/">
-                },
-               <"key">: <"parser">
-              },
-             <"key">: <"expression">
-            }
-          }
-        },
-       <"3">:
-        {<"@">: <"set">,
-         <"object">:
-          {<"@">: <"getenv">
-          },
-         <"key">: <"sts">,
-         <"value">:
-          {<"@">: <"many">,
-           <"parser">:
-            {<"@">: <"quote">,
-             <"value">:
-              {<"@">: <"scope">,
-               <"body">:
-                {<"0">:
-                  {<"@">: <"eval">,
-                   <"env">:
-                    {<"@">: <"getenv">
-                    },
-                   <"program">:
-                    {<"@">: <"get">,
-                     <"object">:
-                      {<"@">: <"get">,
-                       <"object">:
-                        {<"@">: <"get">,
-                         <"object">:
-                          {<"@">: <"getenv">
-                          },
-                         <"key">: <"/">
-                        },
-                       <"key">: <"parser">
-                      },
-                     <"key">: <"whitespaces">
-                    }
-                  },
-                 <"1">:
-                  {<"@">: <"eval">,
-                   <"env">:
-                    {<"@">: <"getenv">
-                    },
-                   <"program">:
-                    {<"@">: <"get">,
-                     <"object">:
-                      {<"@">: <"get">,
-                       <"object">:
-                        {<"@">: <"get">,
-                         <"object">:
-                          {<"@">: <"getenv">
-                          },
-                         <"key">: <"/">
-                        },
-                       <"key">: <"parser">
-                      },
-                     <"key">: <"sentence">
+                     "key": "sentence"
                     }
                   }
                 }
@@ -1487,582 +1224,845 @@
             }
           }
         },
-       <"4">:
-        {<"@">: <"eval">,
-         <"env">:
-          {<"@">: <"getenv">
+       "2":
+        {"@": "eval",
+         "env":
+          {"@": "getenv"
           },
-         <"program">:
-          {<"@">: <"get">,
-           <"object">:
-            {<"@">: <"get">,
-             <"object">:
-              {<"@">: <"get">,
-               <"object">:
-                {<"@">: <"getenv">
+         "program":
+          {"@": "get",
+           "object":
+            {"@": "get",
+             "object":
+              {"@": "get",
+               "object":
+                {"@": "getenv"
                 },
-               <"key">: <"/">
+               "key": "/"
               },
-             <"key">: <"parser">
+             "key": "parser"
             },
-           <"key">: <"whitespaces">
+           "key": "whitespaces"
           }
         },
-       <"5">:
-        {<"@">: <"terminal">,
-         <"string">: <"end">
+       "3":
+        {"@": "terminal",
+         "string": "end"
         },
-       <"6">:
-        {<"@">: <"set">,
-         <"object">:
-          {<"@">: <"getenv">
+       "4":
+        {"@": "set",
+         "object":
+          {"@": "getenv"
           },
-         <"key">: <"result">,
-         <"value">:
-          {<"@">: <"datastore">,
-           <"object">:
-            {<"@">: <"while">,
-             <"condition">:
-              {<"@">: <"get">,
-               <"object">:
-                {<"@">: <"getenv">
+         "key": "result",
+         "value":
+          {"@": "datastore",
+           "object":
+            {"@": "quote"
+            }
+          }
+        },
+       "5":
+        {"@": "set",
+         "object":
+          {"@": "get",
+           "object":
+            {"@": "getenv"
+            },
+           "key": "result"
+          },
+         "key": "value",
+         "value":
+          {"@": "datastore",
+           "object":
+            {"@": "scope",
+             "body":
+              {"@": "get",
+               "object":
+                {"@": "getenv"
                 },
-               <"key">: <"cond">
-              },
-             <"body">:
-              {<"@">: <"get">,
-               <"object">:
-                {<"@">: <"getenv">
-                },
-               <"key">: <"sts">
+               "key": "quoted"
               }
             }
           }
         },
-       <"7">:
-        {<"@">: <"get">,
-         <"object">:
-          {<"@">: <"getenv">
+       "6":
+        {"@": "get",
+         "object":
+          {"@": "getenv"
           },
-         <"key">: <"result">
+         "key": "result"
         }
       }
     }
   }
 }
-{<"@">: <"insertprev">,
- <"object">:
-  {<"@">: <"get">,
-   <"object">:
-    {<"@">: <"get">,
-     <"object">:
-      {<"@">: <"get">,
-       <"object">:
-        {<"@">: <"get">,
-         <"object">:
-          {<"@">: <"getenv">
+{"@": "insertprev",
+ "object":
+  {"@": "get",
+   "object":
+    {"@": "get",
+     "object":
+      {"@": "get",
+       "object":
+        {"@": "get",
+         "object":
+          {"@": "getenv"
           },
-         <"key">: <"/">
+         "key": "/"
         },
-       <"key">: <"parser">
+       "key": "parser"
       },
-     <"key">: <"sentence">
+     "key": "expression"
     },
-   <"key">: <"children">
+   "key": "children"
   },
- <"origin">:
-  {<"@">: <"firstkey">,
-   <"object">:
-    {<"@">: <"get">,
-     <"object">:
-      {<"@">: <"get">,
-       <"object">:
-        {<"@">: <"get">,
-         <"object">:
-          {<"@">: <"get">,
-           <"object">:
-            {<"@">: <"getenv">
+ "origin":
+  {"@": "firstkey",
+   "object":
+    {"@": "get",
+     "object":
+      {"@": "get",
+       "object":
+        {"@": "get",
+         "object":
+          {"@": "get",
+           "object":
+            {"@": "getenv"
             },
-           <"key">: <"/">
+           "key": "/"
           },
-         <"key">: <"parser">
+         "key": "parser"
         },
-       <"key">: <"sentence">
+       "key": "expression"
       },
-     <"key">: <"children">
+     "key": "children"
     }
   },
- <"key">: <"do">,
- <"value">:
-  {<"@">: <"get">,
-   <"object">:
-    {<"@">: <"get">,
-     <"object">:
-      {<"@">: <"get">,
-       <"object">:
-        {<"@">: <"getenv">
+ "key": "do",
+ "value":
+  {"@": "get",
+   "object":
+    {"@": "get",
+     "object":
+      {"@": "get",
+       "object":
+        {"@": "getenv"
         },
-       <"key">: <"/">
+       "key": "/"
       },
-     <"key">: <"parser">
+     "key": "parser"
     },
-   <"key">: <"while">
+   "key": "do"
   }
 }
-{<"@">: <"set">,
- <"object">:
-  {<"@">: <"get">,
-   <"object">:
-    {<"@">: <"get">,
-     <"object">:
-      {<"@">: <"getenv">
+{"@": "set",
+ "object":
+  {"@": "get",
+   "object":
+    {"@": "get",
+     "object":
+      {"@": "getenv"
       },
-     <"key">: <"/">
+     "key": "/"
     },
-   <"key">: <"parser">
+   "key": "parser"
   },
- <"key">: <"eval">,
- <"value">:
-  {<"@">: <"quote">,
-   <"value">:
-    {<"@">: <"scope">,
-     <"body">:
-      {<"0">:
-        {<"@">: <"terminal">,
-         <"string">: <"$">
+ "key": "while",
+ "value":
+  {"@": "quote",
+   "value":
+    {"@": "scope",
+     "body":
+      {"0":
+        {"@": "terminal",
+         "string": "while"
         },
-       <"1">:
-        {<"@">: <"set">,
-         <"object">:
-          {<"@">: <"getenv">
+       "1":
+        {"@": "eval",
+         "env":
+          {"@": "getenv"
           },
-         <"key">: <"result">,
-         <"value">:
-          {<"@">: <"copy">,
-           <"object">:
-            {<"@">: <"quote">,
-             <"value">:
-              {<"@">: <"eval">,
-               <"env">:
-                {<"@">: <"get">,
-                 <"object">:
-                  {<"@">: <"getenv">
-                  },
-                 <"key">: <"/">
-                }
-              }
-            }
-          }
-        },
-       <"2">:
-        {<"@">: <"set">,
-         <"object">:
-          {<"@">: <"get">,
-           <"object">:
-            {<"@">: <"getenv">
-            },
-           <"key">: <"result">
-          },
-         <"key">: <"program">,
-         <"value">:
-          {<"@">: <"eval">,
-           <"env">:
-            {<"@">: <"getenv">
-            },
-           <"program">:
-            {<"@">: <"get">,
-             <"object">:
-              {<"@">: <"get">,
-               <"object">:
-                {<"@">: <"get">,
-                 <"object">:
-                  {<"@">: <"getenv">
-                  },
-                 <"key">: <"/">
+         "program":
+          {"@": "get",
+           "object":
+            {"@": "get",
+             "object":
+              {"@": "get",
+               "object":
+                {"@": "getenv"
                 },
-               <"key">: <"parser">
+               "key": "/"
               },
-             <"key">: <"rootvar">
-            }
+             "key": "parser"
+            },
+           "key": "whitespaces"
           }
         },
-       <"3">:
-        {<"@">: <"get">,
-         <"object">:
-          {<"@">: <"getenv">
+       "2":
+        {"@": "set",
+         "object":
+          {"@": "getenv"
           },
-         <"key">: <"result">
-        }
-      }
-    }
-  }
-}
-{<"@">: <"set">,
- <"object">:
-  {<"@">: <"get">,
-   <"object">:
-    {<"@">: <"get">,
-     <"object">:
-      {<"@">: <"get">,
-       <"object">:
-        {<"@">: <"get">,
-         <"object">:
-          {<"@">: <"getenv">
-          },
-         <"key">: <"/">
-        },
-       <"key">: <"parser">
-      },
-     <"key">: <"expression">
-    },
-   <"key">: <"children">
-  },
- <"key">: <"eval">,
- <"value">:
-  {<"@">: <"get">,
-   <"object">:
-    {<"@">: <"get">,
-     <"object">:
-      {<"@">: <"get">,
-       <"object">:
-        {<"@">: <"getenv">
-        },
-       <"key">: <"/">
-      },
-     <"key">: <"parser">
-    },
-   <"key">: <"eval">
-  }
-}
-{<"@">: <"set">,
- <"object">:
-  {<"@">: <"get">,
-   <"object">:
-    {<"@">: <"getenv">
-    },
-   <"key">: <"parser">
-  },
- <"key">: <"command">,
- <"value">:
-  {<"@">: <"quote">,
-   <"value">:
-    {<"@">: <"scope">,
-     <"body">:
-      {<"0">:
-        {<"@">: <"set">,
-         <"object">:
-          {<"@">: <"getenv">
-          },
-         <"key">: <"comname">,
-         <"value">:
-          {<"@">: <"eval">,
-           <"env">:
-            {<"@">: <"getenv">
+         "key": "cond",
+         "value":
+          {"@": "eval",
+           "env":
+            {"@": "getenv"
             },
-           <"program">:
-            {<"@">: <"get">,
-             <"object">:
-              {<"@">: <"get">,
-               <"object">:
-                {<"@">: <"get">,
-                 <"object">:
-                  {<"@">: <"getenv">
+           "program":
+            {"@": "get",
+             "object":
+              {"@": "get",
+               "object":
+                {"@": "get",
+                 "object":
+                  {"@": "getenv"
                   },
-                 <"key">: <"/">
+                 "key": "/"
                 },
-               <"key">: <"parser">
+               "key": "parser"
               },
-             <"key">: <"symbol">
+             "key": "expression"
             }
           }
         },
-       <"1">:
-        {<"@">: <"set">,
-         <"object">:
-          {<"@">: <"getenv">
+       "3":
+        {"@": "set",
+         "object":
+          {"@": "getenv"
           },
-         <"key">: <"args">,
-         <"value">:
-          {<"@">: <"eval">,
-           <"env">:
-            {<"@">: <"getenv">
-            },
-           <"program">:
-            {<"@">: <"get">,
-             <"object">:
-              {<"@">: <"get">,
-               <"object">:
-                {<"@">: <"get">,
-                 <"object">:
-                  {<"@">: <"getenv">
-                  },
-                 <"key">: <"/">
-                },
-               <"key">: <"parser">
-              },
-             <"key">: <"datastore">
-            }
-          }
-        },
-       <"2">:
-        {<"@">: <"set">,
-         <"object">:
-          {<"@">: <"get">,
-           <"object">:
-            {<"@">: <"getenv">
-            },
-           <"key">: <"args">
-          },
-         <"key">: <"@">,
-         <"value">:
-          {<"@">: <"get">,
-           <"object">:
-            {<"@">: <"getenv">
-            },
-           <"key">: <"comname">
-          }
-        },
-       <"3">:
-        {<"@">: <"get">,
-         <"object">:
-          {<"@">: <"getenv">
-          },
-         <"key">: <"args">
-        }
-      }
-    }
-  }
-}
-{<"@">: <"set">,
- <"object">:
-  {<"@">: <"get">,
-   <"object">:
-    {<"@">: <"get">,
-     <"object">:
-      {<"@">: <"get">,
-       <"object">:
-        {<"@">: <"get">,
-         <"object">:
-          {<"@">: <"getenv">
-          },
-         <"key">: <"/">
-        },
-       <"key">: <"parser">
-      },
-     <"key">: <"sentence">
-    },
-   <"key">: <"children">
-  },
- <"key">: <"command">,
- <"value">:
-  {<"@">: <"get">,
-   <"object">:
-    {<"@">: <"get">,
-     <"object">:
-      {<"@">: <"get">,
-       <"object">:
-        {<"@">: <"getenv">
-        },
-       <"key">: <"/">
-      },
-     <"key">: <"parser">
-    },
-   <"key">: <"command">
-  }
-}
-{<"@">: <"set">,
- <"object">:
-  {<"@">: <"get">,
-   <"object">:
-    {<"@">: <"getenv">
-    },
-   <"key">: <"/">
-  },
- <"key">: <"quasiquote">,
- <"value">:
-  {<"@">: <"lambda">,
-   <"env">:
-    {<"@">: <"getenv">
-    },
-   <"body">:
-    {<"@">: <"begin">,
-     <"body">:
-      {<"0">:
-        {<"@">: <"if">,
-         <"condition">:
-          {<"@">: <"isdatastore">,
-           <"value">:
-            {<"@">: <"get">,
-             <"object">:
-              {<"@">: <"getenv">
-              },
-             <"key">: <"object">
-            }
-          },
-         <"consequence">:
-          {<"@">: <"scope">,
-           <"body">:
-            {<"0">:
-              {<"@">: <"set">,
-               <"object">:
-                {<"@">: <"getenv">
-                },
-               <"key">: <"object">,
-               <"value">:
-                {<"@">: <"get">,
-                 <"object">:
-                  {<"@">: <"get">,
-                   <"object">:
-                    {<"@">: <"getenv">
+         "key": "sts",
+         "value":
+          {"@": "many",
+           "parser":
+            {"@": "quote",
+             "value":
+              {"@": "scope",
+               "body":
+                {"0":
+                  {"@": "eval",
+                   "env":
+                    {"@": "getenv"
                     },
-                   <"key">: <"..">
-                  },
-                 <"key">: <"object">
-                }
-              },
-             <"1">:
-              {<"@">: <"if">,
-               <"condition">:
-                {<"@">: <"and">,
-                 <"left">:
-                  {<"@">: <"exist">,
-                   <"object">:
-                    {<"@">: <"get">,
-                     <"object">:
-                      {<"@">: <"getenv">
-                      },
-                     <"key">: <"object">
-                    },
-                   <"key">: <"@">
-                  },
-                 <"right">:
-                  {<"@">: <"equal">,
-                   <"left">:
-                    {<"@">: <"get">,
-                     <"object">:
-                      {<"@">: <"get">,
-                       <"object">:
-                        {<"@">: <"getenv">
+                   "program":
+                    {"@": "get",
+                     "object":
+                      {"@": "get",
+                       "object":
+                        {"@": "get",
+                         "object":
+                          {"@": "getenv"
+                          },
+                         "key": "/"
                         },
-                       <"key">: <"object">
+                       "key": "parser"
                       },
-                     <"key">: <"@">
+                     "key": "whitespaces"
+                    }
+                  },
+                 "1":
+                  {"@": "eval",
+                   "env":
+                    {"@": "getenv"
                     },
-                   <"right">: <"unquote">
+                   "program":
+                    {"@": "get",
+                     "object":
+                      {"@": "get",
+                       "object":
+                        {"@": "get",
+                         "object":
+                          {"@": "getenv"
+                          },
+                         "key": "/"
+                        },
+                       "key": "parser"
+                      },
+                     "key": "sentence"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+       "4":
+        {"@": "eval",
+         "env":
+          {"@": "getenv"
+          },
+         "program":
+          {"@": "get",
+           "object":
+            {"@": "get",
+             "object":
+              {"@": "get",
+               "object":
+                {"@": "getenv"
+                },
+               "key": "/"
+              },
+             "key": "parser"
+            },
+           "key": "whitespaces"
+          }
+        },
+       "5":
+        {"@": "terminal",
+         "string": "end"
+        },
+       "6":
+        {"@": "set",
+         "object":
+          {"@": "getenv"
+          },
+         "key": "result",
+         "value":
+          {"@": "datastore",
+           "object":
+            {"@": "while",
+             "condition":
+              {"@": "get",
+               "object":
+                {"@": "getenv"
+                },
+               "key": "cond"
+              },
+             "body":
+              {"@": "get",
+               "object":
+                {"@": "getenv"
+                },
+               "key": "sts"
+              }
+            }
+          }
+        },
+       "7":
+        {"@": "get",
+         "object":
+          {"@": "getenv"
+          },
+         "key": "result"
+        }
+      }
+    }
+  }
+}
+{"@": "insertprev",
+ "object":
+  {"@": "get",
+   "object":
+    {"@": "get",
+     "object":
+      {"@": "get",
+       "object":
+        {"@": "get",
+         "object":
+          {"@": "getenv"
+          },
+         "key": "/"
+        },
+       "key": "parser"
+      },
+     "key": "sentence"
+    },
+   "key": "children"
+  },
+ "origin":
+  {"@": "firstkey",
+   "object":
+    {"@": "get",
+     "object":
+      {"@": "get",
+       "object":
+        {"@": "get",
+         "object":
+          {"@": "get",
+           "object":
+            {"@": "getenv"
+            },
+           "key": "/"
+          },
+         "key": "parser"
+        },
+       "key": "sentence"
+      },
+     "key": "children"
+    }
+  },
+ "key": "do",
+ "value":
+  {"@": "get",
+   "object":
+    {"@": "get",
+     "object":
+      {"@": "get",
+       "object":
+        {"@": "getenv"
+        },
+       "key": "/"
+      },
+     "key": "parser"
+    },
+   "key": "while"
+  }
+}
+{"@": "set",
+ "object":
+  {"@": "get",
+   "object":
+    {"@": "get",
+     "object":
+      {"@": "getenv"
+      },
+     "key": "/"
+    },
+   "key": "parser"
+  },
+ "key": "eval",
+ "value":
+  {"@": "quote",
+   "value":
+    {"@": "scope",
+     "body":
+      {"0":
+        {"@": "terminal",
+         "string": "$"
+        },
+       "1":
+        {"@": "set",
+         "object":
+          {"@": "getenv"
+          },
+         "key": "result",
+         "value":
+          {"@": "copy",
+           "object":
+            {"@": "quote",
+             "value":
+              {"@": "eval",
+               "env":
+                {"@": "get",
+                 "object":
+                  {"@": "getenv"
+                  },
+                 "key": "/"
+                }
+              }
+            }
+          }
+        },
+       "2":
+        {"@": "set",
+         "object":
+          {"@": "get",
+           "object":
+            {"@": "getenv"
+            },
+           "key": "result"
+          },
+         "key": "program",
+         "value":
+          {"@": "eval",
+           "env":
+            {"@": "getenv"
+            },
+           "program":
+            {"@": "get",
+             "object":
+              {"@": "get",
+               "object":
+                {"@": "get",
+                 "object":
+                  {"@": "getenv"
+                  },
+                 "key": "/"
+                },
+               "key": "parser"
+              },
+             "key": "rootvar"
+            }
+          }
+        },
+       "3":
+        {"@": "get",
+         "object":
+          {"@": "getenv"
+          },
+         "key": "result"
+        }
+      }
+    }
+  }
+}
+{"@": "set",
+ "object":
+  {"@": "get",
+   "object":
+    {"@": "get",
+     "object":
+      {"@": "get",
+       "object":
+        {"@": "get",
+         "object":
+          {"@": "getenv"
+          },
+         "key": "/"
+        },
+       "key": "parser"
+      },
+     "key": "expression"
+    },
+   "key": "children"
+  },
+ "key": "eval",
+ "value":
+  {"@": "get",
+   "object":
+    {"@": "get",
+     "object":
+      {"@": "get",
+       "object":
+        {"@": "getenv"
+        },
+       "key": "/"
+      },
+     "key": "parser"
+    },
+   "key": "eval"
+  }
+}
+{"@": "set",
+ "object":
+  {"@": "get",
+   "object":
+    {"@": "getenv"
+    },
+   "key": "parser"
+  },
+ "key": "command",
+ "value":
+  {"@": "quote",
+   "value":
+    {"@": "scope",
+     "body":
+      {"0":
+        {"@": "set",
+         "object":
+          {"@": "getenv"
+          },
+         "key": "comname",
+         "value":
+          {"@": "eval",
+           "env":
+            {"@": "getenv"
+            },
+           "program":
+            {"@": "get",
+             "object":
+              {"@": "get",
+               "object":
+                {"@": "get",
+                 "object":
+                  {"@": "getenv"
+                  },
+                 "key": "/"
+                },
+               "key": "parser"
+              },
+             "key": "symbol"
+            }
+          }
+        },
+       "1":
+        {"@": "set",
+         "object":
+          {"@": "getenv"
+          },
+         "key": "args",
+         "value":
+          {"@": "eval",
+           "env":
+            {"@": "getenv"
+            },
+           "program":
+            {"@": "get",
+             "object":
+              {"@": "get",
+               "object":
+                {"@": "get",
+                 "object":
+                  {"@": "getenv"
+                  },
+                 "key": "/"
+                },
+               "key": "parser"
+              },
+             "key": "datastore"
+            }
+          }
+        },
+       "2":
+        {"@": "set",
+         "object":
+          {"@": "get",
+           "object":
+            {"@": "getenv"
+            },
+           "key": "args"
+          },
+         "key": "@",
+         "value":
+          {"@": "get",
+           "object":
+            {"@": "getenv"
+            },
+           "key": "comname"
+          }
+        },
+       "3":
+        {"@": "get",
+         "object":
+          {"@": "getenv"
+          },
+         "key": "args"
+        }
+      }
+    }
+  }
+}
+{"@": "set",
+ "object":
+  {"@": "get",
+   "object":
+    {"@": "get",
+     "object":
+      {"@": "get",
+       "object":
+        {"@": "get",
+         "object":
+          {"@": "getenv"
+          },
+         "key": "/"
+        },
+       "key": "parser"
+      },
+     "key": "sentence"
+    },
+   "key": "children"
+  },
+ "key": "command",
+ "value":
+  {"@": "get",
+   "object":
+    {"@": "get",
+     "object":
+      {"@": "get",
+       "object":
+        {"@": "getenv"
+        },
+       "key": "/"
+      },
+     "key": "parser"
+    },
+   "key": "command"
+  }
+}
+{"@": "set",
+ "object":
+  {"@": "get",
+   "object":
+    {"@": "getenv"
+    },
+   "key": "/"
+  },
+ "key": "quasiquote",
+ "value":
+  {"@": "lambda",
+   "env":
+    {"@": "getenv"
+    },
+   "body":
+    {"@": "begin",
+     "body":
+      {"0":
+        {"@": "if",
+         "condition":
+          {"@": "isdatastore",
+           "value":
+            {"@": "get",
+             "object":
+              {"@": "getenv"
+              },
+             "key": "object"
+            }
+          },
+         "consequence":
+          {"@": "scope",
+           "body":
+            {"0":
+              {"@": "set",
+               "object":
+                {"@": "getenv"
+                },
+               "key": "object",
+               "value":
+                {"@": "get",
+                 "object":
+                  {"@": "get",
+                   "object":
+                    {"@": "getenv"
+                    },
+                   "key": ".."
+                  },
+                 "key": "object"
+                }
+              },
+             "1":
+              {"@": "if",
+               "condition":
+                {"@": "and",
+                 "left":
+                  {"@": "exist",
+                   "object":
+                    {"@": "get",
+                     "object":
+                      {"@": "getenv"
+                      },
+                     "key": "object"
+                    },
+                   "key": "@"
+                  },
+                 "right":
+                  {"@": "equal",
+                   "left":
+                    {"@": "get",
+                     "object":
+                      {"@": "get",
+                       "object":
+                        {"@": "getenv"
+                        },
+                       "key": "object"
+                      },
+                     "key": "@"
+                    },
+                   "right": "unquote"
                   }
                 },
-               <"consequence">:
-                {<"@">: <"scope">,
-                 <"body">:
-                  {<"0">:
-                    {<"@">: <"get">,
-                     <"object">:
-                      {<"@">: <"get">,
-                       <"object">:
-                        {<"@">: <"get">,
-                         <"object">:
-                          {<"@">: <"getenv">
+               "consequence":
+                {"@": "scope",
+                 "body":
+                  {"0":
+                    {"@": "get",
+                     "object":
+                      {"@": "get",
+                       "object":
+                        {"@": "get",
+                         "object":
+                          {"@": "getenv"
                           },
-                         <"key">: <"..">
+                         "key": ".."
                         },
-                       <"key">: <"object">
+                       "key": "object"
                       },
-                     <"key">: <"value">
+                     "key": "value"
                     }
                   }
                 },
-               <"alternative">:
-                {<"@">: <"scope">,
-                 <"body">:
-                  {<"0">:
-                    {<"@">: <"set">,
-                     <"object">:
-                      {<"@">: <"getenv">
+               "alternative":
+                {"@": "scope",
+                 "body":
+                  {"0":
+                    {"@": "set",
+                     "object":
+                      {"@": "getenv"
                       },
-                     <"key">: <"result">,
-                     <"value">:
-                      {<"@">: <"datastore">,
-                       <"object">:
+                     "key": "result",
+                     "value":
+                      {"@": "datastore",
+                       "object":
                         {
                         }
                       }
                     },
-                   <"1">: <"hoge">,
-                   <"2">:
-                    {<"@">: <"call">,
-                     <"func">:
-                      {<"@">: <"get">,
-                       <"object">:
-                        {<"@">: <"get">,
-                         <"object">:
-                          {<"@">: <"getenv">
+                   "1": "hoge",
+                   "2":
+                    {"@": "call",
+                     "func":
+                      {"@": "get",
+                       "object":
+                        {"@": "get",
+                         "object":
+                          {"@": "getenv"
                           },
-                         <"key">: <"/">
+                         "key": "/"
                         },
-                       <"key">: <"foreach">
+                       "key": "foreach"
                       },
-                     <"args">:
-                      {<"store">:
-                        {<"@">: <"get">,
-                         <"object">:
-                          {<"@">: <"get">,
-                           <"object">:
-                            {<"@">: <"getenv">
+                     "args":
+                      {"store":
+                        {"@": "get",
+                         "object":
+                          {"@": "get",
+                           "object":
+                            {"@": "getenv"
                             },
-                           <"key">: <"..">
+                           "key": ".."
                           },
-                         <"key">: <"object">
+                         "key": "object"
                         },
-                       <"func">:
-                        {<"@">: <"lambda">,
-                         <"env">:
-                          {<"@">: <"getenv">
+                       "func":
+                        {"@": "lambda",
+                         "env":
+                          {"@": "getenv"
                           },
-                         <"body">:
-                          {<"@">: <"begin">,
-                           <"body">:
-                            {<"0">:
-                              {<"@">: <"set">,
-                               <"object">:
-                                {<"@">: <"get">,
-                                 <"object">:
-                                  {<"@">: <"get">,
-                                   <"object">:
-                                    {<"@">: <"getenv">
+                         "body":
+                          {"@": "begin",
+                           "body":
+                            {"0":
+                              {"@": "set",
+                               "object":
+                                {"@": "get",
+                                 "object":
+                                  {"@": "get",
+                                   "object":
+                                    {"@": "getenv"
                                     },
-                                   <"key">: <"..">
+                                   "key": ".."
                                   },
-                                 <"key">: <"result">
+                                 "key": "result"
                                 },
-                               <"key">:
-                                {<"@">: <"get">,
-                                 <"object">:
-                                  {<"@">: <"getenv">
+                               "key":
+                                {"@": "get",
+                                 "object":
+                                  {"@": "getenv"
                                   },
-                                 <"key">: <"key">
+                                 "key": "key"
                                 },
-                               <"value">:
-                                {<"@">: <"call">,
-                                 <"func">:
-                                  {<"@">: <"get">,
-                                   <"object">:
-                                    {<"@">: <"get">,
-                                     <"object">:
-                                      {<"@">: <"getenv">
+                               "value":
+                                {"@": "call",
+                                 "func":
+                                  {"@": "get",
+                                   "object":
+                                    {"@": "get",
+                                     "object":
+                                      {"@": "getenv"
                                       },
-                                     <"key">: <"/">
+                                     "key": "/"
                                     },
-                                   <"key">: <"quasiquote">
+                                   "key": "quasiquote"
                                   },
-                                 <"args">:
-                                  {<"@">: <"datastore">,
-                                   <"object">:
-                                    {<"object">:
-                                      {<"@">: <"get">,
-                                       <"object">:
-                                        {<"@">: <"getenv">
+                                 "args":
+                                  {"@": "datastore",
+                                   "object":
+                                    {"object":
+                                      {"@": "get",
+                                       "object":
+                                        {"@": "getenv"
                                         },
-                                       <"key">: <"value">
+                                       "key": "value"
                                       }
                                     }
                                   }
@@ -2073,16 +2073,16 @@
                         }
                       }
                     },
-                   <"3">:
-                    {<"@">: <"datastore">,
-                     <"object">:
-                      {<"@">: <"datastore">,
-                       <"object">:
-                        {<"@">: <"get">,
-                         <"object">:
-                          {<"@">: <"getenv">
+                   "3":
+                    {"@": "datastore",
+                     "object":
+                      {"@": "datastore",
+                       "object":
+                        {"@": "get",
+                         "object":
+                          {"@": "getenv"
                           },
-                         <"key">: <"result">
+                         "key": "result"
                         }
                       }
                     }
@@ -2091,23 +2091,23 @@
               }
             }
           },
-         <"alternative">:
-          {<"@">: <"scope">,
-           <"body">:
-            {<"0">:
-              {<"@">: <"datastore">,
-               <"object">:
-                {<"@">: <"quote">,
-                 <"value">:
-                  {<"@">: <"get">,
-                   <"object">:
-                    {<"@">: <"get">,
-                     <"object">:
-                      {<"@">: <"getenv">
+         "alternative":
+          {"@": "scope",
+           "body":
+            {"0":
+              {"@": "datastore",
+               "object":
+                {"@": "quote",
+                 "value":
+                  {"@": "get",
+                   "object":
+                    {"@": "get",
+                     "object":
+                      {"@": "getenv"
                       },
-                     <"key">: <"..">
+                     "key": ".."
                     },
-                   <"key">: <"object">
+                   "key": "object"
                   }
                 }
               }
@@ -2118,101 +2118,101 @@
     }
   }
 }
-{<"@">: <"set">,
- <"object">:
-  {<"@">: <"get">,
-   <"object">:
-    {<"@">: <"get">,
-     <"object">:
-      {<"@">: <"getenv">
+{"@": "set",
+ "object":
+  {"@": "get",
+   "object":
+    {"@": "get",
+     "object":
+      {"@": "getenv"
       },
-     <"key">: <"/">
+     "key": "/"
     },
-   <"key">: <"parser">
+   "key": "parser"
   },
- <"key">: <"quasiquote">,
- <"value">:
-  {<"@">: <"quote">,
-   <"value">:
-    {<"@">: <"scope">,
-     <"body">:
-      {<"0">:
-        {<"@">: <"terminal">,
-         <"string">: <"`">
+ "key": "quasiquote",
+ "value":
+  {"@": "quote",
+   "value":
+    {"@": "scope",
+     "body":
+      {"0":
+        {"@": "terminal",
+         "string": "`"
         },
-       <"1">:
-        {<"@">: <"set">,
-         <"object">:
-          {<"@">: <"getenv">
+       "1":
+        {"@": "set",
+         "object":
+          {"@": "getenv"
           },
-         <"key">: <"st">,
-         <"value">:
-          {<"@">: <"eval">,
-           <"env">:
-            {<"@">: <"getenv">
+         "key": "st",
+         "value":
+          {"@": "eval",
+           "env":
+            {"@": "getenv"
             },
-           <"program">:
-            {<"@">: <"get">,
-             <"object">:
-              {<"@">: <"get">,
-               <"object">:
-                {<"@">: <"get">,
-                 <"object">:
-                  {<"@">: <"getenv">
+           "program":
+            {"@": "get",
+             "object":
+              {"@": "get",
+               "object":
+                {"@": "get",
+                 "object":
+                  {"@": "getenv"
                   },
-                 <"key">: <"/">
+                 "key": "/"
                 },
-               <"key">: <"parser">
+               "key": "parser"
               },
-             <"key">: <"sentence">
+             "key": "sentence"
             }
           }
         },
-       <"2">:
-        {<"@">: <"terminal">,
-         <"string">: <"`">
+       "2":
+        {"@": "terminal",
+         "string": "`"
         },
-       <"3">:
-        {<"@">: <"eval">,
-         <"env">:
-          {<"@">: <"getenv">
+       "3":
+        {"@": "eval",
+         "env":
+          {"@": "getenv"
           },
-         <"program">:
-          {<"@">: <"get">,
-           <"object">:
-            {<"@">: <"get">,
-             <"object">:
-              {<"@">: <"get">,
-               <"object">:
-                {<"@">: <"getenv">
+         "program":
+          {"@": "get",
+           "object":
+            {"@": "get",
+             "object":
+              {"@": "get",
+               "object":
+                {"@": "getenv"
                 },
-               <"key">: <"/">
+               "key": "/"
               },
-             <"key">: <"parser">
+             "key": "parser"
             },
-           <"key">: <"whitespaces">
+           "key": "whitespaces"
           }
         },
-       <"4">:
-        {<"@">: <"call">,
-         <"func">:
-          {<"@">: <"get">,
-           <"object">:
-            {<"@">: <"get">,
-             <"object">:
-              {<"@">: <"getenv">
+       "4":
+        {"@": "call",
+         "func":
+          {"@": "get",
+           "object":
+            {"@": "get",
+             "object":
+              {"@": "getenv"
               },
-             <"key">: <"/">
+             "key": "/"
             },
-           <"key">: <"quasiquote">
+           "key": "quasiquote"
           },
-         <"args">:
-          {<"object">:
-            {<"@">: <"get">,
-             <"object">:
-              {<"@">: <"getenv">
+         "args":
+          {"object":
+            {"@": "get",
+             "object":
+              {"@": "getenv"
               },
-             <"key">: <"st">
+             "key": "st"
             }
           }
         }
@@ -2220,40 +2220,40 @@
     }
   }
 }
-{<"@">: <"set">,
- <"object">:
-  {<"@">: <"get">,
-   <"object">:
-    {<"@">: <"get">,
-     <"object">:
-      {<"@">: <"get">,
-       <"object">:
-        {<"@">: <"get">,
-         <"object">:
-          {<"@">: <"getenv">
+{"@": "set",
+ "object":
+  {"@": "get",
+   "object":
+    {"@": "get",
+     "object":
+      {"@": "get",
+       "object":
+        {"@": "get",
+         "object":
+          {"@": "getenv"
           },
-         <"key">: <"/">
+         "key": "/"
         },
-       <"key">: <"parser">
+       "key": "parser"
       },
-     <"key">: <"sentence">
+     "key": "sentence"
     },
-   <"key">: <"children">
+   "key": "children"
   },
- <"key">: <"quasiquote">,
- <"value">:
-  {<"@">: <"get">,
-   <"object">:
-    {<"@">: <"get">,
-     <"object">:
-      {<"@">: <"get">,
-       <"object">:
-        {<"@">: <"getenv">
+ "key": "quasiquote",
+ "value":
+  {"@": "get",
+   "object":
+    {"@": "get",
+     "object":
+      {"@": "get",
+       "object":
+        {"@": "getenv"
         },
-       <"key">: <"/">
+       "key": "/"
       },
-     <"key">: <"parser">
+     "key": "parser"
     },
-   <"key">: <"quasiquote">
+   "key": "quasiquote"
   }
 }

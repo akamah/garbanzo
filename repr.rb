@@ -96,14 +96,14 @@ EOS
       @@created_in = Hash.new { 0 }
       
       at_exit {
-        puts "string is created #{@@creation} times"
+        $stderr.puts "string is created #{@@creation} times"
 
         locations = @@created_in.keys.sort { |a, b|
           @@created_in[a] <=> @@created_in[b]
         }
         
         locations.each do |k|
-          puts "#{@@created_in[k]} => #{k}"
+          $stderr.puts "#{@@created_in[k]} => #{k}"
         end
       }
       
@@ -115,8 +115,9 @@ EOS
 #        if @@creation % 113 == 0        
 #          @@created_in[caller(1..5)] += 1
 #        end
-        
-        puts @@creation if @@creation % 100000 == 0
+
+#        if @@creation % 113 == 0        
+
       end
       
       def copy; String.new(::String.new(self.value)); end
@@ -236,28 +237,36 @@ EOS
         r = key
         case r
         when ::String
-          r.to_sym
-        when ::Symbol
-          r
-        when ::Numeric
           r
         when Repr::String
-          r.value.to_sym
+          r.value
         when Repr::Num
           r.num
         when Repr::Bool
           r.value
+        when ::Symbol
+          r.to_s
+        when ::Numeric
+          r
+        when ::Bool
+          r
         else
-          raise "this is not a key #{key}"
+          raise "this is not a key #{key.class}"
         end
       end
 
       def from_key(inner)
         case inner
-        when Numeric
+        when ::String
           inner.to_repr
-        when Symbol
+        when ::Numeric
+          inner.to_repr
+        when ::Symbol
           inner.to_s.to_repr
+        when true, false
+          inner.to_repr
+        else
+          raise "this is not a key #{inner.class.ancestors}"          
         end
       end
       
@@ -269,8 +278,6 @@ EOS
         realkey = as_key key
         result = @table[realkey]
 
-#        p @table
-        
         raise "no entry found: #{realkey}:#{realkey.class} in #{@keys.inspect}" if result == nil
 
         result

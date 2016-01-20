@@ -213,7 +213,7 @@ print '[@: "insertprev", object: /parser/sentence/children, origin: [@: "firstke
 # [@: "insertprev", object: cs, origin: [@: "firstkey", object: cs], key: "head", value: c];
 
 symbol = 'parser/symbol = '{
-    oo = /oneof([string: "abcdefghijklmnopqrstuvwxyz"])
+    oo = [@: "quote", value: [@: "oneof", string: "abcdefghijklmnopqrstuvwxyz"]]
     %/parser/whitespaces;
     result  = %oo
     cs = [@: "many", parser: oo]

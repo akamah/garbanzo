@@ -529,6 +529,9 @@ EOS
     define_command("many", "parser")
 
     define_command("parsestring")
+
+    # 与えられた文字列のうち，どれか一文字に一致
+    define_command("oneof", "string")
     
     class ::Integer
       def to_repr; Garbanzo::Repr::num(self); end

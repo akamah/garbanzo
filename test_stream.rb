@@ -6,7 +6,9 @@ require './rule.rb'
 
 class TC_Stream < Test::Unit::TestCase
   include Garbanzo
+  include Garbanzo::Repr
 
+  
   def test_source_token
     s1 = Store.create_source("h\nge")
 
@@ -71,5 +73,20 @@ class TC_Stream < Test::Unit::TestCase
       assert_equal("homuhomu".to_repr, t)
       assert_equal(8.to_repr, s1['index'])
     end
+  end
+  
+  def test_one_of
+    s1 = Store.create_source("homuhomu")
+
+    t1 = s1.one_of("hoge".to_repr)
+    assert_equal("h".to_repr, t1)
+
+    t2 = s1.one_of("aoeui".to_repr)
+    assert_equal("o".to_repr, t2)
+
+    assert_raise(Rule::ParseError) {
+      s1.one_of("abcdefg".to_repr)
+    }
+
   end
 end

@@ -133,6 +133,18 @@ module Garbanzo
       def is_eof?
         return self['source'].value.length == self['index'].num
       end
+
+      def one_of(string)
+        t = parse_token
+
+        string.value.each_char do |c|
+          if t.value == c
+            return t
+          end
+        end
+
+        self.fail("expected one of #{string}".to_repr)
+      end
     end
   end
 end

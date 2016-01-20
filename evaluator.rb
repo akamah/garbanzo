@@ -354,6 +354,11 @@ module Garbanzo
         s = @dot["/"]["source"]
         s.parse_string
       end
+
+      operator("oneof", "string", String) do |string|
+        source = @dot["/"]["source"]
+        source.one_of(string)
+      end
     end
 
     def trace_log(feature, s)

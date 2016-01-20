@@ -41,7 +41,7 @@ module Garbanzo
         param = arglist.map {|name_type|
           e = evaluate(store[name_type[0]])
           unless e.is_a? name_type[1]
-            raise "operator `#{opname}' wants `#{name}' to be #{type}, not #{e.class}"
+            raise "operator `#{opname}' type mismatch: #{name_type}, not #{e.class}"
           end
           e
         }

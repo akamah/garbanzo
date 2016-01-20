@@ -66,10 +66,7 @@ module Garbanzo
       root['parser']['whitespaces'] =
         Repr::many(
           Repr::quote(
-            Repr::choice(
-              { "space" => Repr::terminal(" ".to_repr),
-                "newline" => Repr::terminal("\n".to_repr),
-                "tab" => Repr::terminal("\t".to_repr) }.to_repr)))
+            Repr::oneof(" \t\n".to_repr)))
     end
 
     def install_pair_rule(root)
@@ -184,29 +181,6 @@ module Garbanzo
                          }.to_repr)),                       
                      "return" => true.to_repr
                    }.to_repr)))
-
-      root['oneof'] = Repr::function(
-        root,
-        Repr::begin(
-          { "init_i" => Repr::set(Repr::getenv, "i".to_repr, 0.to_repr),
-            "init_store" => Repr::set(Repr::getenv, "store".to_repr, Repr::datastore({}.to_repr)),
-            "loop" => Repr::while(
-              Repr::notequal(Repr::get(Repr::getenv, "i".to_repr),
-                             Repr::length(Repr::get(Repr::getenv, "string".to_repr))),
-              Repr::begin(
-                { "settostore" =>  Repr::set(Repr::get(Repr::getenv, "store".to_repr), Repr::get(Repr::getenv, "i".to_repr),
-                                             Repr::datastore({ "@" => "terminal",
-                                                               "string" => Repr::charat(Repr::get(Repr::getenv, "string".to_repr),
-                                                                                        Repr::get(Repr::getenv, "i".to_repr))
-                                                             }.to_repr)),
-                  "increment" => Repr::set(Repr::getenv, "i".to_repr, Repr::add(Repr::get(Repr::getenv, "i".to_repr), 1.to_repr))
-                }.to_repr)),
-            "choice" => Repr::datastore(
-              { "@" => "choice",
-                "children" => Repr::get(Repr::getenv, "store".to_repr)
-              }.to_repr)
-          }.to_repr))
-
 
       install_string_rule(root)
       install_whitespaces_rule(root)

@@ -258,20 +258,10 @@
           },
          "key": "oo",
          "value":
-          {"@": "call",
-           "func":
-            {"@": "get",
-             "object":
-              {"@": "get",
-               "object":
-                {"@": "getenv"
-                },
-               "key": "/"
-              },
-             "key": "oneof"
-            },
-           "args":
-            {"string": "abcdefghijklmnopqrstuvwxyz"
+          {"@": "quote",
+           "value":
+            {"@": "oneof",
+             "string": "abcdefghijklmnopqrstuvwxyz"
             }
           }
         },

@@ -10,7 +10,7 @@ class TC_Interpreter < Test::Unit::TestCase
   include Garbanzo
   
   def test_native_proc
-    inter = Interpreter.new
+    inter = Proto1.new
     
     prog = Repr::call(Repr::get(Repr::getenv, "add".to_repr),
                       Repr::store({ 'right'.to_repr => 3.to_repr,

@@ -7,25 +7,23 @@ Garbanzoの文法をGarbanzoのプログラムで記述できる．
 
 =end
 
-require 'stackprof'
-
 require './repr.rb'
 require './lib.rb'
 require './rule.rb'
 require './evaluator.rb'
 require './parser.rb'
+require './interpreter.rb'
 
 
 module Garbanzo
   include Repr
   
-  # EvaluatorとParserをカプセルしたもの。
-  class Interpreter2
+  class Proto2 < Interpreter
     attr_accessor :evaluator
     attr_accessor :debug
     
     def initialize(debug = true)
-      @evaluator = Evaluator.new(construct_root)
+      super('proto2')
       @debug = debug
     end
 
@@ -198,28 +196,21 @@ module Garbanzo
       parser['sentence']['children']['datastore'] = parser['datastore']
       root
     end
+
+    def show_parse_error(e)
+      super(e)
+      puts self.evaluator.dot['/']['source']['source'].value.split("\n")[e.line - 1]      
+    end
+
+    def show_general_error(e)
+      super(e)
+      puts self.evaluator.dot['/']['source']['source'].value.split("\n")[line]
+    end
   end
 end
 
 
 if __FILE__ == $0
   include Garbanzo
-  int = Interpreter2.new(false)
-
-  File.open(ARGV[0] || "calc2.garb", "rb") { |f|
-    begin
-      StackProf.run(mode: :cpu, out: 'proto2.dump') do
-        int.execute(f.read)
-      end
-    rescue Rule::ParseError => e
-      puts "parse error, expecting #{e.message}"
-      puts int.evaluator.dot['/']['source']['source'].value.split("\n")[e.line - 1]
-    rescue => e
-      line = int.evaluator.dot['/']['source']['line'].num - 1
-      puts "some error, on #{line}: #{e.message}"
-      puts int.evaluator.dot['/']['source']['source'].value.split("\n")[line]
-    end
-  }
-
-  int.evaluator.debug_print
+  Proto2.new(false).start(ARGV)
 end

@@ -10,7 +10,7 @@ class TC_Proto2 < Test::Unit::TestCase
   include Garbanzo
 
   # def test_oneof
-  #   int = Interpreter2.new(false)
+  #   int = Proto2.new(false)
 
   #   int.evaluator.dot['/']['parser']['sentence'] =
   #     int.evaluator.evaluate(
@@ -21,7 +21,7 @@ class TC_Proto2 < Test::Unit::TestCase
   # end
 
   def test_string
-    int = Interpreter2.new(false)
+    int = Proto2.new(false)
 
     int.evaluator.dot['/']['parser']['sentence']['children']['white'] =
       int.evaluator.dot['/']['parser']['whitespaces']
@@ -29,7 +29,7 @@ class TC_Proto2 < Test::Unit::TestCase
   end
 
   def test_pair
-    int = Interpreter2.new(false)
+    int = Proto2.new(false)
 
     int.evaluator.dot['/']['parser']['sentence'] =
       int.evaluator.dot['/']['parser']['pair']
@@ -39,7 +39,7 @@ class TC_Proto2 < Test::Unit::TestCase
   end
 
   def test_datastore
-    int = Interpreter2.new(false)
+    int = Proto2.new(false)
 
     assert_equal({}.to_repr,
                  int.execute('{ }'))

@@ -10,6 +10,9 @@
 
 require 'stackprof'
 
+require './repr.rb'
+require './evaluator.rb'
+
 module Garbanzo
   class Interpreter
     attr_reader :evaluator, :name
@@ -37,20 +40,19 @@ module Garbanzo
     end
     
     def start(args)
-      File.open(ARGV[0], "rb") { |f|
-        begin
-          source = f.read
-          
-          StackProf.run(mode: :cpu, out: "#{self.name}.dump") do
-            execute(source)
-          end
+      source = File.open(ARGV[0], "rb").read
 
-        rescue Rule::ParseError => e
-          show_parse_error(e)
-        rescue => e
-          show_general_error(e)
+      begin
+        StackProf.run(mode: :cpu, out: "#{self.name}.dump") do
+          execute(source)
         end
-      }
+      rescue Rule::ParseError => e
+        show_parse_error(e)
+      rescue => e
+        show_general_error(e)
+      ensure
+        evaluator.debug_print
+      end
     end
   end
 end

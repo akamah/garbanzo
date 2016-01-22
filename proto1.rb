@@ -6,6 +6,7 @@
 3. デフォルトでは構文の拡張しかできない構文を持つ
 =end
 
+require './interpreter.rb'
 require './repr.rb'
 require './lib.rb'
 require './rule.rb'
@@ -14,16 +15,41 @@ require './parser.rb'
 
 module Garbanzo
   # EvaluatorとParserをカプセルしたもの。
-  class Interpreter
+  
+  class Proto1 < Interpreter
     def initialize
-      @evaluator = Evaluator.new(construct_root)
-      @parser    = Parser.new
+      super("proto1")
+      
+      @parser = install_grammar_extension
+    end
 
-      install_grammar_extension
+    ## 親クラスのコンストラクタにより呼ばれる．
+    def construct_root
+      root = Repr::store({})
+      root['add'] = Lib::add
+      root['/']   = root
+      root
+    end
+
+    # 構文拡張のやつです。
+    def install_grammar_extension
+      parser = Parser.new
+      nth ||= 0
+      parser.grammar.rules[:sentence] = Rule::choice(
+        ['#{', 
+         Rule::many(!'#}'.to_rule >> Rule::any).map {|cs|
+           nth += 1
+           to_eval = cs.map(&:value).join
+           parser.instance_eval(to_eval, "(grammar_extension: #{nth})")
+           Repr::Bool.new(false)
+         },
+         '#}'].sequence >> Rule::success(false.to_repr))
+
+      parser
     end
 
     def evaluate(prog)
-      @evaluator.evaluate(prog)
+      evaluator.evaluate(prog)
     end
 
     def parse(src)
@@ -32,36 +58,9 @@ module Garbanzo
     
     def execute(src)
       while src != ""
-        begin
-          prog, src = parse(src)
-#        $stderr.puts "program: #{@evaluator.show(prog)}"
-          evaluate(prog)
-        rescue => e
-          $stderr.puts e.message
-          raise e
-        end
+        prog, src = parse(src)
+        evaluate(prog)
       end
-    end
-    
-    # 構文拡張のやつです。
-    def install_grammar_extension
-      @nth ||= 0
-      @parser.grammar.rules[:sentence] = Rule::choice(
-        ['#{', 
-         Rule::many(!'#}'.to_rule >> Rule::any).map {|cs|
-           @nth += 1
-           to_eval = cs.map(&:value).join
-           @parser.instance_eval(to_eval, "(grammar_extension: #{@nth})")
-           Repr::Bool.new(false)
-         },
-         '#}'].sequence >> Rule::success(false.to_repr))
-    end
-
-    def construct_root
-      root = Repr::store({})
-      root['add'] = Lib::add
-      root['/']   = root
-      root
     end
   end
 end
@@ -69,9 +68,5 @@ end
 
 if __FILE__ == $0
   include Garbanzo
-  int = Interpreter.new
-
-  File.open(ARGV[0] || "calc.garb", "rb") { |f|
-    int.execute(f.read)
-  }
+  Proto1.new.start(ARGV)
 end

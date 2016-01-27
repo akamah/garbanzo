@@ -67,19 +67,31 @@ module Garbanzo
       self.get_raw(key).analyzed.call(env)
     end
 
-    def type_check(a, klass)
-    end
-
     private
+    def analyze_non_command
+      proc {|env|
+        result = {}.to_repr
+
+        self.each_key {|k, v|
+          result[k] = evaluate_sub_expr(k, env)
+        }
+      }
+    end
     
     def analyze
       comname = self.get_raw('@')
 
       if comname == nil
-        # evaluate its content
+        analyze_non_command
       end
 
-      return @@commands[comname.value].call(self)
+      feature = @@commands[comname.value]
+
+      if feature == nil
+        raise "undefined command #{comname}"
+      end
+
+      return feature.call(self)
     end
 
     public

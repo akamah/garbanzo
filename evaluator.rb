@@ -20,6 +20,15 @@ class Garbanzo::Repr::GarbObject
   end
 end
 
+class Garbanzo::Repr::Store
+  private
+  def analyze
+    puts "Store#analyze"
+    proc {}
+  end
+
+  public
+end
 
 module Garbanzo
   # 評価するやつ。変数とか文脈とか何も考えていないので単純

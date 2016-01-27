@@ -185,27 +185,27 @@ EOS
     end
     
     class Procedure < Callable
-      attr_accessor :proc
+      attr_accessor :procedure
 
-      def initialize(proc)
-        @proc = proc
+      def initialize(procedure)
+        @procedure = procedure
       end
       
       def copy
-        Procedure.new(self.proc)
+        Procedure.new(self.procedure)
       end
 
       def inspect
-        "#<proc>"
+        "#<procedure>"
       end
 
       def ==(other)
-        other.class == Procedure && other.proc == self.proc
+        other.class == Procedure && other.procedure == self.procedure
       end
     end
 
-    def self.procedure(proc)
-      Procedure.new(proc)
+    def self.procedure(procedure)
+      Procedure.new(procedure)
     end
     
     class Store < GarbObject
@@ -370,6 +370,11 @@ EOS
         @keys.each do |k|
           yield(from_key(k), @table[k])
         end
+      end
+
+      # wants realkey a string
+      def get_raw(realkey)
+        @table[realkey]
       end
 
       # recには，もうすでにでてきたデータストアを記録し，再帰的に出力しないようにする．

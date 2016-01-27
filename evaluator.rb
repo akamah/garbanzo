@@ -4,33 +4,87 @@ require './lib.rb'
 require './rule.rb'
 require './stream.rb'
 
-
-# analyzeのためのやつ
-class Garbanzo::Repr::GarbObject
-  private
-  # 環境を受け取ることができる```proc'''を返す．
-  def analyze
-    proc { self }
-  end
-
-  public
-  def analyzed
-    @analyzed ||= analyze
-    return @analyzed
-  end
-end
-
-class Garbanzo::Repr::Store
-  private
-  def analyze
-    puts "Store#analyze"
-    proc {}
-  end
-
-  public
-end
-
 module Garbanzo
+  # analyzeのためのやつ
+  class Repr::GarbObject
+    private
+    # 環境を受け取ることができる```proc'''を返す．
+    def analyze
+      proc { self }
+    end
+
+    public
+    def analyzed
+      @analyzed ||= analyze
+      return @analyzed
+    end
+
+    def refresh_analyzed
+      @analyzed = analyze
+      return @analyzed
+    end
+  end
+
+  class Repr::Store
+    @@commands = {}
+    @@callcount = Hash.new { 0 }
+    
+    def self.command(commandname, *arguments)
+      @@commands[commandname] = lambda { |store|
+        @@callcount[commandname] += 1
+        yield(*arguments.map {|aname| store.get_raw(aname) })
+      }
+    end
+
+    def self.operator(opname, *args)
+      raise "invalid argument list" if args.length % 2 == 1
+
+      arglist = args.each_slice(2).map {|name, type|
+        [name, type]
+      }
+      
+      @@commands[opname] = lambda { |store|
+        proc { |env|
+          @@callcount[opname] += 1
+          param = arglist.map {|name_type|
+            e = store.evaluate_sub_expr(name_type[0], env)
+            unless e.is_a? name_type[1]
+              raise "operator `#{opname}' type mismatch: #{name_type}, not #{e.class}"
+            end
+            e
+          }
+          yield(*param)
+        }        
+      }
+    end
+
+    operator("add", "left", Repr::Num, "right", Repr::Num) do |left, right|
+      Repr::num(left.num + right.num)
+    end
+      
+
+    def evaluate_sub_expr(key, env)
+      self.get_raw(key).analyzed.call(env)
+    end
+
+    def type_check(a, klass)
+    end
+
+    private
+    
+    def analyze
+      comname = self.get_raw('@')
+
+      if comname == nil
+        # evaluate its content
+      end
+
+      return @@commands[comname.value].call(self)
+    end
+
+    public
+  end
+
   # 評価するやつ。変数とか文脈とか何も考えていないので単純
   class Evaluator
     include Repr

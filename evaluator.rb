@@ -5,6 +5,22 @@ require './rule.rb'
 require './stream.rb'
 
 
+# analyzeのためのやつ
+class Garbanzo::Repr::GarbObject
+  private
+  # 環境を受け取ることができる```proc'''を返す．
+  def analyze
+    proc { self }
+  end
+
+  public
+  def analyzed
+    @analyzed ||= analyze
+    return @analyzed
+  end
+end
+
+
 module Garbanzo
   # 評価するやつ。変数とか文脈とか何も考えていないので単純
   class Evaluator
@@ -49,7 +65,7 @@ module Garbanzo
         func.call(*param)
       }
     end
-    
+
     def install_commands
       operator("add", "left", Num, "right", Num) do |left, right|
         Repr::num(left.num + right.num)
@@ -426,6 +442,37 @@ module Garbanzo
       result
     end
 
+    def eval_with_analyze(program)
+      procedure = analyze(program)
+      procedure.call()
+    end
+    
+    # analyze - Storeで作られた構文木を，実行可能な手続きへと変換する．
+    # * analyzeの手続きはprocで作ること．
+    # * すべてのオブジェクトにanalyzeのキャッシュが必要だとわかったので，
+    #   この辺のコードは後々削除する．参考までに残す．
+    
+    def analyze(program)
+      case program
+      when Num, Bool, String, Function, Procedure
+        proc { |e| program }
+      when Store
+        analyze_store(program)
+      else
+        raise "ANALYZE: argument is not a program: #{program.inspect} of #{program.class}"
+      end
+    end
+
+    ANALYZE_CACHE = "$analyze"
+    
+    def analyze_store(store)
+      if store.exists(ANALYZE_CACHE).value == true
+        store[ANALYZE_CACHE]
+      end
+    end
+
+
+    
     def show(p)
       return p.inspect
     end

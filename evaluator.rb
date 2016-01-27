@@ -38,7 +38,7 @@ module Garbanzo
     end
 
     def self.debug_print
-      p @@callcount
+      $stderr.puts @@callcount
     end
     
     def self.operator(opname, *args)
@@ -289,7 +289,7 @@ module Garbanzo
         end
       when Repr::Procedure
         evaluator.extend_scope(args, {}.to_repr) do
-          func.proc.call(evaluator, args)
+          func.procedure.call(evaluator, args)
         end
       else
         raise "EVALUATE: callee is not a function: #{func}" unless f.is_a? Repr::Function

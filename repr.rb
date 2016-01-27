@@ -185,27 +185,27 @@ EOS
     end
     
     class Procedure < Callable
-      attr_accessor :proc
+      attr_accessor :procedure
 
-      def initialize(proc)
-        @proc = proc
+      def initialize(procedure)
+        @procedure = procedure
       end
       
       def copy
-        Procedure.new(self.proc)
+        Procedure.new(self.procedure)
       end
 
       def inspect
-        "#<proc>"
+        "#<procedure>"
       end
 
       def ==(other)
-        other.class == Procedure && other.proc == self.proc
+        other.class == Procedure && other.procedure == self.procedure
       end
     end
 
-    def self.procedure(proc)
-      Procedure.new(proc)
+    def self.procedure(procedure)
+      Procedure.new(procedure)
     end
     
     class Store < GarbObject

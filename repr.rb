@@ -372,6 +372,11 @@ EOS
         end
       end
 
+      # wants realkey a string
+      def get_raw(realkey)
+        @table[realkey]
+      end
+
       # recには，もうすでにでてきたデータストアを記録し，再帰的に出力しないようにする．
       # indentは，そのデータストアの字下げ．
       def inspect_rec(rec = [], indent = 0)

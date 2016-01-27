@@ -115,10 +115,13 @@ class TC_Repr < Test::Unit::TestCase
     pr = Repr::procedure(lambda {|e, a|
                            (a['right'].num + a['left'].num).to_repr
                          })
+    
     args = Repr::store({})
     args['right'] = 1.to_repr
     args['left']  = 3.to_repr
+
     assert_equal(4.to_repr, ev.evaluate(Repr::call(pr, args)))
+
     assert_equal(pr, ev.evaluate(pr))
   end
 

@@ -31,7 +31,9 @@ module Garbanzo
     def self.command(commandname, *arguments)
       @@commands[commandname] = lambda { |store|
         @@callcount[commandname] += 1
-        yield(*arguments.map {|aname| store.get_raw(aname) })
+        proc { |env|
+          yield(*arguments.map {|aname| store.get_raw(aname) }, env)
+        }
       }
     end
 
@@ -52,11 +54,11 @@ module Garbanzo
           param = arglist.map {|name_type|
             e = store.evaluate_sub_expr(name_type[0], env)
             unless e.is_a? name_type[1]
-              raise "operator `#{opname}' type mismatch: #{name_type}, not #{e.class}"
+              raise "operator `#{opname}' type mismatch: #{name_type}, not #{e}"
             end
             e
           }
-          yield(*param)
+          yield(*param, env)
         }        
       }
     end
@@ -188,23 +190,23 @@ module Garbanzo
     
     
     ### parsing operators
-    operator("token") do
-      s = @dot["/"]["source"]
+    operator("token") do |env|
+      s = env.dot["/"]["source"]
 
       s.parse_token
     end
     
-    operator("fail", "message", Repr::GarbObject) do |message|
-      s = @dot['/']['source']
+    operator("fail", "message", Repr::GarbObject) do |message, env|
+      s = env.dot['/']['source']
       line = s['line']
       column = s['column']
       
       raise Rule::ParseError.new(message, line, column)
     end
 
-    command("choice", "children") do |children|
+    command("choice", "children") do |children, evaluator|
       -> { # local jump errorを解消するために、ここにlambdaを入れた。
-        s = @dot["/"]["source"]
+        s = evaluator.dot["/"]["source"]
         state = s.copy_state
         errors = []
 
@@ -215,7 +217,7 @@ module Garbanzo
           #            p k, v
           begin
             s.set_state(state)
-            res = env.evaluate(v)
+            res = evaluator.evaluate(v)
             #              puts "result : #{res}"
             return res
           rescue Rule::ParseError => e
@@ -228,21 +230,21 @@ module Garbanzo
       }.call
     end
 
-    operator("terminal", "string", Repr::String) do |string|
-      s = @dot["/"]["source"]
+    operator("terminal", "string", Repr::String) do |string, evaluator|
+      s = evaluator.dot["/"]["source"]
       s.parse_terminal(string)
     end
 
-    operator("many", "parser", Repr::GarbObject) do |parser|
+    operator("many", "parser", Repr::GarbObject) do |parser, evaluator|
       i = 0
       result = Repr::store({})
-      s = @dot['/']["source"]
+      s = evaluator.dot['/']["source"]
       state = nil
       
       while true
         state = s.copy_state
         begin
-          result[i.to_repr] = env.evaluate(parser)
+          result[i.to_repr] = evaluator.evaluate(parser)
           i += 1
         rescue Rule::ParseError
           s.set_state(state)
@@ -253,19 +255,19 @@ module Garbanzo
       result
     end
 
-    command("parsestring") do
-      s = @dot["/"]["source"]
+    command("parsestring") do |evaluator|
+      s = evaluator.dot["/"]["source"]
       s.parse_string
     end
 
-    operator("oneof", "string", Repr::String) do |string|
-      source = @dot["/"]["source"]
+    operator("oneof", "string", Repr::String) do |string, evaluator|
+      source = evaluator.dot["/"]["source"]
       source.one_of(string)
     end
 
     ### miscellaneous operators
-    operator("print", "value", Repr::GarbObject) do |value|
-      puts show(value)
+    operator("print", "value", Repr::GarbObject) do |value, evaluator|
+      puts evaluator.show(value)
       value
     end
 
@@ -279,81 +281,81 @@ module Garbanzo
 
     
     ### operators cooperate with environment
-    operator("call", "func", Repr::Callable, "args", Repr::Store) do |func, args|
+    operator("call", "func", Repr::Callable, "args", Repr::Store) do |func, args, evaluator|
       case func
-      when Function
-        extend_scope(args, func.env) do
-          env.evaluate(func.body)
+      when Repr::Function
+        evaluator.extend_scope(args, func.env) do
+          evaluator.evaluate(func.body)
         end
-      when Procedure
-        extend_scope(args, {}.to_repr) do
-          func.proc.call(self, args)
+      when Repr::Procedure
+        evaluator.extend_scope(args, {}.to_repr) do
+          func.proc.call(evaluator, args)
         end
       else
-        raise "EVALUATE: callee is not a function: #{func}" unless f.is_a? Function
+        raise "EVALUATE: callee is not a function: #{func}" unless f.is_a? Repr::Function
       end
     end
 
-    operator("eval", "env", Repr::Store, "program", Repr::GarbObject) do |env, program|
-      prevEnv = @dot
-      @dot = env
+    operator("eval", "env", Repr::Store, "program", Repr::GarbObject) do |env, program, evaluator|
+      prevEnv = evaluator.dot
+      evaluator.dot = env
       begin
-        result = .evaluate(program)
+        result = evaluator.evaluate(program)
       ensure
-        @dot = prevEnv
+        evaluator.dot = prevEnv
       end
       
       result
     end
 
-    operator("getenv") do
-      @dot
+    operator("getenv") do |evaluator|
+      evaluator.dot
     end
 
-    operator("setenv", "env", Repr::Store) do |env|
-      @dot = env
+    operator("setenv", "env", Repr::Store) do |env, evaluator|
+      evaluator.dot = env
     end
 
     ## commands
     ### control flow
-    command("while", "condition", "body") do |condition, body|
+    command("while", "condition", "body") do |condition, body, evaluator|
       falseObj = Repr::Bool.new(false)
       result = Repr::Bool.new(true)
       
-      while evaluate(condition) != falseObj
-        result = evaluate(body)
+      while evaluator.evaluate(condition) != falseObj
+        result = evaluator.evaluate(body)
       end
       
       result
     end
 
-    command("if", "condition", "consequence", "alternative") do |condition, consequence, alternative|
-      if evaluate(condition) != false.to_repr
-        evaluate(consequence)
+    command("if", "condition", "consequence", "alternative") do |condition, consequence, alternative, evaluator|
+      if evaluator.evaluate(condition) != false.to_repr
+        evaluator.evaluate(consequence)
       else
-        evaluate(alternative)
+        evaluator.evaluate(alternative)
       end
     end
 
         
-    command("begin", "body") do |body|
+    command("begin", "body") do |body, evaluator|
       result = false.to_repr
 
       body.each_key do |k, v|
-        result = evaluate(v)
+        result = evaluator.evaluate(v)
       end
 
       result
     end
 
     # スコープを導入するコマンド。
-    command("scope", "body") do |body|
+    command("scope", "body") do |body, evaluator|
       emptyenv = {}.to_repr
-      extend_scope(emptyenv, @dot) do
+      evaluator.extend_scope(emptyenv, evaluator.dot) do
         result = false.to_repr
 
         body.each_key do |k, v|
-          result = evaluate(v)
+          result = evaluator.evaluate(v)
         end
 
         result
@@ -361,25 +363,26 @@ module Garbanzo
     end
 
     ### object allocation
-    command("datastore", "object") do |object|
+    command("datastore", "object") do |object, evaluator|
       store = Repr::store({})
       
       object.each_key { |k|
-        store[k] = self.evaluate(object[k])
+        store[k] = evaluator.evaluate(object[k])
       }
       store
     end
 
-    command("quote", "value") do |value|
+    command("quote", "value") do |value, evaluator|
       value
     end
 
-    command("lambda", "env", "body") do |env, body|
-      Repr::function(evaluate(env), body)
+    command("lambda", "env", "body") do |env, body, evaluator|
+      Repr::function(evaluator.evaluate(env), body)
     end
     
     def evaluate_sub_expr(key, env)
-      self.get_raw(key).analyzed.call(env)
+      expr = self.get_raw(key).analyzed.call(env)
+      expr
     end
 
     private
@@ -388,8 +391,10 @@ module Garbanzo
         result = {}.to_repr
 
         self.each_key {|k, v|
-          result[k] = evaluate_sub_expr(k, env)
+          result[k] = self[k].analyzed.call(env)
         }
+
+        result
       }
     end
     
@@ -397,7 +402,7 @@ module Garbanzo
       comname = self.get_raw('@')
 
       if comname == nil
-        analyze_non_command
+        return analyze_non_command
       end
 
       feature = @@commands[comname.value]

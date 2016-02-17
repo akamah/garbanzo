@@ -198,8 +198,8 @@ module Garbanzo
     
     operator("fail", "message", Repr::GarbObject) do |message, env|
       s = env.dot['/']['source']
-      line = s['line']
-      column = s['column']
+      line = s.line
+      column = s.column
       
       raise Rule::ParseError.new(message, line, column)
     end
@@ -270,7 +270,7 @@ module Garbanzo
         raise "regex command requires `regex' as String"
       end
 
-      re = Regexp.new(regex.value, Regexp::MULTILINE)
+      re = Regexp.new("^" + regex.value, Regexp::MULTILINE)
 
       source.regex_match(re)
     end

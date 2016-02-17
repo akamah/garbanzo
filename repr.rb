@@ -315,6 +315,8 @@ EOS
           @table[realkey] = value.to_repr
           @keys << realkey
         end
+
+        refresh_analyzed
       end
 
       def size
@@ -327,6 +329,9 @@ EOS
         
         @table.delete(realkey)
         @keys.delete(realkey)
+
+        refresh_analyzed
+        
         result
       end
 
@@ -348,6 +353,9 @@ EOS
         index = find_index(origin)
         realkey = as_key key
         @table[realkey] = value.to_repr
+
+        refresh_analyzed
+        
         @keys.insert(index, realkey)
       end
 
@@ -355,6 +363,9 @@ EOS
         index = find_index(origin)
         realkey = as_key key
         @table[realkey] = value.to_repr
+
+        refresh_analyzed
+        
         @keys.insert(index + 1, realkey)
       end
 

@@ -120,6 +120,10 @@ module Garbanzo
         end
       end
 
+      def regex_match
+      end
+
+      
       def copy_state
         s, i, l, c = source_vars
         return [s.to_repr, i.to_repr, l.to_repr, c.to_repr]

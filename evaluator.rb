@@ -265,6 +265,16 @@ module Garbanzo
       source.one_of(string)
     end
 
+    command("regex") do |regex, evaluator|
+      unless regex.is_a? Repr::String
+        raise "regex command requires `regex' as String"
+      end
+
+      re = Regexp.new(regex.value, Regexp::MULTILINE)
+
+      source.regex_match(re)
+    end
+
     ### miscellaneous operators
     operator("print", "value", Repr::GarbObject) do |value, evaluator|
       puts evaluator.show(value)

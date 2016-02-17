@@ -10,10 +10,10 @@ module Garbanzo
   module Repr
     class Store
       def self.linum_array(str)
-        arr = Array.new(str.size)
+        arr = Array.new(str.size + 1)
 
         l, c = 1, 1
-        str.size.times do |i|
+        0.upto(str.size) do |i|
           arr[i] = [l.to_repr, c.to_repr]
 
           if str[i] == "\n"

@@ -204,7 +204,8 @@ module Garbanzo
 
     def show_general_error(e)
       super(e)
-      puts self.evaluator.dot['/']['source']['source'].value.split("\n")[line]
+      linum = self.evaluator.dot['/']['source'].line.num
+      puts self.evaluator.dot['/']['source']['source'].value.split("\n")[linum - 1]
     end
   end
 end

@@ -65,7 +65,7 @@ EOS
       end
 
       def inspect
-        self.num.inspect
+        "@" + self.num.inspect
       end
 
       def eql?(other)
@@ -78,10 +78,6 @@ EOS
       
       def hash
         num.hash
-      end
-      
-      def to_s
-        self.num.to_s
       end
     end
 
@@ -138,7 +134,7 @@ EOS
 
       def initialize(value); @value = value; end      
       def copy; self; end
-      def inspect; self.value.inspect; end
+      def inspect; "@" + self.value.inspect; end
 
       def self.true_object;  @@true_object;  end
       def self.false_object; @@false_object; end

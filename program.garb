@@ -30,9 +30,6 @@ parser.key = tmp
 
 print {hoge: "string"}
 
-
-print parser.key
-
 parser.addition = do
   x = $parser.digit
   terminal { "string": "+" }
@@ -41,7 +38,6 @@ parser.addition = do
   result = {"@": "datastore", "object": {"@": "add"}}
   result.left = x
   result.right = e
-  print result
 end
 
 insertprev { "object": parser.expression.children,
@@ -68,17 +64,7 @@ end
 insertprev { "object": a, "origin": "b", "key": "g", "value": "hoge" }
 
 print a
-
-
-print hogepoyo
-print $hogepoyo
-
-print 1
-
-print parser.addition
-
 print 1+1+1
-print {"@": "quote", "value": %(a).%(b).%(c)}
 
 name = "poyoshi"
 `%(name) = 1 + %(name)`
@@ -127,9 +113,6 @@ end
 
 parser.expression |= notone
 
-print parser.notone
-print parser.expression
-
 print !=1 1
 print !=1 a
 
@@ -151,3 +134,5 @@ x++
 print x
 x++
 print x
+
+

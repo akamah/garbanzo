@@ -548,6 +548,11 @@ EOS
 
     # 与えられた文字列のうち，どれか一文字に一致
     define_command("oneof", "string")
+
+    # 与えられた正規表現に沿ってパースするコマンド．
+    # マッチした箇所全体の文字列を返す．
+    # 今のところ，正規表現の記法はRubyに依存することとする．
+    define_command("regex", "regex")
     
     class ::Integer
       def to_repr; Garbanzo::Repr::num(self); end

@@ -385,20 +385,6 @@
               {"@": "begin",
                "body":
                 {"0":
-                  {"@": "print",
-                   "value":
-                    {"@": "get",
-                     "object":
-                      {"@": "get",
-                       "object":
-                        {"@": "getenv"
-                        },
-                       "key": ".."
-                      },
-                     "key": "a"
-                    }
-                  },
-                 "1":
                   {"@": "set",
                    "object":
                     {"@": "getenv"
@@ -422,7 +408,7 @@
                       }
                     }
                   },
-                 "2":
+                 "1":
                   {"@": "set",
                    "object":
                     {"@": "get",
@@ -519,6 +505,142 @@
      "key": "parser"
     },
    "key": "integer"
+  }
+}
+{"@": "set",
+ "object":
+  {"@": "get",
+   "object":
+    {"@": "get",
+     "object":
+      {"@": "getenv"
+      },
+     "key": "/"
+    },
+   "key": "parser"
+  },
+ "key": "true",
+ "value":
+  {"@": "quote",
+   "value":
+    {"@": "scope",
+     "body":
+      {"0":
+        {"@": "terminal",
+         "string": "@true"
+        },
+       "1":
+        {"@": "equal",
+         "left": "",
+         "right": ""
+        }
+      }
+    }
+  }
+}
+{"@": "set",
+ "object":
+  {"@": "get",
+   "object":
+    {"@": "get",
+     "object":
+      {"@": "get",
+       "object":
+        {"@": "get",
+         "object":
+          {"@": "getenv"
+          },
+         "key": "/"
+        },
+       "key": "parser"
+      },
+     "key": "expression"
+    },
+   "key": "children"
+  },
+ "key": "true",
+ "value":
+  {"@": "get",
+   "object":
+    {"@": "get",
+     "object":
+      {"@": "get",
+       "object":
+        {"@": "getenv"
+        },
+       "key": "/"
+      },
+     "key": "parser"
+    },
+   "key": "true"
+  }
+}
+{"@": "set",
+ "object":
+  {"@": "get",
+   "object":
+    {"@": "get",
+     "object":
+      {"@": "getenv"
+      },
+     "key": "/"
+    },
+   "key": "parser"
+  },
+ "key": "false",
+ "value":
+  {"@": "quote",
+   "value":
+    {"@": "scope",
+     "body":
+      {"0":
+        {"@": "terminal",
+         "string": "@false"
+        },
+       "1":
+        {"@": "equal",
+         "left": "",
+         "right": "a"
+        }
+      }
+    }
+  }
+}
+{"@": "set",
+ "object":
+  {"@": "get",
+   "object":
+    {"@": "get",
+     "object":
+      {"@": "get",
+       "object":
+        {"@": "get",
+         "object":
+          {"@": "getenv"
+          },
+         "key": "/"
+        },
+       "key": "parser"
+      },
+     "key": "expression"
+    },
+   "key": "children"
+  },
+ "key": "false",
+ "value":
+  {"@": "get",
+   "object":
+    {"@": "get",
+     "object":
+      {"@": "get",
+       "object":
+        {"@": "getenv"
+        },
+       "key": "/"
+      },
+     "key": "parser"
+    },
+   "key": "false"
   }
 }
 {"@": "set",
@@ -2426,3 +2548,6 @@ parser.sentence |= increment
 
 
 {"@":"print", "value": @141421356}
+{"@":"print", "value": @0}
+{"@":"print", "value": @true}
+{"@":"print", "value": @false}

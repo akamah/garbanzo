@@ -243,6 +243,26 @@ setinteger = '/parser/expression/children/integer = /parser/integer
 print integer
 print setinteger
 
+true = '/parser/true = '{
+    [@: "terminal", string: "@true"];
+    [@: "equal", left: "", right: ""];
+}
+
+settrue = '/parser/expression/children/true = /parser/true
+
+false = '/parser/false = '{
+    [@: "terminal", string: "@false"];
+    [@: "equal", left: "", right: "a"];
+}
+
+setfalse = '/parser/expression/children/false = /parser/false
+
+print true
+print settrue
+print false
+print setfalse
+
+
 path = 'parser/path = '{
     p = %/parser/symbol
 

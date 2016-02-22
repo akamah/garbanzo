@@ -77,3 +77,6 @@ parser.sentence |= increment
 
 
 {"@":"print", "value": @141421356}
+{"@":"print", "value": @0}
+{"@":"print", "value": @true}
+{"@":"print", "value": @false}

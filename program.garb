@@ -1,19 +1,11 @@
-parser.digit = do
-  terminal { "string": "1" }
-  w = $parser.whitespaces
-  sub { "left":  {"@": "tocode", "string": "1" },
-        "right": {"@": "tocode", "string": "0" } }
-end
-
-parser.expression.children.digit = parser.digit
-
-parser.unquote = do
-  terminal { "string": "%(" }
+parser.unquote = @[
+  @terminal { "string": "%(" }
   expr = $parser.expression
-  terminal { "string": ")"  }
+  @terminal { "string": ")"  }
 
-  datastore {"object": {"@": "unquote", "value": expr }}
-end
+  @datastore {"object": {"@": "unquote", "value": expr }}
+]
+
 
 tmp = {"@": "datastore", "object": {"@": "choice", "children": {}}}
 tmp.children.symbol = parser.symbol
@@ -27,54 +19,6 @@ tmp.children.string = parser.string
 tmp.children.symbol = parser.symbol
 
 parser.key = tmp
-
-parser.addition = do
-  x = $parser.digit
-  terminal { "string": "+" }
-  w = $parser.whitespaces
-  e = $parser.expression
-  result = {"@": "datastore", "object": {"@": "add"}}
-  result.left = x
-  result.right = e
-end
-
-insertprev { "object": parser.expression.children,
-             "origin": {"@":"firstkey", "object": parser.expression.children},
-	     "key":    "addition",
-	     "value":  parser.addition }
-
-hogepoyo = do
-  fst = "hoge"
-  snd = "hige"
-end
-
-
-parser.increment = do
-  name = $parser.symbol
-  terminal { string: "++" }
-  `%(name) = 1 + %(name)`
-end
-
-parser.donothing = do
-  name = $parser.symbol
-  terminal { string: "++" }
-  `%(name) = %(name)`
-end
-
-
-parser.addrule = do
-  target = $parser.path
-  terminal { string: "|=" }
-  name = $parser.symbol
-  `%(target).children.%(name) = parser.%(name)`
-end
-
-parser.sentence.children.addrule = parser.addrule
-
-parser.sentence.children.increment = parser.increment
-parser.sentence |= increment
-
-
 
 {"@":"print", "value": @141421356}
 {"@":"print", "value": @0}

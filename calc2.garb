@@ -191,7 +191,7 @@ grammar.rules[:expression].children << ["%".to_rule, :expression].sequence {|_, 
 
 
 
-# 改行
+# 改行 ################################################
 newline = '/parser/sentence/children/newline = '{
   [@: "terminal", string:"
 "];
@@ -202,7 +202,7 @@ setnewline = '/parser/newline = /parser/sentence/children/newline
 print newline
 print setnewline
 
-# シンボル
+# シンボル ################################################
 symbol = 'parser/symbol = '{
     oo = [@: "quote", value: [@: "oneof", string: "abcdefghijklmnopqrstuvwxyz"]]
     %/parser/whitespaces;
@@ -222,6 +222,7 @@ print symbol
 # print setsymbol
 
 
+# 整数 ################################################
 integer = '/parser/integer = '{
     [@: "terminal", string: "@"];
     digit = [@: "quote", value: [@: "oneof", string: "0123456789"]]
@@ -243,6 +244,7 @@ setinteger = '/parser/expression/children/integer = /parser/integer
 print integer
 print setinteger
 
+# 真偽値 ################################################
 true = '/parser/true = '{
     [@: "terminal", string: "@true"];
     [@: "equal", left: "", right: ""];
@@ -262,7 +264,21 @@ print settrue
 print false
 print setfalse
 
+# 命令 ################################################
+command = 'parser/command = '{
+  [@: "terminal", string: "@"];
+  comname = %/parser/symbol
+  args = %/parser/datastore
+  args/@ = comname
+  args;
+}
 
+setcommand = '/parser/sentence/children/command = /parser/command
+
+print command
+print setcommand
+
+# パス ################################################
 path = 'parser/path = '{
     p = %/parser/symbol
 
@@ -284,13 +300,11 @@ path = 'parser/path = '{
     result;
 }
 
-
-setpath = '/parser/expression/children/path = /parser/path
-
 print path
-# print setpath
 
+# 変数 ################################################
 variable = 'parser/variable = '{
+    [@: "terminal", string: ""];
     name = %/parser/path
     result = [@: "datastore", object: [@: "getenv"]]
     "hoge";
@@ -342,16 +356,16 @@ setassign = '/parser/sentence/children/assign = /parser/assign
 print assign
 print setassign
 
-
+# ブロック ################################################
 do = '/parser/do = '{
-    [@: "terminal", string: "do"];
+    [@: "terminal", string: "@["];
     quoted = [@: "many", parser: '{
       %/parser/whitespaces;
       %/parser/sentence;
     }]
 
     %/parser/whitespaces;
-    [@: "terminal", string: "end"];
+    [@: "terminal", string: "]"];
 
     result = [@: "datastore", object: [@: "quote"]]
     result/value = [@: "datastore", object: [@: "scope", body: quoted]]
@@ -406,17 +420,6 @@ seteval = '/parser/expression/children/eval = /parser/eval
 print eval
 print seteval
 
-command = 'parser/command = '{
-  comname = %/parser/symbol
-  args = %/parser/datastore
-  args/@ = comname
-  args;
-}
-
-setcommand = '/parser/sentence/children/command = /parser/command
-
-print command
-print setcommand
 
 
 ### QUASIQUOTE ##################

@@ -1,9 +1,9 @@
 parser.unquote = @[
-  @terminal { "string": "%(" }
+  {"@": "terminal", "string": "%(" }
   expr = $parser.expression
-  @terminal { "string": ")"  }
+  {"@": "terminal", "string": ")"  }
 
-  @datastore {"object": {"@": "unquote", "value": expr }}
+  {"@": "datastore", "object": {"@": "unquote", "value": expr }}
 ]
 
 
@@ -24,3 +24,34 @@ parser.key = tmp
 {"@":"print", "value": @0}
 {"@":"print", "value": @true}
 {"@":"print", "value": @false}
+
+
+
+
+
+
+@# fibonacci number
+
+
+$fib = @fun(n) @{
+  @if n <= 1 @{
+    n
+  } @else @{
+    @sub { left:  @call $fib {n: $n - 1},
+           right: @call $fib {n: $n - 2}}
+  }
+}
+
+
+$symbol = @[
+  $char = @'{@: "range", from: "A", to: "Z"}
+  $head = @!$char
+  $tail = {@: "many", parser: $char}
+
+  $result = ""
+  @call $/foreach {store: $tail, func: @fun(value) {
+
+  }}
+
+
+]

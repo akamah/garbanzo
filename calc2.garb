@@ -265,18 +265,18 @@ print false
 print setfalse
 
 # 命令 ################################################
-command = 'parser/command = '{
-  [@: "terminal", string: "@"];
-  comname = %/parser/symbol
-  args = %/parser/datastore
-  args/@ = comname
-  args;
-}
-
-setcommand = '/parser/sentence/children/command = /parser/command
-
-print command
-print setcommand
+#command = 'parser/command = '{
+#  [@: "terminal", string: "@"];
+#  comname = %/parser/symbol
+#  args = %/parser/datastore
+#  args/@ = comname
+#  args;
+#}
+#
+#setcommand = '/parser/sentence/children/command = /parser/command
+#
+#print command
+#print setcommand
 
 # パス ################################################
 path = 'parser/path = '{

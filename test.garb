@@ -77,174 +77,6 @@
     },
    "key": "parser"
   },
- "key": "print",
- "value":
-  {"@": "quote",
-   "value":
-    {"@": "scope",
-     "body":
-      {"0":
-        {"@": "terminal",
-         "string": "print"
-        },
-       "1":
-        {"@": "eval",
-         "env":
-          {"@": "getenv"
-          },
-         "program":
-          {"@": "get",
-           "object":
-            {"@": "get",
-             "object":
-              {"@": "get",
-               "object":
-                {"@": "getenv"
-                },
-               "key": "/"
-              },
-             "key": "parser"
-            },
-           "key": "whitespaces"
-          }
-        },
-       "2":
-        {"@": "set",
-         "object":
-          {"@": "getenv"
-          },
-         "key": "expr",
-         "value":
-          {"@": "eval",
-           "env":
-            {"@": "getenv"
-            },
-           "program":
-            {"@": "get",
-             "object":
-              {"@": "get",
-               "object":
-                {"@": "get",
-                 "object":
-                  {"@": "getenv"
-                  },
-                 "key": "/"
-                },
-               "key": "parser"
-              },
-             "key": "expression"
-            }
-          }
-        },
-       "3":
-        {"@": "set",
-         "object":
-          {"@": "getenv"
-          },
-         "key": "val",
-         "value":
-          {"@": "datastore",
-           "object":
-            {"@": "print"
-            }
-          }
-        },
-       "4":
-        {"@": "set",
-         "object":
-          {"@": "get",
-           "object":
-            {"@": "getenv"
-            },
-           "key": "val"
-          },
-         "key": "value",
-         "value":
-          {"@": "get",
-           "object":
-            {"@": "getenv"
-            },
-           "key": "expr"
-          }
-        },
-       "5":
-        {"@": "get",
-         "object":
-          {"@": "getenv"
-          },
-         "key": "val"
-        }
-      }
-    }
-  }
-}
-{"@": "insertprev",
- "object":
-  {"@": "get",
-   "object":
-    {"@": "get",
-     "object":
-      {"@": "get",
-       "object":
-        {"@": "get",
-         "object":
-          {"@": "getenv"
-          },
-         "key": "/"
-        },
-       "key": "parser"
-      },
-     "key": "sentence"
-    },
-   "key": "children"
-  },
- "origin":
-  {"@": "firstkey",
-   "object":
-    {"@": "get",
-     "object":
-      {"@": "get",
-       "object":
-        {"@": "get",
-         "object":
-          {"@": "get",
-           "object":
-            {"@": "getenv"
-            },
-           "key": "/"
-          },
-         "key": "parser"
-        },
-       "key": "sentence"
-      },
-     "key": "children"
-    }
-  },
- "key": "print",
- "value":
-  {"@": "get",
-   "object":
-    {"@": "get",
-     "object":
-      {"@": "get",
-       "object":
-        {"@": "getenv"
-        },
-       "key": "/"
-      },
-     "key": "parser"
-    },
-   "key": "print"
-  }
-}
-{"@": "set",
- "object":
-  {"@": "get",
-   "object":
-    {"@": "getenv"
-    },
-   "key": "parser"
-  },
  "key": "symbol",
  "value":
   {"@": "quote",
@@ -419,6 +251,274 @@
         }
       }
     }
+  }
+}
+{"@": "set",
+ "object":
+  {"@": "get",
+   "object":
+    {"@": "get",
+     "object":
+      {"@": "getenv"
+      },
+     "key": "/"
+    },
+   "key": "parser"
+  },
+ "key": "integer",
+ "value":
+  {"@": "quote",
+   "value":
+    {"@": "scope",
+     "body":
+      {"0":
+        {"@": "terminal",
+         "string": "@"
+        },
+       "1":
+        {"@": "set",
+         "object":
+          {"@": "getenv"
+          },
+         "key": "digit",
+         "value":
+          {"@": "quote",
+           "value":
+            {"@": "oneof",
+             "string": "0123456789"
+            }
+          }
+        },
+       "2":
+        {"@": "set",
+         "object":
+          {"@": "getenv"
+          },
+         "key": "a",
+         "value":
+          {"@": "sub",
+           "left":
+            {"@": "tocode",
+             "string":
+              {"@": "eval",
+               "env":
+                {"@": "getenv"
+                },
+               "program":
+                {"@": "get",
+                 "object":
+                  {"@": "getenv"
+                  },
+                 "key": "digit"
+                }
+              }
+            },
+           "right":
+            {"@": "tocode",
+             "string": "0"
+            }
+          }
+        },
+       "3":
+        {"@": "set",
+         "object":
+          {"@": "getenv"
+          },
+         "key": "rest",
+         "value":
+          {"@": "many",
+           "parser":
+            {"@": "get",
+             "object":
+              {"@": "getenv"
+              },
+             "key": "digit"
+            }
+          }
+        },
+       "4":
+        {"@": "set",
+         "object":
+          {"@": "getenv"
+          },
+         "key": "ten",
+         "value":
+          {"@": "sub",
+           "left":
+            {"@": "tocode",
+             "string": "K"
+            },
+           "right":
+            {"@": "tocode",
+             "string": "A"
+            }
+          }
+        },
+       "5": "generate",
+       "6":
+        {"@": "call",
+         "func":
+          {"@": "get",
+           "object":
+            {"@": "get",
+             "object":
+              {"@": "getenv"
+              },
+             "key": "/"
+            },
+           "key": "foreach"
+          },
+         "args":
+          {"store":
+            {"@": "get",
+             "object":
+              {"@": "getenv"
+              },
+             "key": "rest"
+            },
+           "func":
+            {"@": "lambda",
+             "env":
+              {"@": "getenv"
+              },
+             "body":
+              {"@": "begin",
+               "body":
+                {"0":
+                  {"@": "print",
+                   "value":
+                    {"@": "get",
+                     "object":
+                      {"@": "get",
+                       "object":
+                        {"@": "getenv"
+                        },
+                       "key": ".."
+                      },
+                     "key": "a"
+                    }
+                  },
+                 "1":
+                  {"@": "set",
+                   "object":
+                    {"@": "getenv"
+                    },
+                   "key": "n",
+                   "value":
+                    {"@": "sub",
+                     "left":
+                      {"@": "tocode",
+                       "string":
+                        {"@": "get",
+                         "object":
+                          {"@": "getenv"
+                          },
+                         "key": "value"
+                        }
+                      },
+                     "right":
+                      {"@": "tocode",
+                       "string": "0"
+                      }
+                    }
+                  },
+                 "2":
+                  {"@": "set",
+                   "object":
+                    {"@": "get",
+                     "object":
+                      {"@": "getenv"
+                      },
+                     "key": ".."
+                    },
+                   "key": "a",
+                   "value":
+                    {"@": "add",
+                     "left":
+                      {"@": "mult",
+                       "left":
+                        {"@": "get",
+                         "object":
+                          {"@": "get",
+                           "object":
+                            {"@": "getenv"
+                            },
+                           "key": ".."
+                          },
+                         "key": "a"
+                        },
+                       "right":
+                        {"@": "get",
+                         "object":
+                          {"@": "get",
+                           "object":
+                            {"@": "getenv"
+                            },
+                           "key": ".."
+                          },
+                         "key": "ten"
+                        }
+                      },
+                     "right":
+                      {"@": "get",
+                       "object":
+                        {"@": "getenv"
+                        },
+                       "key": "n"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+       "7":
+        {"@": "get",
+         "object":
+          {"@": "getenv"
+          },
+         "key": "a"
+        }
+      }
+    }
+  }
+}
+{"@": "set",
+ "object":
+  {"@": "get",
+   "object":
+    {"@": "get",
+     "object":
+      {"@": "get",
+       "object":
+        {"@": "get",
+         "object":
+          {"@": "getenv"
+          },
+         "key": "/"
+        },
+       "key": "parser"
+      },
+     "key": "expression"
+    },
+   "key": "children"
+  },
+ "key": "integer",
+ "value":
+  {"@": "get",
+   "object":
+    {"@": "get",
+     "object":
+      {"@": "get",
+       "object":
+        {"@": "getenv"
+        },
+       "key": "/"
+      },
+     "key": "parser"
+    },
+   "key": "integer"
   }
 }
 {"@": "set",
@@ -2277,8 +2377,6 @@ tmp.children.symbol = parser.symbol
 
 parser.key = tmp
 
-print {hoge: "string"}
-
 parser.addition = do
   x = $parser.digit
   terminal { "string": "+" }
@@ -2294,29 +2392,11 @@ insertprev { "object": parser.expression.children,
 	     "key":    "addition",
 	     "value":  parser.addition }
 
-
-homuhomu = "homu"
-bouzu = {"man": "bouzuman"}
-a = {"b": {"c": "abcdefg" } }
-
-print homuhomu
-print bouzu.man
-print a.b.c
-
 hogepoyo = do
   fst = "hoge"
   snd = "hige"
-  print fst
-  print snd
 end
 
-insertprev { "object": a, "origin": "b", "key": "g", "value": "hoge" }
-
-print a
-print 1+1+1
-
-name = "poyoshi"
-`%(name) = 1 + %(name)`
 
 parser.increment = do
   name = $parser.symbol
@@ -2345,43 +2425,4 @@ parser.sentence |= increment
 
 
 
-
-a = 1
-a++
-a++
-
-print a
-
-parser.notone = do
-  terminal { string: "!=1" }
-  print "notone"
-  w = $parser.whitespaces
-  e = $parser.expression
-  datastore { object: {"@": "notequal", left: 1, right: e } }
-end
-
-parser.expression |= notone
-
-print !=1 1
-print !=1 a
-
-
-i = 1+1+1+1+1
-x = 1
-
-while !=1 i
-  print x
-  x++
-  i = {"@": "sub", "left": i, "right": 1 }
-  parser.sentence.children.increment = parser.donothing
-end
-
-print "endloop"
-
-print x
-x++
-print x
-x++
-print x
-
-
+{"@":"print", "value": @141421356}

@@ -1,57 +1,494 @@
-{"@": "set",
- "object":
-  {"@": "get",
-   "object":
-    {"@": "get",
-     "object":
-      {"@":"get",
-       "object": {"@": "getenv"},
-       "key": "parser"},
-     "key": "sentence"},
-   "key": "children"},
- "key": "newline",
- "value":
-  {"@": "quote",
-   "value":
-    {"@": "terminal",
-          "string":"
-"   }
+#{
+grammar.rules[:sentence].children << Rule::many_one(Rule::whitespace).map { "\n".to_repr }
+#}
+#{
+grammar.rules[:eof] = Rule::not(Rule::any)
+grammar.rules[:comment] = "#".to_rule >> Rule::many(Rule::not("\n") >> Rule::any) >> ("\n".to_rule | :eof)
+grammar.rules[:sentence].children << Rule::call(:comment)
+#}
+# コメントを実装したぞ！
+
+# 数値を定義 (1428)
+#{
+grammar.rules[:number] = Rule::many_one(Rule::one_of("0123456789")).map {|as|
+  as.map(&:value).join.to_i.to_repr
+}.token
+
+# 識別子を定義 (hoge, poyo)
+grammar.rules[:identifier] = Rule::many_one(Rule::one_of("@abcdefghijklmnopqrstuvwxyz.")).map {|as|
+  as.map(&:value).join.to_repr
+}.token
+#}
+
+# 文字列を定義 ("string")
+#{
+grammar.rules[:string] = ["\"", Rule::many(!"\"".to_rule >> Rule::any), Rule::token("\"")].sequence {|_, cs, _|
+  cs.map(&:value).join.to_repr
+}.token
+#}
+
+# print文 (print 3)
+#{
+grammar.rules[:sentence].children << ["print", Rule::many_one(Rule::whitespace), :expression].sequence { |_, _, n|
+  Repr::print(n)
+}
+#}
+
+# pathとは、a/b/cのように、オブジェクトのキーを指定するもの。
+#{
+grammar.rules[:path] = [:identifier, Rule::many(Rule::string("/") >> :identifier)].sequence { |a, idents|
+  [a] + idents
+}
+#}
+
+# $path という記法で、親を辿れるようにする
+#{
+grammar.rules[:path] = grammar.rules[:path] | ["$", :path].sequence { |_, idents|
+  ["..".to_repr] + idents
+}
+#}
+
+# 変数はパスで表される
+#{
+grammar.rules[:variable]  = :path.to_rule.map {|idents|
+  idents.reduce(Repr::getenv) { |body, key|
+    Repr::get(body, key)
+  }
+} | ["/", :path].sequence {|_, idents|
+  idents.reduce(Repr::get(Repr::getenv, '/'.to_repr)) { |body, key|
+    Repr::get(body, key)
+  }
+}
+#}
+
+
+# 原始式は、数値か文字列か変数のいずれかである
+#{
+grammar.rules[:primitive] = [:number, :string, :variable].choice
+#}
+
+# おっと忘れてた、ストアオブジェクトも原始式
+#{
+grammar.rules[:pair] = [:identifier, Rule::token(":"), :expression].sequence { |id, _, expr|
+  [id, expr]
+}
+
+grammar.rules[:primitive].children <<
+  [Rule::token("["), Rule::separate_by(:pair, Rule::token(",")), Rule::token("]")].sequence { |_, lst, _|
+    Repr::store(lst.to_h)
+  }
+#}
+
+# 関数呼び出しは、原始式にカッコを後置したもの, func(expr)
+#{
+grammar.rules[:call] = [:primitive, Rule::token("("), :expression, Rule::token(")")].sequence {|func, _, arg, _|
+    Repr::call(func, arg)
+} | :primitive
+#}
+
+
+# termは、関数呼び出しとパスでのアクセスを加えたもの
+#{
+grammar.rules[:term] = 
+  [:call, Rule::optional(Rule::string("/") >> :path, [])].sequence { |a, idents|
+  idents.reduce(a) { |body, key|
+    Repr::get(body, key)
+  }
+}
+#}
+
+# かけ算は、termをくっつけたもの
+#{
+grammar.rules[:multiplication] = 
+  [:term, Rule::many(Rule::string('*').token >> :term)].sequence { |num, mults|
+  mults.reduce(num) { |expr, adder|
+    Repr::mult(expr, adder)
+  }
+}
+#}
+
+# 足し算は、multiplication二つをプラスでくっつけたもの。
+#{
+grammar.rules[:addition] = 
+  [:multiplication, Rule::many(Rule::string('+').token >> :multiplication)].sequence { |num, adds|
+  adds.reduce(num) { |expr, adder|
+    Repr::add(expr, adder)
+  }
+}
+#}
+
+# 関数は、いまのところ^{ <sentence> }と書く
+#{
+grammar.rules[:function] =
+  [Rule::token("^{"), Rule::many(:sentence), Rule::token("}")].sequence {|_, body, _|
+    a = Repr::lambda(Repr::getenv, Repr::begin(Lib::make_list(*body)))
+    a    
+  }
+#}
+
+#{
+grammar.rules[:expression] = [:addition, :function].choice
+#}
+
+#{
+grammar.rules[:condition] = :expression.to_rule
+#}
+
+
+
+# 代入構文
+#{
+grammar.rules[:sentence].children <<
+  [:expression, Rule::token("="), :expression].sequence {|object, _, expr|
+  Repr::set(object['object'], object['key'], expr)
+}
+#}
+
+# 繰り返しのwhileループ
+#{
+grammar.rules[:sentence].children << [Rule::token("while"), :condition, :sentence].sequence {|_, cond, body|
+  Repr::while(cond, body)
+}
+#}
+
+# if文
+#{
+grammar.rules[:sentence].children << [Rule::token('if'), :expression,
+				     :sentence,
+				     Rule::token('else'),
+				     :sentence].sequence { |_, cond, csq, _, alt|
+  Repr::if(cond, csq, alt)				     
+}
+#}
+
+# スコープの導入。これは、空の引数を取る関数を呼び出すこととする。
+#{
+grammar.rules[:sentence].children << [Rule::token("{"), Rule::many(:sentence), Rule::token("}")].sequence { |_, lst, _|
+  Repr::scope(Lib::make_list(*lst))
+}
+#}
+#  Repr::call(Repr::lambda(Repr::getenv, body), Repr::Store.new({}))
+
+
+# 式の末尾にセミコロンをつけると文になるやつ
+#{
+grammar.rules[:sentence].children << [:expression, Rule::token(";")].sequence {|e, _| e}
+#}  
+
+#{
+grammar.rules[:expression].children << ["'".to_rule, :sentence].sequence {|_, s|
+  Repr::quote(s)
+}
+#}
+
+#{
+grammar.rules[:expression].children << ["%".to_rule, :expression].sequence {|_, s|
+  Repr::eval(Repr::getenv, s)
+}
+#}
+
+
+
+
+
+# 改行
+newline = '/parser/sentence/children/newline = '{
+  [@: "terminal", string:"
+"];
+}
+
+setnewline = '/parser/newline = /parser/sentence/children/newline
+
+print newline
+print setnewline
+
+# シンボル
+symbol = 'parser/symbol = '{
+    oo = [@: "quote", value: [@: "oneof", string: "abcdefghijklmnopqrstuvwxyz"]]
+    %/parser/whitespaces;
+    result  = %oo
+    cs = [@: "many", parser: oo]
+    %/parser/whitespaces;
+
+    /foreach([store: cs, func: ^{
+      ../result = [@: "append", left: ../result, right: value]
+    }]);
+
+    result;
+}
+
+setsymbol = '/parser/expression/children/symbol = /parser/symbol
+print symbol
+# print setsymbol
+
+
+integer = '/parser/integer = '{
+    [@: "terminal", string: "@"];
+    digit = [@: "quote", value: [@: "oneof", string: "0123456789"]]
+    a = [@: "sub", left: [@: "tocode", string: %digit], right: [@: "tocode", string: "0"]]
+    rest = [@: "many", parser: digit]
+    ten = [@: "sub", left: [@: "tocode", string: "K"], right: [@: "tocode", string: "A"]]
+    
+    "generate";
+    /foreach([store: rest, func: ^{
+      n = [@: "sub", left: [@: "tocode", string: value], right: [@: "tocode", string: "0"]]
+      ../a = ../a * ../ten + n
+    }]);
+
+    a;
+}
+
+setinteger = '/parser/expression/children/integer = /parser/integer
+
+print integer
+print setinteger
+
+path = 'parser/path = '{
+    p = %/parser/symbol
+
+    ps = [@: "many", parser: '{
+        [@: "terminal", string: "."];
+        %/parser/symbol;
+    }]
+
+    result = []
+    result/head = p
+
+    "hoge";
+
+    /foreach([store: ps, func: ^{
+      [@: "set", object: ../result, key: key, value: value];
+    }]);
+
+
+    result;
+}
+
+
+setpath = '/parser/expression/children/path = /parser/path
+
+print path
+# print setpath
+
+variable = 'parser/variable = '{
+    name = %/parser/path
+    result = [@: "datastore", object: [@: "getenv"]]
+    "hoge";
+   
+    /foreach([store: name, func: ^{
+#        print "-----"
+        ../result = [@: "datastore", object: [@: "get", object: ../result, key: value]]
+    }]);
+
+    result;
+}
+
+setvariable = '/parser/expression/children/variable = /parser/variable
+
+print variable
+print setvariable
+
+rootvar = 'parser/rootvar = '{
+    name = %/parser/path
+    result = [@: "copy", object: '[@: "get", object: [@: "getenv"], key: "/"];]
+    "hoge";
+   
+    /foreach([store: name, func: ^{
+#        print "-----"
+        ../result = [@: "datastore", object: [@: "get", object: ../result, key: value]]
+    }]);
+
+    result;
+}
+
+print rootvar
+
+assign = '/parser/assign = '{
+    ws = /parser/whitespaces
+    path = %/parser/variable
+    %ws;
+    [@: "terminal", string: "="];
+    %ws;
+    rhe = %/parser/expression
+
+    path/@ = "set"
+    path/value = rhe
+
+    path;
+}
+
+setassign = '/parser/sentence/children/assign = /parser/assign
+
+print assign
+print setassign
+
+
+do = '/parser/do = '{
+    [@: "terminal", string: "do"];
+    quoted = [@: "many", parser: '{
+      %/parser/whitespaces;
+      %/parser/sentence;
+    }]
+
+    %/parser/whitespaces;
+    [@: "terminal", string: "end"];
+
+    result = [@: "datastore", object: [@: "quote"]]
+    result/value = [@: "datastore", object: [@: "scope", body: quoted]]
+
+    result;
+}
+
+setdo = '[@: "insertprev", object: /parser/expression/children,
+          origin: [@: "firstkey", object: /parser/expression/children],
+	  key: "do", value: /parser/do];
+
+print do
+print setdo
+
+loop = '/parser/while = '{
+    [@: "terminal", string: "while"];
+    %/parser/whitespaces;
+    cond = %/parser/expression
+
+
+    sts = [@: "many", parser: '{
+      %/parser/whitespaces;
+      %/parser/sentence;
+    }]
+
+    %/parser/whitespaces;
+    [@: "terminal", string: "end"];
+
+    result = [@: "datastore", object: [@: "while", condition: cond, body: sts]]
+
+    result;
+}
+
+setloop = '[@: "insertprev", object: /parser/sentence/children,
+            origin: [@: "firstkey", object: /parser/sentence/children],
+	    key: "do", value: /parser/while];
+
+print loop
+print setloop
+
+
+eval = '/parser/eval = '{
+  [@: "terminal", string: "$"];
+  result = [@:"copy", object: '[@:"eval", env: [@: "get", object: [@:"getenv"], key: "/"]];]
+  result/program = %/parser/rootvar
+
+  result;
+}
+
+seteval = '/parser/expression/children/eval = /parser/eval
+
+print eval
+print seteval
+
+command = 'parser/command = '{
+  comname = %/parser/symbol
+  args = %/parser/datastore
+  args/@ = comname
+  args;
+}
+
+setcommand = '/parser/sentence/children/command = /parser/command
+
+print command
+print setcommand
+
+
+### QUASIQUOTE ##################
+
+
+
+
+qqfunc = '/quasiquote = ^{
+  if [@: "isdatastore", value: object] {
+    object = ../object
+
+    if [@: "and", left:  [@: "exist", object: object, key: "@"],
+                  right: [@: "equal",
+		    left: [@: "get", object: object, key: "@"], right: "unquote"]] {
+        [@: "get", object: ../object, key: "value"];
+    } else {
+      result = [@: "datastore", object:[]]
+      "hoge";
+      /foreach([store: ../object, func: ^{
+        [@: "set", object: ../result, key: key,
+	  value: /quasiquote([@: "datastore", object: [object: value]])];
+      }]);
+      [@: "datastore", object: [@: "datastore", object: result]];
+    }
+  } else {
+    [@: "datastore", object: [@: "quote", value: ../object]];
   }
 }
 
-{"@":"set","object":{"@":"get","object":{"@":"get","object":{"@":"get","object":{"@":"getenv"},"key":"parser"},"key":"expression"},"key":"children"},"key":"dot","value":{"@":"quote","value":{"@":"begin","body":{"read":{"@":"terminal","string":"."},"return":{"@":"quote","value":{"@":"getenv"}}}}}}
+quasiquote = '/parser/quasiquote = '{
+  [@: "terminal", string: "`"];
+  st = %/parser/sentence
+  [@: "terminal", string: "`"];  
+  %/parser/whitespaces;
+  /quasiquote([object: st]);
+}
 
-{"@":"set","object":{"@":"get","object":{"@":"get","object":{"@":"get","object":.,"key":"parser"},"key":"expression"},"key":"children"},"key":"englishget","value":{"@":"quote","value":{"@":"scope","body":{"get":{"@":"terminal","string":"get "},"key":{"@":"set","object":.,"key":"key","value":{"@":"eval","env":.,"program":{"@":"get","object":{"@":"get","object":{"@":"get","object":.,"key":"/"},"key":"parser"},"key":"expression"}}},"of":{"@":"terminal","string":"of "},"value":{"@":"set","object":.,"key":"value","value":{"@":"eval","env":.,"program":{"@":"get","object":{"@":"get","object":{"@":"get","object":.,"key":"/"},"key":"parser"},"key":"expression"}}},"return":{"@":"datastore","object":{"@":"get","key":{"@":"get","object":.,"key":"key"},"object":{"@":"get","object":.,"key":"value"}}}}}}}
+setquasiquote = '/parser/sentence/children/quasiquote = /parser/quasiquote
 
-{"@":"set","object":get "children"of get "expression"of get "parser"of .,"key":"setenglish","value":{"@":"quote","value":{"@":"scope","body":{"set":{"@":"terminal","string":"set "},"key":{"@":"set","object":.,"key":"key","value":{"@":"eval","env":.,"program":get "expression"of get "parser"of get "/"of .}},"to":{"@":"terminal","string":"to "},"value":{"@":"set","object":.,"key":"value","value":{"@":"eval","env":.,"program":get "expression"of get "parser"of get "/"of .}},"of":{"@":"terminal","string":"of "},"object":{"@":"set","object":.,"key":"object","value":{"@":"eval","env":.,"program":get "expression"of get "parser"of get "/"of .}},"return":{"@":"datastore","object":{"@":"set","object":get "object"of .,"key":get "key"of .,"value":get "value"of .}}}}}}
-
-
-set "quote"to {"@":"quote","value":{"@":"scope","body":{"quotemark":{"@":"terminal","string":"'"},"expression":set "value"to {"@":"eval","env":.,"program":get "expression"of get "parser"of get "/"of .}of .,"return":{"@":"datastore","object":{"@":"quote","value":get "value"of .}}}}}of get "children"of get "expression"of get "parser"of get "/"of .
-
-set "eval"to '{"@":"scope","body":{"evalmark":{"@":"terminal","string":"$"},"expression":set "value"to {"@":"eval","env":.,"program":get "expression"of get "parser"of get "/"of .}of .,"return":{"@":"datastore","object":{"@":"eval","env":'.,"program":get "value"of .}}}}of get "children"of get "expression"of get "parser"of get "/"of .
-
-
-
-set "whitespace"to {"@":"scope","body":{"gen":set "ws"to {"@":"call","func":get "oneof"of get "/"of .,"args":{"string":" 
-"}}of .,"return":{"@":"datastore","object":{"@":"many","parser":{"@":"datastore","object":{"@":"quote","value":get "ws"of .}}}}}}of get "parser"of get "/"of .
-
-set "tokstring"to '{"@":"scope","body":{"str":set "str"to $get "string"of get "parser"of get "/"of .of .,"skip":$get "whitespace"of get "parser"of get "/"of .,"return":get "str"of .}}of get "parser"of get "/"of .
-
-{"@":"insertprev","object":get "children"of get "expression"of get "parser"of get "/"of .,"origin":"string","key":"tokenstring","value":get "tokstring"of get "parser"of get "/"of .}
-
-get "whitespace" of get "parser" of .
-
-set "tokenize" to {"@":"lambda","env":.,"body":{"@":"begin","body"
-:{"create":set "tree" to '{"@":"scope","body"
-                           :{"generate":set "value" to $"dummy" of .,"whitespace":$get "whitespace" of get "parser" of get "/" of .,"return"
-                           :get "value" of .}}of .,"assign"
-          :set "value" to get "parser" of .of get "generate" of get "body" of get "tree" of .,"return":get "tree" of .}}}of .
+print qqfunc
+print quasiquote
+print setquasiquote
 
 
-{"@":"remove","object":get "children"of get "expression"of get "parser"of .,"key":"string"}
-
-{"@"    :"print"
-,"value":{"@":"call","func":get "tokenize" of .,"args":{"parser":'"theparser"}}}
-
-{"@":"print",
- "value": get "token_called" of get "source" of get "/" of .}
+# 代入できます
+# i = 0
+# a = 0
+# b = 1
+# 
+# print "fibonacci numbers"
+# 
+# フィボナッチ数を出力する
+# while i != 10 {
+#  $i=$i+1
+#   tmp=$b
+#   $b=$a+$b
+#   $a=tmp
+#   print $a
+# }
+# 
+# print "----------"
+# 
+# 
+# if 1==2 {
+#   print "true"
+# } else {
+#   print "false"
+# }
+# 
+# store=[]
+# store/a=0
+# store/b=20
+# store/c=[]
+# store/d="hogehoge"
+# store/c/hoge=[]
+# print store
+# 
+# args = [left: 42, right: 32]
+# 
+# print /add
+# print "42 + 32 = "
+# print /add(args)
+# 
+# f=^{
+#   if a==10 {
+#     print 100
+#   } else {
+#     print $a
+#     e = []
+#     e/a = $a+1
+#     $$f(e);
+#   }
+# }
+#     
+# print f(store)

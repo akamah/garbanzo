@@ -1,6 +1,6 @@
 set -e
 
-ruby proto1.rb calc.garb > predef.garb
-cat predef.garb program.garb > test.garb
+ruby proto1.rb grammar.garb > predef.tmp.garb
+cat predef.tmp.garb program.garb > /tmp/test.tmp.garb
 
-ruby proto2.rb test.garb
+ruby proto2.rb /tmp/test.tmp.garb

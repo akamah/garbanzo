@@ -1,4 +1,6 @@
 #!/bin/sh
-cat predef.garb program.garb > test.garb
+set -e
 
-ruby proto2.rb test.garb
+cat predef.tmp.garb program.garb > /tmp/test.tmp.garb
+
+ruby proto2.rb /tmp/test.tmp.garb

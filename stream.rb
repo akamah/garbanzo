@@ -26,14 +26,19 @@ module Garbanzo
 
         arr
       end
+
+      def install_source(str)
+        self['source'] = str.to_repr
+        self['index'] = 0.to_repr
+        self['token_called'] = 0.to_repr
+        self['line_numbers'] = Store.linum_array(str)
+        self
+      end
       
       def self.create_source(str)
-        linum_colnum = linum_array(str)
-          
-        Repr::store({ "source".to_repr => str.to_repr,
-                      "index".to_repr => 0.to_repr,
-                      "token_called".to_repr => 0.to_repr,
-                      "line_numbers".to_repr => linum_colnum })
+        store = Repr::store({})
+        store.install_source(str)
+        store
       end
 
       def is_source

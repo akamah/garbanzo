@@ -6,8 +6,12 @@ grammar.rules[:eof] = Rule::not(Rule::any)
 grammar.rules[:comment] = "#".to_rule >> Rule::many(Rule::not("\n") >> Rule::any) >> ("\n".to_rule | :eof)
 grammar.rules[:sentence].children << Rule::call(:comment)
 #}
-# コメントを実装したぞ！
+# Garbanzo predefined grammar set v.2
+# 2016/02/29 akamah
+#
 
+# 最初に，バージョン1に対する構文定義が続く．
+#
 # 数値を定義 (1428)
 #{
 grammar.rules[:number] = Rule::many_one(Rule::one_of("0123456789")).map {|as|

@@ -1,7 +1,4 @@
 .DS_Store
 *~
-
-test.garb
-predef.garb
-
+*.tmp.garb
 *.dump

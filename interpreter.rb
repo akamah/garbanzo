@@ -51,7 +51,7 @@ module Garbanzo
       rescue => e
         show_general_error(e)
       ensure
-        evaluator.debug_print
+#        evaluator.debug_print
       end
     end
   end

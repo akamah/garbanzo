@@ -103,7 +103,7 @@ module Garbanzo
       end
 
       def fail(msg)
-        raise Rule::ParseError.new(msg.value, self.line.num, self.line.num)
+        raise Rule::ParseError.new(msg.value, self.line.num, self.column.num)
       end
 
       def parse_terminal(str)

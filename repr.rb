@@ -306,9 +306,9 @@ EOS
         realkey = as_key key
         
         if @keys.include?(realkey)
-          @table[realkey] = value.to_repr
+          @table[realkey] = value
         else
-          @table[realkey] = value.to_repr
+          @table[realkey] = value
           @keys << realkey
         end
 

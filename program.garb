@@ -30,15 +30,14 @@ parser.key = tmp
 
 
 
-@# fibonacci number
+# fibonacci number
 
-
-$fib = @fun(n) @{
-  @if n <= 1 @{
+fib = fun(n) {
+  if n <= 1 {
     n
-  } @else @{
-    @sub { left:  @call $fib {n: $n - 1},
-           right: @call $fib {n: $n - 2}}
+  } else {
+    {@: "sub", left:  !fib(n: $n - 1),
+               right: !fib(n: $n - 2) }
   }
 }
 

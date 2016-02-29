@@ -8,3 +8,5 @@ require './test_proto1.rb'
 require './test_proto2.rb'
 require './test_stream.rb'
 require './test_evaluator.rb'
+
+require './test_grammar2.rb'

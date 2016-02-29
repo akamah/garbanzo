@@ -45,18 +45,32 @@ class TC_Grammar2 < Test::Unit::TestCase
   
   def test_integer
     rule 'parser.integer', '@0', 0.to_repr
-    rule 'parser.integer', '@1', 1.to_repr
+    rule 'parser.expression', '@1', 1.to_repr
     rule 'parser.integer', '@142857', 142857.to_repr
   end
 
+  def test_bool
+    rule 'parser.expression', '@true', true.to_repr
+    rule 'parser.expression', '@false', false.to_repr
+  end
+  
   def test_string
     rule 'parser.string', '"hogehoge"', "hogehoge".to_repr
     rule 'parser.string', '""', "".to_repr
     rule 'parser.string', '"string with \newline"', "string with \newline".to_repr
   end
 
-  
+  def test_symbol
+    rule 'parser.symbol', 'homuhomu', 'homuhomu'.to_repr
+  end
 
+  def test_variable
+    rule 'parser.expression', 'a.b.c', Repr::get(Repr::get(Repr::get(Repr::getenv, 'a'.to_repr),
+                                                          'b'.to_repr),
+                                                'c'.to_repr)
+                                                          
+  end
+  
   def test_fail
     assert_raise {
       rule 'parser.integer', 'hoge', 3.to_repr

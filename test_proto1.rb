@@ -1,10 +1,22 @@
-#!/usr/local/bin/ruby
-
 require 'test/unit'
-require './test_parser.rb'
-require './test_repr.rb'
-require './test_lib.rb'
-require './test_interpreter.rb'
-require './test_proto2.rb'
-require './test_stream.rb'
-require './test_evaluator.rb'
+require './repr.rb'
+require './lib.rb'
+require './rule.rb'
+require './evaluator.rb'
+require './parser.rb'
+require './proto1.rb'
+
+class TC_Interpreter < Test::Unit::TestCase
+  include Garbanzo
+  
+  def test_native_proc
+    inter = Proto1.new
+    
+    prog = Repr::call(Repr::get(Repr::getenv, "add".to_repr),
+                      Repr::store({ 'right'.to_repr => 3.to_repr,
+                                    'left'.to_repr  => 5.to_repr }))
+                                     
+    assert_equal(8.to_repr, inter.evaluate(prog))
+    assert_not_equal(7.to_repr, inter.evaluate(prog))
+  end
+end

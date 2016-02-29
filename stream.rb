@@ -152,7 +152,7 @@ module Garbanzo
 
         if md = re.match(str[offset..-1])
           newoffset = offset + md.end(0) # マッチした部分の全体を表すオフセット，らしい．
-          self['index'] = newoffset
+          self['index'] = newoffset.to_repr
 
 #          p md.to_a
           md[0].to_repr

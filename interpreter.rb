@@ -40,7 +40,7 @@ module Garbanzo
     end
     
     def start(args)
-      source = File.open(ARGV[0], "rb").read
+      source = File.open(args[0], "rb").read
 
       begin
         StackProf.run(mode: :cpu, out: "#{self.name}.dump") do

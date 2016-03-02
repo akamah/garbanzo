@@ -181,16 +181,26 @@ module Garbanzo
         return self['source'].value.length == self['index'].num
       end
 
-      def one_of(string)
+      def satisfy?(message = "doesn't satisfy")
         t = parse_token
 
-        string.value.each_char do |c|
-          if t.value == c
-            return t
-          end
+        if yield t.value
+          return t
+        else
+          self.fail(message)
         end
+      end
 
-        self.fail("expected one of #{string}".to_repr)
+      def one_of(string)
+        self.satisfy?("expected one of #{string}".to_repr) {|c|
+          string.value.index(c) != nil
+        }
+      end
+
+      def none_of(string)
+        self.satisfy?("expected none of #{string}".to_repr) {|c|
+          string.value.index(c) == nil
+        }
       end
     end
   end

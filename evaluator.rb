@@ -265,6 +265,11 @@ module Garbanzo
       source.one_of(string)
     end
 
+    operator("noneof", "string", Repr::String) do |string, evaluator|
+      source = evaluator.dot["/"]["source"]
+      source.none_of(string)
+    end
+
     command("regex") do |regex, evaluator|
       unless regex.is_a? Repr::String
         raise "regex command requires `regex' as String"

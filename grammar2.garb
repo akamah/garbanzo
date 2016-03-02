@@ -208,7 +208,7 @@ print setnewline
 
 # シンボル ################################################
 symbol = 'parser/symbol = '{
-    oo = [@: "quote", value: [@: "oneof", string: "@abcdefghijklmnopqrstuvwxyz"]]
+    oo = [@: "quote", value: [@: "oneof", string: ".@abcdefghijklmnopqrstuvwxyz"]]
     %/parser/whitespaces;
     result  = %oo
     cs = [@: "many", parser: oo]
@@ -345,7 +345,7 @@ path = 'parser/path = '{
     p = %/parser/symbol
 
     ps = [@: "many", parser: '{
-        [@: "terminal", string: "."];
+        [@: "terminal", string: "/"];
         %/parser/symbol;
     }]
 

@@ -1,6 +1,6 @@
-parser.unquote = @[
+parser/unquote = @[
   {"@": "terminal", "string": "%(" }
-  expr = $parser.expression
+  expr = %parser/expression
   {"@": "terminal", "string": ")"  }
 
   {"@": "datastore", "object": {"@": "unquote", "value": expr }}
@@ -8,17 +8,15 @@ parser.unquote = @[
 
 
 tmp = {"@": "datastore", "object": {"@": "choice", "children": {}}}
-tmp.children.symbol = parser.symbol
-parser.symbol = tmp
-parser.symbol.children.unquote = parser.unquote
-
-
+tmp/children/symbol = parser/symbol
+parser/symbol = tmp
+parser/symbol/children/unquote = parser/unquote
 
 tmp = {"@": "datastore", "object": {"@": "choice", "children": {}}}
-tmp.children.string = parser.string
-tmp.children.symbol = parser.symbol
+tmp/children/string = parser/string
+tmp/children/symbol = parser/symbol
 
-parser.key = tmp
+parser/key = tmp
 
 {"@":"print", "value": @141421356}
 {"@":"print", "value": @0}

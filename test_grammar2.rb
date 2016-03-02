@@ -18,7 +18,7 @@ class TC_Grammar2 < Test::Unit::TestCase
     path = rule_name.split('.')
     dot  = @int.evaluator.dot
     
-    rule = path.reduce(dot) { |obj, key| obj[key] }
+    path.reduce(dot) { |obj, key| obj[key] }
   end
   
   def install_source(input)

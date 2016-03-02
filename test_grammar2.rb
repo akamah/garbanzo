@@ -86,7 +86,7 @@ END
   end
 
   def test_while
-    result = Repr::while(true.to_repr, {}.to_repr)
+    result = Repr::while(true.to_repr, Repr::begin({}.to_repr))
 
     rule 'parser.sentence', <<END, result
 while @true
@@ -95,7 +95,7 @@ END
   end
 
   def test_if
-    result = Repr::if(true.to_repr, {}.to_repr, {}.to_repr)
+    result = Repr::if(true.to_repr, Repr::begin({}.to_repr), Repr::begin({}.to_repr))
 
     rule 'parser.sentence', <<END, result
 if @true

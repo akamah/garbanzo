@@ -268,6 +268,57 @@ print settrue
 print false
 print setfalse
 
+# ユーティリティ #########################################
+## 複数の文
+somesentences = '/parser/somesentences = '{
+    sts = [@: "many", parser: '{
+      %/parser/whitespaces;
+      %/parser/sentence;
+    }]
+    %/parser/whitespaces;
+
+    sts;
+}
+
+print somesentences
+
+
+# ブロック (begin) #######################################
+block = '/parser/block = '{
+    [@: "terminal", string: "begin"];
+    sentences = [@: "many", parser: '{
+      %/parser/whitespaces;
+      %/parser/sentence;
+    }]
+
+    %/parser/whitespaces;
+
+    [@: "terminal", string: "end"];	
+    result = [@: "datastore", object: [@: "begin", body: sentences]]
+
+    result;
+}
+
+setblock = '/parser/sentence/children/block = /parser/block
+
+print block
+print setblock
+
+# 関数 ##############################################
+function = '/parser/function = '{
+    [@: "terminal", string: "fun"];
+    %/parser/whitespaces;
+    body = %/parser/block
+    
+    x = [@: "datastore", object: [@: "lambda", env: [@: "quote", value: [@: "getenv"]], body: body]]
+    x;
+}
+
+setfunction = '/parser/expression/children/function = /parser/function
+print function
+print setfunction
+
+
 # 命令 ################################################
 #command = 'parser/command = '{
 #  [@: "terminal", string: "@"];
@@ -405,11 +456,43 @@ loop = '/parser/while = '{
 
 setloop = '[@: "insertprev", object: /parser/sentence/children,
             origin: [@: "firstkey", object: /parser/sentence/children],
-	    key: "do", value: /parser/while];
+	    key: "while", value: /parser/while];
 
 print loop
 print setloop
 
+
+branch = '/parser/if = '{
+    [@: "terminal", string: "if"];
+    %/parser/whitespaces;
+    cond = %/parser/expression
+
+    csq = [@: "many", parser: '{
+      %/parser/whitespaces;
+      %/parser/sentence;
+    }]
+
+    %/parser/whitespaces;
+    [@: "terminal", string: "else"];
+
+    alt = [@: "many", parser: '{
+      %/parser/whitespaces;
+      %/parser/sentence;
+    }]
+
+    %/parser/whitespaces;
+    [@: "terminal", string: "end"];
+
+    result = [@: "datastore", object: [@: "if", condition: cond, consequence: csq, alternative: alt]]
+    result;
+}
+
+setbranch = '[@: "insertprev", object: /parser/sentence/children,
+            origin: [@: "firstkey", object: /parser/sentence/children],
+	    key: "if", value: /parser/if];
+
+print branch
+print setbranch
 
 eval = '/parser/eval = '{
   [@: "terminal", string: "$"];

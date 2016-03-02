@@ -58,3 +58,22 @@ end
 
 
 {@: "print", value: {@: "call", func: fib, args: {n: @7}}}
+
+
+#funca = function(arguments)
+#funca(argumentb)
+
+#@@func(arg)(arg2)
+
+#hoge.1
+#3,0
+
+
+#c = 30
+#(list '+ 'b c 'd)
+
+#=> (+ b 30 d)
+
+#{@: datastore, object: {@: hoge, b: poyo, c: foo, d: bar} }
+
+#=> {@: hoge, ... d: bar}

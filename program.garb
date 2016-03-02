@@ -1,11 +1,10 @@
-parser/unquote = @[
+parser/unquote = block
   {"@": "terminal", "string": "%(" }
   expr = %parser/expression
   {"@": "terminal", "string": ")"  }
 
   {"@": "datastore", "object": {"@": "unquote", "value": expr }}
-]
-
+end
 
 tmp = {"@": "datastore", "object": {"@": "choice", "children": {}}}
 tmp/children/symbol = parser/symbol

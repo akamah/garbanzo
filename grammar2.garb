@@ -433,9 +433,9 @@ print setassign
 
 # ブロック ################################################
 do = '/parser/do = '{
-    [@: "terminal", string: "@["];
+    [@: "terminal", string: "block"];
     quoted = %/parser/somesentences
-    [@: "terminal", string: "]"];
+    [@: "terminal", string: "end"];
 
     result = [@: "datastore", object: [@: "quote"]]
     result/value = [@: "datastore", object: [@: "scope", body: quoted]]

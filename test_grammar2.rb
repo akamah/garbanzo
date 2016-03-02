@@ -70,6 +70,44 @@ class TC_Grammar2 < Test::Unit::TestCase
                                                 'c'.to_repr)
                                                           
   end
+
+  def test_block
+    result = Repr::begin(
+      { 0 => Repr::print("hoge".to_repr),
+        1 => Repr::print("poyo".to_repr)
+      }.to_repr)
+    
+    rule 'parser.block', <<END, result
+begin
+  {"@": "print", "value": "hoge"}
+  {"@": "print", "value": "poyo"}
+end
+END
+  end
+
+  def test_while
+    result = Repr::while(true.to_repr, {}.to_repr)
+
+    rule 'parser.sentence', <<END, result
+while @true
+end
+END
+  end
+
+  def test_if
+    result = Repr::if(true.to_repr, {}.to_repr, {}.to_repr)
+
+    rule 'parser.sentence', <<END, result
+if @true
+else
+end
+END
+  end
+  
+#  def test_function
+#    result = Repr::lambda(@int.evaluator.dot, Repr::num(3))
+#    rule 'parser.function', 'fun begin end', result
+#  end
   
   def test_fail
     assert_raise {

@@ -6,15 +6,16 @@ parser/unquote = block
   {"@": "datastore", "object": {"@": "unquote", "value": expr }}
 end
 
+# ここで，symbolがunquoteも兼ねるようになった．
 tmp = {"@": "datastore", "object": {"@": "choice", "children": {}}}
 tmp/children/symbol = parser/symbol
 parser/symbol = tmp
 parser/symbol/children/unquote = parser/unquote
 
+# keyが，単なるsymbolを認識するように変更
 tmp = {"@": "datastore", "object": {"@": "choice", "children": {}}}
 tmp/children/string = parser/string
 tmp/children/symbol = parser/symbol
-
 parser/key = tmp
 
 {"@":"print", "value": @141421356}
@@ -22,18 +23,21 @@ parser/key = tmp
 {"@":"print", "value": @true}
 {"@":"print", "value": @false}
 
+# whileのテスト
 a = @1
 while {@: "notequal", left: a, right: @10}
   {@: "print", value: a}
   a = {@: "add", left: a, right: @1}
 end
 
+# ifのテスト
 if {@: "notequal", left: a, right: @10}
   {@: "print", value: "a != 10"}
 else
   {@: "print", value: "a == 10"}
 end
 
+# 関数のテスト
 hoge = fun
   {@: "print", value: "abc"}
   {@: "print", value: "def"}
@@ -43,26 +47,14 @@ end
 
 
 # fibonacci number
-
-fib = fun {
-  if n <= 1 {
-    n
-  } else {
-    {@: "sub", left:  !fib(n: $n - 1),
-               right: !fib(n: $n - 2) }
-  }
-}
-
-
-$symbol = @[
-  $char = @'{@: "range", from: "A", to: "Z"}
-  $head = @!$char
-  $tail = {@: "many", parser: $char}
-
-  $result = ""
-  @call $/foreach {store: $tail, func: @fun(value) {
-
-  }}
+fib = fun
+  if {@: "lessthan", left: n, right: @2}
+    result = n
+  else
+    {@: "add", left:  {@: "call", func: ../fib, args: {n: {@: "sub", left: n, right: @1}}},
+               right: {@: "call", func: ../fib, args: {n: {@: "sub", left: n, right: @2}}}}
+  end
+end
 
 
-]
+{@: "print", value: {@: "call", func: fib, args: {n: @7}}}

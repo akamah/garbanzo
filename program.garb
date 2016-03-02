@@ -25,14 +25,29 @@ parser.key = tmp
 {"@":"print", "value": @true}
 {"@":"print", "value": @false}
 
+a = @1
+while {@: "notequal", left: a, right: @10}
+  {@: "print", value: a}
+  a = {@: "add", left: a, right: @1}
+end
 
+if {@: "notequal", left: a, right: @10}
+  {@: "print", value: "a != 10"}
+else
+  {@: "print", value: "a == 10"}
+end
 
+hoge = fun
+  {@: "print", value: "abc"}
+  {@: "print", value: "def"}
+end
 
+{@: "call", func: hoge, args: {}}
 
 
 # fibonacci number
 
-fib = fun(n) {
+fib = fun {
   if n <= 1 {
     n
   } else {

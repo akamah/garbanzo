@@ -286,13 +286,7 @@ print somesentences
 # ブロック (begin) #######################################
 block = '/parser/block = '{
     [@: "terminal", string: "begin"];
-    sentences = [@: "many", parser: '{
-      %/parser/whitespaces;
-      %/parser/sentence;
-    }]
-
-    %/parser/whitespaces;
-
+    sentences = %/parser/somesentences
     [@: "terminal", string: "end"];	
     result = [@: "datastore", object: [@: "begin", body: sentences]]
 
@@ -307,9 +301,11 @@ print setblock
 # 関数 ##############################################
 function = '/parser/function = '{
     [@: "terminal", string: "fun"];
-    %/parser/whitespaces;
-    body = %/parser/block
-    
+    sts = %/parser/somesentences
+    [@: "terminal", string: "end"];
+
+    body = [@: "datastore", object: [@: "begin", body: sts]]
+
     x = [@: "datastore", object: [@: "lambda", env: [@: "quote", value: [@: "getenv"]], body: body]]
     x;
 }
@@ -414,12 +410,7 @@ print setassign
 # ブロック ################################################
 do = '/parser/do = '{
     [@: "terminal", string: "@["];
-    quoted = [@: "many", parser: '{
-      %/parser/whitespaces;
-      %/parser/sentence;
-    }]
-
-    %/parser/whitespaces;
+    quoted = %/parser/somesentences
     [@: "terminal", string: "]"];
 
     result = [@: "datastore", object: [@: "quote"]]
@@ -439,17 +430,11 @@ loop = '/parser/while = '{
     [@: "terminal", string: "while"];
     %/parser/whitespaces;
     cond = %/parser/expression
-
-
-    sts = [@: "many", parser: '{
-      %/parser/whitespaces;
-      %/parser/sentence;
-    }]
-
-    %/parser/whitespaces;
+    sts = %/parser/somesentences
     [@: "terminal", string: "end"];
+    body = [@: "datastore", object: [@: "begin", body: sts]]
 
-    result = [@: "datastore", object: [@: "while", condition: cond, body: sts]]
+    result = [@: "datastore", object: [@: "while", condition: cond, body: body]]
 
     result;
 }
@@ -467,23 +452,17 @@ branch = '/parser/if = '{
     %/parser/whitespaces;
     cond = %/parser/expression
 
-    csq = [@: "many", parser: '{
-      %/parser/whitespaces;
-      %/parser/sentence;
-    }]
+    csq = %/parser/somesentences
 
-    %/parser/whitespaces;
     [@: "terminal", string: "else"];
 
-    alt = [@: "many", parser: '{
-      %/parser/whitespaces;
-      %/parser/sentence;
-    }]
-
-    %/parser/whitespaces;
+    alt = %/parser/somesentences
     [@: "terminal", string: "end"];
 
-    result = [@: "datastore", object: [@: "if", condition: cond, consequence: csq, alternative: alt]]
+    c = [@: "datastore", object: [@: "begin", body: csq]]
+    a = [@: "datastore", object: [@: "begin", body: alt]]
+    
+    result = [@: "datastore", object: [@: "if", condition: cond, consequence: c, alternative: a]]
     result;
 }
 

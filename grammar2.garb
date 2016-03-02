@@ -314,6 +314,17 @@ setfunction = '/parser/expression/children/function = /parser/function
 print function
 print setfunction
 
+# EVAL #############################################
+evaluate = '/parser/eval = '{
+    [@: "terminal", string: "%"];
+    expr = %/parser/expression
+
+    [@: "datastore", object: [@: "eval", env: [@: "quote", value: [@: "getenv"]], program: expr]];
+}
+
+setevaluate = '/parser/expression/children/eval = /parser/eval
+print evaluate
+print setevaluate
 
 # 命令 ################################################
 #command = 'parser/command = '{
@@ -472,20 +483,6 @@ setbranch = '[@: "insertprev", object: /parser/sentence/children,
 
 print branch
 print setbranch
-
-eval = '/parser/eval = '{
-  [@: "terminal", string: "$"];
-  result = [@:"copy", object: '[@:"eval", env: [@: "get", object: [@:"getenv"], key: "/"]];]
-  result/program = %/parser/rootvar
-
-  result;
-}
-
-seteval = '/parser/expression/children/eval = /parser/eval
-
-print eval
-print seteval
-
 
 
 ### QUASIQUOTE ##################

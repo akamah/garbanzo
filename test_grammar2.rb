@@ -103,6 +103,12 @@ else
 end
 END
   end
+
+  def test_eval
+    result = Repr::eval(Repr::getenv, 3.to_repr)
+
+    rule 'parser.expression', "%@3", result
+  end
   
 #  def test_function
 #    result = Repr::lambda(@int.evaluator.dot, Repr::num(3))

@@ -206,6 +206,19 @@ setnewline = '/parser/newline = /parser/sentence/children/newline
 print newline
 print setnewline
 
+# 一行コメント
+comment = '/parser/comment = '{
+  [@: "terminal", string: "#"];
+  [@: "many", parser: [@: "quote", value: [@: "noneof", string: "
+"]]];
+  "";
+}
+
+setcomment = '/parser/sentence/children/comment = /parser/comment
+
+print comment
+print setcomment
+
 # シンボル ################################################
 symbol = 'parser/symbol = '{
     oo = [@: "quote", value: [@: "oneof", string: ".@abcdefghijklmnopqrstuvwxyz"]]

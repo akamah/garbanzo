@@ -504,6 +504,7 @@ print setbranch
 # "hoge,hoge"
 # ...
 # にマッチする．
+# Haskellのパーサコンビネータにインスパイアされた
 
 sepbyone = '/sepbyone = ^{
   head = %parser

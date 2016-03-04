@@ -507,18 +507,19 @@ print setbranch
 
 sepbyone = '/sepbyone = ^{
   head = %parser
-  tail = [@: "many", parser: '[
-    %sep;
-    %parser;
-  ];]
+  tail = [@: "many", parser: '{
+    %../sep;
+    %../parser;
+  }]
 
-  result = [0: head]
+  result = []
+  [@: "set", object: result, key: 0, value: head];
 
   i = 1
   "loop";
   /foreach([store: tail, func: ^{
     [@: "set", object: ../result, key: ../i, value: value];
-    ../i = [@: "add", left: ../i, right: 1];
+    ../i = [@: "add", left: ../i, right: 1]
   }]);
 
   result;
@@ -528,15 +529,29 @@ sepby = '/sepby = ^{
   [@: "choice", children:
     [more: /sepbyone([parser: parser, sep: sep]),
      zero: []]];
-  }  
 }
 
+print sepbyone
+print sepby
+
 ### 呼び出し #####################
-#call = '/parser/call = '{
-#  [@: "terminal", string: "!"];
-#  f = %/parser/expression
-#
-#  
+call = '/parser/call = '{
+  [@: "terminal", string: "!"];
+  f = %/parser/expression
+
+  [@: "terminal", string: "("];
+  args = /sepby([parser: /parser/expression, sep: '{
+    %/parser/whitespaces;
+    [@: "terminal", string: ","];
+    %/parser/whitespaces;
+  }])
+
+  [@: "terminal", string: ")"];
+
+  [@: "datastore", object: [@: "call", func: f, args: args]];
+}
+
+print call
 
 ### QUASIQUOTE ##################
 

@@ -204,30 +204,38 @@ module Garbanzo
       raise Rule::ParseError.new(message, line, column)
     end
 
+    def self.choice(children, evaluator)
+      s = evaluator.dot["/"]["source"]
+      state = s.copy_state
+      errors = []
+
+      #          puts "choice called"
+      #          puts state
+      
+      children.each { |v|
+        #            p k, v
+        begin
+          s.set_state(state)
+          res = evaluator.evaluate(v)
+          #              puts "result : #{res}"
+          return res
+        rescue Rule::ParseError => e
+          errors << e
+        end
+      }
+
+      deepest = errors.max_by {|a| [a.line, a.column]}
+      raise (deepest || Rule::ParseError.new("empty argument in choice"))
+    end
+    
     command("choice", "children") do |children, evaluator|
-      -> { # local jump errorを解消するために、ここにlambdaを入れた。
-        s = evaluator.dot["/"]["source"]
-        state = s.copy_state
-        errors = []
-
-        #          puts "choice called"
-        #          puts state
-        
-        children.each_key { |k, v|
-          #            p k, v
-          begin
-            s.set_state(state)
-            res = evaluator.evaluate(v)
-            #              puts "result : #{res}"
-            return res
-          rescue Rule::ParseError => e
-            errors << e
-          end
-        }
-
-        deepest = errors.max_by {|a| [a.line, a.column]}
-        raise (deepest || Rule::ParseError.new("empty argument in choice"))
-      }.call
+      arr = []
+      
+      children.each_key do |k, v|
+        arr << v
+      end
+      
+      choice(arr, evaluator)
     end
 
     operator("terminal", "string", Repr::String) do |string, evaluator|

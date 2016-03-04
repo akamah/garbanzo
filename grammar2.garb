@@ -497,6 +497,39 @@ setbranch = '[@: "insertprev", object: /parser/sentence/children,
 print branch
 print setbranch
 
+# sepby: あるパーサに区切られたパーサを複数読み込む．
+# parser = "hoge", sep = ","なら，
+# "" (空白)
+# "hoge"
+# "hoge,hoge"
+# ...
+# にマッチする．
+
+sepbyone = '/sepbyone = ^{
+  head = %parser
+  tail = [@: "many", parser: '[
+    %sep;
+    %parser;
+  ];]
+
+  result = [0: head]
+
+  i = 1
+  "loop";
+  /foreach([store: tail, func: ^{
+    [@: "set", object: ../result, key: ../i, value: value];
+    ../i = [@: "add", left: ../i, right: 1];
+  }]);
+
+  result;
+}
+
+sepby = '/sepby = ^{
+  [@: "choice", children:
+    [more: /sepbyone([parser: parser, sep: sep]),
+     zero: []]];
+  }  
+}
 
 ### 呼び出し #####################
 #call = '/parser/call = '{

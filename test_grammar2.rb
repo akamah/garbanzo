@@ -65,7 +65,7 @@ class TC_Grammar2 < Test::Unit::TestCase
   end
 
   def test_variable
-    rule 'parser.expression', 'a.b.c', Repr::get(Repr::get(Repr::get(Repr::getenv, 'a'.to_repr),
+    rule 'parser.expression', 'a/b/c', Repr::get(Repr::get(Repr::get(Repr::getenv, 'a'.to_repr),
                                                           'b'.to_repr),
                                                 'c'.to_repr)
                                                           

@@ -204,30 +204,38 @@ module Garbanzo
       raise Rule::ParseError.new(message, line, column)
     end
 
+    def self.choice(children, evaluator)
+      s = evaluator.dot["/"]["source"]
+      state = s.copy_state
+      errors = []
+
+      #          puts "choice called"
+      #          puts state
+      
+      children.each { |v|
+        #            p k, v
+        begin
+          s.set_state(state)
+          res = evaluator.evaluate(v)
+          #              puts "result : #{res}"
+          return res
+        rescue Rule::ParseError => e
+          errors << e
+        end
+      }
+
+      deepest = errors.max_by {|a| [a.line, a.column]}
+      raise (deepest || Rule::ParseError.new("empty argument in choice"))
+    end
+    
     command("choice", "children") do |children, evaluator|
-      -> { # local jump errorを解消するために、ここにlambdaを入れた。
-        s = evaluator.dot["/"]["source"]
-        state = s.copy_state
-        errors = []
-
-        #          puts "choice called"
-        #          puts state
-        
-        children.each_key { |k, v|
-          #            p k, v
-          begin
-            s.set_state(state)
-            res = evaluator.evaluate(v)
-            #              puts "result : #{res}"
-            return res
-          rescue Rule::ParseError => e
-            errors << e
-          end
-        }
-
-        deepest = errors.max_by {|a| [a.line, a.column]}
-        raise (deepest || Rule::ParseError.new("empty argument in choice"))
-      }.call
+      arr = []
+      
+      children.each_key do |k, v|
+        arr << v
+      end
+      
+      choice(arr, evaluator)
     end
 
     operator("terminal", "string", Repr::String) do |string, evaluator|
@@ -280,6 +288,29 @@ module Garbanzo
       source.regex_match(re)
     end
 
+    operator("precrule", "table", Repr::Store, "prec", Repr::Num) do |table, prec, evaluator|
+      # まず，tableから優先度がprec以下のルールを抽出
+      rules = []
+      table.each_key {|k, v|
+        unless v.is_a?(Repr::Store) && v.exist('prec').value && v.exist('parser').value
+          raise "precrule: invalid table entry: #{v}"
+        end
+
+        p = v.get_raw('prec').num
+        if p <= prec.num
+          rules << v
+        end
+      }
+
+      # 次に，さっきのやつをソート
+      rules.sort_by! {|a|
+        -a.get_raw('prec').num
+      }
+      
+      # 順番に試す．
+      choice(rules, evaluator)
+    end
+    
     ### miscellaneous operators
     operator("print", "value", Repr::GarbObject) do |value, evaluator|
       puts evaluator.show(value)

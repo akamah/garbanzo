@@ -109,6 +109,15 @@ END
 
     rule 'parser.expression', "%@3", result
   end
+
+  def test_call
+    result = Repr::call(
+      Repr::get(Repr::getenv, "func".to_repr),
+      { 0 => Repr::get(Repr::getenv, "foo".to_repr),
+        1 => Repr::get(Repr::getenv, "bar".to_repr) }.to_repr)
+                                                               
+    rule 'parser.call', "!func(foo, bar)", result
+  end
   
 #  def test_function
 #    result = Repr::lambda(@int.evaluator.dot, Repr::num(3))

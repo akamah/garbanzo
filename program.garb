@@ -38,26 +38,26 @@ else
 end
 
 # 関数のテスト
-hoge = fun
+hoge = fun()
   {@: "print", value: "abc"}
   {@: "print", value: "def"}
 end
 
-{@: "call", func: hoge, args: {}}
+{@: "print", value: !hoge()}
 
 
 # fibonacci number
-fib = fun
+fib = fun(n)
   if {@: "lessthan", left: n, right: @2}
     result = n
   else
-    {@: "add", left:  {@: "call", func: ../fib, args: {n: {@: "sub", left: n, right: @1}}},
-               right: {@: "call", func: ../fib, args: {n: {@: "sub", left: n, right: @2}}}}
+    {@: "add", left:  !../fib({@: "sub", left: n, right: @1}),
+               right: !../fib({@: "sub", left: n, right: @2})}
   end
 end
 
 
-{@: "print", value: {@: "call", func: fib, args: {n: @7}}}
+{@: "print", value: !fib(@7)}
 
 
 #funca = function(arguments)

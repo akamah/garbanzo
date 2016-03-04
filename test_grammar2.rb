@@ -111,18 +111,28 @@ END
   end
 
   def test_call
-    result = Repr::call(
+    r1 = Repr::call(
       Repr::get(Repr::getenv, "func".to_repr),
       { 0 => Repr::get(Repr::getenv, "foo".to_repr),
         1 => Repr::get(Repr::getenv, "bar".to_repr) }.to_repr)
                                                                
-    rule 'parser.call', "!func(foo, bar)", result
+    rule 'parser.call', "!func(foo, bar)", r1
+
+    r2 = Repr::call(
+      Repr::get(Repr::getenv, "func".to_repr), {}.to_repr)
+
+    rule 'parser.expression', "!func()", r2
   end
   
-#  def test_function
-#    result = Repr::lambda(@int.evaluator.dot, Repr::num(3))
-#    rule 'parser.function', 'fun begin end', result
-#  end
+  def test_function
+    result = ""
+    rule 'parser.expression', <<END, result
+fun(a)
+  while a
+  end
+end
+END
+  end
   
   def test_fail
     assert_raise {

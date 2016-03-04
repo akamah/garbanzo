@@ -314,10 +314,35 @@ print setblock
 # 関数 ##############################################
 function = '/parser/function = '{
     [@: "terminal", string: "fun"];
+    %/parser/whitespaces;
+    [@: "terminal", string: "("];
+    %/parser/whitespaces;
+    
+    args = /sepby([parser: /parser/symbol, sep: '{
+      %/parser/whitespaces;
+      [@: "terminal", string: ","];
+      %/parser/whitespaces;
+    }])
+    [@: "terminal", string: ")"];
+    
     sts = %/parser/somesentences
     [@: "terminal", string: "end"];
 
-    body = [@: "datastore", object: [@: "begin", body: sts]]
+    setargs = []
+
+    "loop";
+    /foreach([store: args, func: ^{
+      [@: "set", object: ../setargs, key: key, value:
+        [@: "datastore", object:
+	  [@: "set", object: '[@: "getenv"];, key: value, value:
+	    [@: "datastore", object:
+	      [@: "get", object: [@: "quote", value: [@: "getenv"]], key: key]]]]];
+    }]);
+
+    body = [@: "datastore", object:
+              [@: "begin", body:
+	        [setargs: [@: "datastore", object: [@: "begin", body: setargs]],
+		 thebody: [@: "datastore", object: [@: "begin", body: sts]]]]]
 
     x = [@: "datastore", object: [@: "lambda", env: [@: "quote", value: [@: "getenv"]], body: body]]
     x;
@@ -552,7 +577,10 @@ call = '/parser/call = '{
   [@: "datastore", object: [@: "call", func: f, args: args]];
 }
 
+setcall = '/parser/expression/children/call = /parser/call
+  
 print call
+print setcall
 
 ### QUASIQUOTE ##################
 

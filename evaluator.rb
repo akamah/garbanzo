@@ -288,6 +288,29 @@ module Garbanzo
       source.regex_match(re)
     end
 
+    operator("precrule", "table", Repr::Store, "prec", Repr::Num) do |table, prec, evaluator|
+      # まず，tableから優先度がprec以下のルールを抽出
+      rules = []
+      table.each_key {|k, v|
+        unless v.is_a?(Repr::Store) && v.exist('prec').value && v.exist('parser').value
+          raise "precrule: invalid table entry: #{v}"
+        end
+
+        p = v.get_raw('prec').num
+        if p <= prec.num
+          rules << v
+        end
+      }
+
+      # 次に，さっきのやつをソート
+      rules.sort_by! {|a|
+        -a.get_raw('prec').num
+      }
+      
+      # 順番に試す．
+      choice(rules, evaluator)
+    end
+    
     ### miscellaneous operators
     operator("print", "value", Repr::GarbObject) do |value, evaluator|
       puts evaluator.show(value)

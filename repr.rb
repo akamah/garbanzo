@@ -552,6 +552,15 @@ EOS
     # マッチした箇所全体の文字列を返す．
     # 今のところ，正規表現の記法はRubyに依存することとする．
     define_command("regex", "regex")
+
+    # ルールの優先度付きテーブルを元に，パースを行う．
+    # 優先順位は，低いほど硬く，高いほど柔らかい．
+    # 例： expr + expr は柔らかく，優先的にルールが適用される．
+    # ( expr ) は硬く，そこまで優先的には働かない．
+
+    # テーブルに指定するデータストアの形式は，次のようなものとする．
+    # { name: {prec: n, parser: p } * }
+    define_command("precrule", "table", "prec")
     
     class ::Integer
       def to_repr; Garbanzo::Repr::num(self); end

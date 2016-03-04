@@ -316,4 +316,32 @@ class TC_Repr < Test::Unit::TestCase
 
     assert_equal("correct".to_repr, st[ix])
   end
+
+  def test_precrule
+    ev = Evaluator.new(construct_test_root("h*h+h*h*h+h"))
+    tab = { "hoge" => { "prec" => 0, "parser" => Repr::terminal("h".to_repr) }
+          }.to_repr
+
+    tab['plus'] = { "prec" => 100,
+                    "parser" =>
+                    Repr::begin(
+                        { "h1" => Repr::precrule(Repr::quote(tab), Repr::num(99)),
+                          "pl" => Repr::terminal("+".to_repr),
+                          "h2" => Repr::precrule(Repr::quote(tab), Repr::num(100))
+                        }.to_repr) }.to_repr
+
+    tab['mult'] = { "prec" => 80,
+                    "parser" =>
+                    Repr::begin(
+                        { "h1" => Repr::precrule(Repr::quote(tab), Repr::num(79)),
+                          "pl" => Repr::terminal("*".to_repr),
+                          "h2" => Repr::precrule(Repr::quote(tab), Repr::num(80))
+                        }.to_repr) }.to_repr
+    
+    assert_nothing_raised {
+      ev.evaluate(Repr::precrule(Repr::quote(tab), 1000.to_repr))
+    }
+
+    p ev.dot['source']
+  end
 end

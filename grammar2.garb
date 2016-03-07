@@ -623,7 +623,7 @@ callrule = '/parser/exprtab/callrule =
    parser: '{
      f = [@: "precrule", table: /parser/exprtab, prec: 29]
      [@: "terminal", string: "("];
-     args = /sepby([parser: /parser/newexpr, sep: '{
+     args = /sepby([parser: /parser/expression, sep: '{
        %/parser/whitespaces;
        [@: "terminal", string: ","];
        %/parser/whitespaces;

@@ -50,8 +50,8 @@ class TC_Grammar2 < Test::Unit::TestCase
   end
 
   def test_bool
-    rule 'parser.expression', '@true', true.to_repr
-    rule 'parser.expression', '@false', false.to_repr
+    rule 'parser.expression', 'true', true.to_repr
+    rule 'parser.expression', 'false', false.to_repr
   end
   
   def test_string
@@ -89,7 +89,7 @@ END
     result = Repr::while(true.to_repr, Repr::begin({}.to_repr))
 
     rule 'parser.sentence', <<END, result
-while @true
+while true
 end
 END
   end
@@ -98,7 +98,7 @@ END
     result = Repr::if(true.to_repr, Repr::begin({}.to_repr), Repr::begin({}.to_repr))
 
     rule 'parser.sentence', <<END, result
-if @true
+if true
 else
 end
 END

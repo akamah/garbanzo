@@ -20,8 +20,8 @@ parser/key = tmp
 
 {"@":"print", "value": 141421356}
 {"@":"print", "value": 0}
-{"@":"print", "value": @true}
-{"@":"print", "value": @false}
+{"@":"print", "value": true}
+{"@":"print", "value": false}
 
 # whileのテスト
 a = 1

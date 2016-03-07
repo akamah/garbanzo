@@ -134,7 +134,7 @@ EOS
 
       def initialize(value); @value = value; end      
       def copy; self; end
-      def inspect; "@" + self.value.inspect; end
+      def inspect; self.value.inspect; end
 
       def self.true_object;  @@true_object;  end
       def self.false_object; @@false_object; end

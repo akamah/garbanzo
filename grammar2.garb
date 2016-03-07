@@ -262,14 +262,14 @@ print setinteger
 
 # 真偽値 ################################################
 true = '/parser/true = '{
-    [@: "terminal", string: "@true"];
+    [@: "terminal", string: "true"];
     [@: "equal", left: "", right: ""];
 }
 
 settrue = '/parser/expression/children/true = /parser/true
 
 false = '/parser/false = '{
-    [@: "terminal", string: "@false"];
+    [@: "terminal", string: "false"];
     [@: "equal", left: "", right: "a"];
 }
 

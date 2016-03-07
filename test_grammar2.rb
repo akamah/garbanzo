@@ -44,9 +44,9 @@ class TC_Grammar2 < Test::Unit::TestCase
   end
   
   def test_integer
-    rule 'parser.integer', '@0', 0.to_repr
-    rule 'parser.expression', '@1', 1.to_repr
-    rule 'parser.integer', '@142857', 142857.to_repr
+    rule 'parser.integer', '0', 0.to_repr
+    rule 'parser.expression', '1', 1.to_repr
+    rule 'parser.integer', '142857', 142857.to_repr
   end
 
   def test_bool
@@ -107,7 +107,7 @@ END
   def test_eval
     result = Repr::eval(Repr::getenv, 3.to_repr)
 
-    rule 'parser.expression', "%@3", result
+    rule 'parser.expression', "%3", result
   end
 
   def test_call

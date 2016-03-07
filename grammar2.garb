@@ -241,7 +241,6 @@ print symbol
 
 # 整数 ################################################
 integer = '/parser/integer = '{
-    [@: "terminal", string: "@"];
     digit = [@: "quote", value: [@: "oneof", string: "0123456789"]]
     a = [@: "sub", left: [@: "tocode", string: %digit], right: [@: "tocode", string: "0"]]
     rest = [@: "many", parser: digit]

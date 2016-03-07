@@ -65,7 +65,7 @@ EOS
       end
 
       def inspect
-        "@" + self.num.inspect
+        self.num.inspect
       end
 
       def eql?(other)

@@ -18,20 +18,20 @@ tmp/children/string = parser/string
 tmp/children/symbol = parser/symbol
 parser/key = tmp
 
-{"@":"print", "value": @141421356}
-{"@":"print", "value": @0}
+{"@":"print", "value": 141421356}
+{"@":"print", "value": 0}
 {"@":"print", "value": @true}
 {"@":"print", "value": @false}
 
 # whileのテスト
-a = @1
-while {@: "notequal", left: a, right: @10}
+a = 1
+while {@: "notequal", left: a, right: 10}
   {@: "print", value: a}
-  a = {@: "add", left: a, right: @1}
+  a = {@: "add", left: a, right: 1}
 end
 
 # ifのテスト
-if {@: "notequal", left: a, right: @10}
+if {@: "notequal", left: a, right: 10}
   {@: "print", value: "a != 10"}
 else
   {@: "print", value: "a == 10"}
@@ -48,16 +48,16 @@ end
 
 # fibonacci number
 fib = fun(n)
-  if {@: "lessthan", left: n, right: @2}
+  if {@: "lessthan", left: n, right: 2}
     result = n
   else
-    {@: "add", left:  !../fib({@: "sub", left: n, right: @1}),
-               right: !../fib({@: "sub", left: n, right: @2})}
+    {@: "add", left:  !../fib({@: "sub", left: n, right: 1}),
+               right: !../fib({@: "sub", left: n, right: 2})}
   end
 end
 
 
-{@: "print", value: !fib(@7)}
+{@: "print", value: !fib(7)}
 
 
 #funca = function(arguments)

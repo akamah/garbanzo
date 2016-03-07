@@ -72,12 +72,12 @@ module Garbanzo
         
         _, i, l, c = source_vars
 
-        lines = self['whole_lines']
+        lines = self['source'].value.split("\n")
 
-        if lines.exist(l).value
+        if lines[l]
           printf("[%10s] %4d, %4d:%4d: %s\n", kind, i, l, c, lines[l])
           printf("[%10s] %4d, %4d:%4d:%s\n", kind, i, l, c, " " * c + "^")
-          sleep 0.01
+          sleep 0.0001
         end
       end
       

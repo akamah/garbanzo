@@ -43,7 +43,7 @@ hoge = fun()
   {@: "print", value: "def"}
 end
 
-{@: "print", value: !hoge()}
+{@: "print", value: hoge()}
 
 
 # fibonacci number
@@ -51,13 +51,13 @@ fib = fun(n)
   if {@: "lessthan", left: n, right: 2}
     result = n
   else
-    {@: "add", left:  !../fib({@: "sub", left: n, right: 1}),
-               right: !../fib({@: "sub", left: n, right: 2})}
+    {@: "add", left:  ../fib({@: "sub", left: n, right: 1}),
+               right: ../fib({@: "sub", left: n, right: 2})}
   end
 end
 
 
-{@: "print", value: !fib(7)}
+{@: "print", value: fib(7)}
 
 
 #funca = function(arguments)

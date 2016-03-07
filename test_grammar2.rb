@@ -116,12 +116,12 @@ END
       { 0 => Repr::get(Repr::getenv, "foo".to_repr),
         1 => Repr::get(Repr::getenv, "bar".to_repr) }.to_repr)
                                                                
-    rule 'parser.call', "!func(foo, bar)", r1
+    rule 'parser.expression', "func(foo, bar)", r1
 
     r2 = Repr::call(
       Repr::get(Repr::getenv, "func".to_repr), {}.to_repr)
 
-    rule 'parser.expression', "!func()", r2
+    rule 'parser.expression', "func()", r2
   end
   
   def test_function

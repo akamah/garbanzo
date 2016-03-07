@@ -152,5 +152,7 @@ END
     rule 'parser.expression', '2*3*4*5',  Repr::mult(2.to_repr, Repr::mult(3.to_repr, Repr::mult(4.to_repr, 5.to_repr)))
     rule 'parser.expression', '2+3+4+5', Repr::add(2.to_repr, Repr::add(3.to_repr, Repr::add(4.to_repr, 5.to_repr)))
     rule 'parser.expression', '2(3, 4)', Repr::call(2.to_repr, { 0 => 3, 1 => 4 }.to_repr)
+    rule 'parser.expression', '2+3<4+5', Repr::lessthan(Repr::add(2.to_repr, 3.to_repr),
+                                                              Repr::add(4.to_repr, 5.to_repr))
   end
 end

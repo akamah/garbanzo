@@ -276,9 +276,9 @@ false = '/parser/false = '{
 setfalse = '/parser/expression/children/false = /parser/false
 
 print true
-print settrue
+#print settrue
 print false
-print setfalse
+#print setfalse
 
 # ユーティリティ #########################################
 ## 複数の文
@@ -349,7 +349,7 @@ function = '/parser/function = '{
 
 setfunction = '/parser/expression/children/function = /parser/function
 print function
-print setfunction
+# print setfunction
 
 # EVAL #############################################
 evaluate = '/parser/eval = '{
@@ -402,7 +402,7 @@ path = 'parser/path = '{
 print path
 
 # 変数 ################################################
-variable = 'parser/variable = '{
+variable = '/parser/variable = '{
     [@: "terminal", string: ""];
     name = %/parser/path
     result = [@: "datastore", object: [@: "getenv"]]
@@ -419,7 +419,7 @@ variable = 'parser/variable = '{
 setvariable = '/parser/expression/children/variable = /parser/variable
 
 print variable
-print setvariable
+# print setvariable
 
 rootvar = 'parser/rootvar = '{
     name = %/parser/path
@@ -472,7 +472,7 @@ setdo = '[@: "insertprev", object: /parser/expression/children,
 	  key: "do", value: /parser/do];
 
 print do
-print setdo
+# print setdo
 
 loop = '/parser/while = '{
     [@: "terminal", string: "while"];
@@ -579,7 +579,102 @@ call = '/parser/call = '{
 setcall = '/parser/expression/children/call = /parser/call
   
 print call
-print setcall
+#print setcall
+
+
+### 優先順位付きexpression  ###############
+exprtab = '/parser/exprtab = [@: "datastore", object: []]
+print exprtab
+
+
+numrule = '/parser/exprtab/numrule =
+  [prec: 0,
+   parser: /parser/integer]
+
+print numrule
+
+# まずは，未実装である足し算と掛け算を実装してみる．
+# 足し算の優先順位は100
+plusrule = '/parser/exprtab/addrule =
+  [prec: 100,
+   parser: '{
+     left  = [@: "precrule", table: /parser/exprtab, prec: 99]
+     [@: "terminal", string: "+"];
+     right = [@: "precrule", table: /parser/exprtab, prec: 100]
+     [@: "datastore", object: [@: "add", left: left, right: right]];
+   }]
+
+print plusrule
+
+# 掛け算の優先順位は90
+multrule = '/parser/exprtab/multrule =
+  [prec: 90,
+   parser: '{
+     left  = [@: "precrule", table: /parser/exprtab, prec: 89]
+     [@: "terminal", string: "*"];
+     right = [@: "precrule", table: /parser/exprtab, prec: 90]
+     [@: "datastore", object: [@: "mult", left: left, right: right]];
+   }]
+
+print multrule
+
+callrule = '/parser/exprtab/callrule =
+  [prec: 30,
+   parser: '{
+     f = [@: "precrule", table: /parser/exprtab, prec: 29]
+     [@: "terminal", string: "("];
+     args = /sepby([parser: /parser/newexpr, sep: '{
+       %/parser/whitespaces;
+       [@: "terminal", string: ","];
+       %/parser/whitespaces;
+     }])
+
+     [@: "terminal", string: ")"];
+     [@: "datastore", object: [@: "call", func: f, args: args]];
+   }]
+
+print callrule
+
+truerule = '/parser/exprtab/truerule =
+  [prec: 20,
+   parser: /parser/true]
+   
+falserule = '/parser/exprtab/falserule =
+  [prec: 20,
+   parser: /parser/false]
+   
+print truerule
+print falserule
+
+varrule = '/parser/exprtab/varrule =
+  [prec: 10,
+   parser: /parser/variable]
+
+print varrule
+
+
+blockrule = '/parser/exprtab/blockrule =
+  [prec: 20,
+   parser: /parser/do]
+
+print blockrule
+
+
+funrule = '/parser/exprtab/funrule =
+  [prec: 20,
+   parser: /parser/function]
+
+print funrule
+
+newexpr = '/parser/newexpr = '{
+  [@: "precrule", table: /parser/exprtab, prec: 1000];
+}
+print newexpr
+
+setnewexpr = '[@: "insertprev", object: /parser/expression/children,
+          origin: [@: "firstkey", object: /parser/expression/children],
+	  key: "newexpr", value: /parser/newexpr];
+print setnewexpr
 
 ### QUASIQUOTE ##################
 

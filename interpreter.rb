@@ -50,9 +50,9 @@ module Garbanzo
         show_parse_error(e)
       rescue => e
         show_general_error(e)
-      ensure
-#        evaluator.debug_print
       end
+
+      evaluator.debug_print
     end
   end
 end

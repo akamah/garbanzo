@@ -306,6 +306,11 @@ module Garbanzo
       rules.sort_by! {|a|
         -a.get_raw('prec').num
       }
+
+      # 最後に，ソートしたやつから取り出す．
+      rules.map! { |v|
+        v['parser']
+      }
       
       # 順番に試す．
       choice(rules, evaluator)

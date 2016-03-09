@@ -308,7 +308,7 @@ block = '/parser/block = '{
 setblock = '/parser/sentence/children/block = /parser/block
 
 print block
-print setblock
+# print setblock
 
 # 関数 ##############################################
 function = '/parser/function = '{
@@ -688,6 +688,25 @@ lessthanrule = '/parser/exprtab/lessthanrule =
   
 print lessthanrule
 
+evalrule = '/parser/exprtab/evalrule =
+  [prec: 40,
+   parser: /parser/eval]
+     
+print evalrule
+
+stringrule = '/parser/exprtab/stringrule =
+  [prec: 0,
+   parser: /parser/string]
+
+print stringrule
+
+datastorerule = '/parser/exprtab/datastorerule =
+  [prec: 0,
+   parser: /parser/datastore]
+
+print datastorerule
+
+
 
 newexpr = '/parser/newexpr = '{
   [@: "withcache", table: /parser/exprtab];
@@ -698,6 +717,14 @@ setnewexpr = '[@: "insertprev", object: /parser/expression/children,
           origin: [@: "firstkey", object: /parser/expression/children],
 	  key: "newexpr", value: /parser/newexpr];
 print setnewexpr
+
+deleteint = '[@: "remove", object: /parser/expression/children, key: "integer"];
+deleteds = '[@: "remove", object: /parser/expression/children, key: "datastore"];
+deletestr = '[@: "remove", object: /parser/expression/children, key: "string"];
+
+print deleteint
+print deleteds
+print deletestr
 
 ### QUASIQUOTE ##################
 

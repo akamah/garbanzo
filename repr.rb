@@ -570,6 +570,10 @@ EOS
     # テーブルに指定するデータストアの形式は，次のようなものとする．
     # { name: {prec: n, parser: p } * }
     define_command("precrule", "table", "prec")
+
+    # あるテーブルでの構文解析を，キャッシュ（メモ）を有効にしつつ実行する
+    define_command("withcache", "table")
+    
     
     class ::Integer
       def to_repr; Garbanzo::Repr::num(self); end

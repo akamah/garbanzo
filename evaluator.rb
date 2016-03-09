@@ -314,6 +314,25 @@ module Garbanzo
       
       # 順番に試す．
       choice(rules, evaluator)
+    operator("withcache", "table", Repr::Store) do |table, evaluator|
+      cachekey = "@cache"
+      needclear = table.exist(cachekey).value == false # 元々キャッシュがなかったのなら，クリアする必要がある．
+      prec = 1000.to_repr
+      
+      if needclear
+        $stderr.puts "allocate cache"
+        
+        table[cachekey] = {}.to_repr
+        begin
+          precrule(table, prec, evaluator)
+        ensure
+          $stderr.puts "dispose cache"
+          
+          table.remove(cachekey)
+        end
+      else
+        precrule(table, prec, evaluator)        
+      end
     end
     
     ### miscellaneous operators

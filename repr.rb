@@ -335,6 +335,15 @@ EOS
         @table.include?(as_key key).to_repr
       end
 
+      def exist_path(*args)
+        ds = self
+        args.each { |k|
+          return false unless ds.exist(k)
+          ds = ds[k]
+        }
+        return true
+      end
+
       def get_prev_key(origin)
         index = find_index(origin)
         return from_key @keys[index - 1]

@@ -33,10 +33,12 @@ module Garbanzo
 
     def show_parse_error(e)
       $stderr.puts "parse error, #{e.message}"
+      raise e
     end
 
     def show_general_error(e)
       $stderr.puts "some error, #{e.message}"
+      raise e
     end
     
     def start(args)

@@ -288,32 +288,96 @@ module Garbanzo
       source.regex_match(re)
     end
 
-    operator("precrule", "table", Repr::Store, "prec", Repr::Num) do |table, prec, evaluator|
-      # まず，tableから優先度がprec以下のルールを抽出
+    def self.cached_choice(children, cache, evaluator)
+      s = evaluator.dot["/"]["source"]
+      pos = s.index
+      state = s.copy_state
+      errors = []
+
+      # キャッシュのテーブル自体が作られてなかったら
+      cache[pos] = {}.to_repr unless cache.exist(pos).value == true
+      
+      children.each_key {|k, v|
+        # 各自を試す．まず，キャッシュに入っているかどうか．
+        if cache[pos].exist(k).value
+          entry = cache[pos][k] # キャッシュデータが出てくる．
+
+          if entry['status'].value == 'success' # 成功していた場合
+#            $stderr.puts ["hit, success!", k, pos].inspect
+            result = entry['value']
+            s.set_state(entry['next'])
+            return result
+          elsif entry['status'].value == 'fail' # 失敗していた場合
+#            $stderr.puts ["hit, fail!", k, pos.num].inspect
+
+            errors << entry['value']
+            next
+          else
+            raise "cannot reach!"
+          end
+        else # キャッシュに当たんなかった．仕方ないので実際に試す．
+#          $stderr.puts ["miss!", k, pos.num].inspect
+          
+          cache[pos] = {}.to_repr
+          begin
+            s.set_state(state)
+            res = evaluator.evaluate(v)
+
+            # キャッシュに貯める
+            cache[pos][k] = { "status" => "success", "value" => res, "next" => s.copy_state }.to_repr
+            return res
+          rescue Rule::ParseError => e
+            msg = e.message.to_repr
+            errors << msg
+
+            # 失敗情報をキャッシュに貯める
+            cache[pos][k] = { "status" => "fail", "value" => msg }.to_repr
+          end
+        end
+      }
+
+      deepest = errors.sample
+      raise Rule::ParseError.new(deepest || "empty argument in cached_choice")
+    end
+    
+    def self.precrule(table, prec, evaluator)
       rules = []
+      # まず，tableから優先度がprec以下のルールを抽出
       table.each_key {|k, v|
+        if k.value.start_with?("@") # 特殊エントリーなので飛ばす
+          next
+        end
+        
         unless v.is_a?(Repr::Store) && v.exist('prec').value && v.exist('parser').value
           raise "precrule: invalid table entry: #{v}"
         end
 
         p = v.get_raw('prec').num
         if p <= prec.num
-          rules << v
+          rules << [k, v]
         end
       }
 
       # 次に，さっきのやつをソート
-      rules.sort_by! {|a|
-        -a.get_raw('prec').num
+      rules.sort_by! {|kv|
+        -kv[1].get_raw('prec').num
       }
 
-      # 最後に，ソートしたやつから取り出す．
-      rules.map! { |v|
-        v['parser']
-      }
+      children = {}.to_repr
+
+      # 最後に，データストア形式に直す
+      rules.each do |kv|
+        children[kv[0]] = kv[1]['parser']
+      end
       
       # 順番に試す．
-      choice(rules, evaluator)
+      cached_choice(children, table['@cache'], evaluator)
+    end
+    
+    operator("precrule", "table", Repr::Store, "prec", Repr::Num) do |table, prec, evaluator|
+      precrule(table, prec, evaluator)
+    end
+
     operator("withcache", "table", Repr::Store) do |table, evaluator|
       cachekey = "@cache"
       needclear = table.exist(cachekey).value == false # 元々キャッシュがなかったのなら，クリアする必要がある．

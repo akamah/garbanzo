@@ -690,7 +690,7 @@ print lessthanrule
 
 
 newexpr = '/parser/newexpr = '{
-  [@: "precrule", table: /parser/exprtab, prec: 1000];
+  [@: "withcache", table: /parser/exprtab];
 }
 print newexpr
 

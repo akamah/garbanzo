@@ -339,7 +339,7 @@ class TC_Repr < Test::Unit::TestCase
                         }.to_repr) }.to_repr
     
     assert_nothing_raised {
-      ev.evaluate(Repr::precrule(Repr::quote(tab), 1000.to_repr))
+      ev.evaluate(Repr::withcache(Repr::quote(tab)))
     }
 
     p ev.dot['source']

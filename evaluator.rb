@@ -298,6 +298,8 @@ module Garbanzo
       cache[pos] = {}.to_repr unless cache.exist(pos).value == true
       
       children.each_key {|k, v|
+        $stderr.puts "#{children.size.inspect}, #{s.line.inspect}, #{k.inspect}"
+        
         # 各自を試す．まず，キャッシュに入っているかどうか．
         if cache[pos].exist(k).value
           entry = cache[pos][k] # キャッシュデータが出てくる．
@@ -325,6 +327,7 @@ module Garbanzo
 
             # キャッシュに貯める
             cache[pos][k] = { "status" => "success", "value" => res, "next" => s.copy_state }.to_repr
+            puts "success!"
             return res
           rescue Rule::ParseError => e
             msg = e.message.to_repr
@@ -332,6 +335,7 @@ module Garbanzo
 
             # 失敗情報をキャッシュに貯める
             cache[pos][k] = { "status" => "fail", "value" => msg }.to_repr
+            puts "failure!"
           end
         end
       }
@@ -391,6 +395,7 @@ module Garbanzo
           precrule(table, prec, evaluator)
         ensure
           $stderr.puts "dispose cache"
+          $stderr.puts table[cachekey].inspect
           
           table.remove(cachekey)
         end

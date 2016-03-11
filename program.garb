@@ -25,13 +25,13 @@ parser/key = tmp
 
 # whileのテスト
 a = 1
-while {@: "notequal", left: a, right: 10}
+while a<10
   {@: "print", value: a}
   a = {@: "add", left: a, right: 1}
 end
 
 # ifのテスト
-if {@: "notequal", left: a, right: 10}
+if a<10
   {@: "print", value: "a != 10"}
 else
   {@: "print", value: "a == 10"}
@@ -48,11 +48,10 @@ end
 
 # fibonacci number
 fib = fun(n)
-  if {@: "lessthan", left: n, right: 2}
+  if n<2
     result = n
   else
-    {@: "add", left:  ../fib({@: "sub", left: n, right: 1}),
-               right: ../fib({@: "sub", left: n, right: 2})}
+    result = ../fib(n-1)+../fib(n-2)
   end
 end
 

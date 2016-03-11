@@ -229,8 +229,7 @@ EOS
         Store.new(@keys.map {|k| [from_key(k), @table[k].copy] })
       end
 
-      def as_key(key)
-        r = key
+      def as_key(r)
         case r
         when ::String
           r

@@ -247,17 +247,16 @@ module Garbanzo
       i = 0
       result = Repr::store({})
       s = evaluator.dot['/']["source"]
-      state = nil
-      
-      while true
-        state = s.copy_state
-        begin
+      state = s.copy_state
+
+      begin
+        while true
           result[i.to_repr] = evaluator.evaluate(parser)
           i += 1
-        rescue Rule::ParseError
-          s.set_state(state)
-          break
+          state = s.copy_state # すくなくとも，ここまでは成功した，という意味でのパーサの状態
         end
+      rescue Rule::ParseError # 失敗した時，直前までの成功のところまで巻き戻す．
+        s.set_state(state)
       end
 
       result

@@ -69,7 +69,10 @@ module Garbanzo
 
       def debug_log(kind)
         return
-        s, i, l, c = source_vars
+        s, i, l, c = source_vars 
+
+        return unless i % 100 == 0
+
         lines = self['source'].value.split("\n")
 
         if lines[l]

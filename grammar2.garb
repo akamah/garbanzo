@@ -709,6 +709,18 @@ evalrule = '/parser/exprtab/evalrule =
   
 print evalrule
 
+
+#unquoterule = '/parser/exprtab/unquote =
+#  [prec: 40,
+#   parser: '{
+#    [@: "terminal", string: "$"];
+#     expr = [@: "precrule", table: /parser/exprtab, prec: 40]
+#     
+#     [@: "datastore", object: [@: "unquote", env: [@: "quote", value: [@: "getenv"]], program: expr]];
+#  }] 
+#
+#print unquoterule
+
 stringrule = '/parser/exprtab/stringrule =
   [prec: 0,
    parser: /parser/string]
@@ -762,42 +774,42 @@ print setexprsentence
 
 
 
-#qqfunc = '/quasiquote = ^{
-#  if [@: "isdatastore", value: object] {
-#    object = ../object
-#
-#    if [@: "and", left:  [@: "exist", object: object, key: "@"],
-#                  right: [@: "equal",
-#		    left: [@: "get", object: object, key: "@"], right: "unquote"]] {
-#        [@: "get", object: ../object, key: "value"];
-#    } else {
-#      result = [@: "datastore", object:[]]
-#      "hoge";
-#      /foreach([store: ../object, func: ^{
-#        [@: "set", object: ../result, key: key,
-#	  value: /quasiquote([@: "datastore", object: [object: value]])];
-#      }]);
-#      [@: "datastore", object: [@: "datastore", object: result]];
-#    }
-#  } else {
-#    [@: "datastore", object: [@: "quote", value: ../object]];
-#  }
-#}
-#
-#quasiquote = '/parser/quasiquote = '{
-#  [@: "terminal", string: "`"];
-#  st = %/parser/sentence
-#  [@: "terminal", string: "`"];  
-#  %/parser/whitespaces;
-#  /quasiquote([object: st]);
-#}
-#
-#setquasiquote = '/parser/sentence/children/quasiquote = /parser/quasiquote
-#
-#print qqfunc
-#print quasiquote
-#print setquasiquote
-#
+qqfunc = '/quasiquote = ^{
+  if [@: "isdatastore", value: object] {
+    object = ../object
+
+    if [@: "and", left:  [@: "exist", object: object, key: "@"],
+                  right: [@: "equal",
+		    left: [@: "get", object: object, key: "@"], right: "unquote"]] {
+        [@: "get", object: ../object, key: "value"];
+    } else {
+      result = [@: "datastore", object:[]]
+      "hoge";
+      /foreach([store: ../object, func: ^{
+        [@: "set", object: ../result, key: key,
+	  value: /quasiquote([@: "datastore", object: [object: value]])];
+      }]);
+      [@: "datastore", object: [@: "datastore", object: result]];
+    }
+  } else {
+    [@: "datastore", object: [@: "quote", value: ../object]];
+  }
+}
+
+quasiquote = '/parser/quasiquote = '{
+  [@: "terminal", string: "`"];
+  st = %/parser/sentence
+  [@: "terminal", string: "`"];  
+  %/parser/whitespaces;
+  /quasiquote([object: st]);
+}
+
+setquasiquote = '/parser/sentence/children/quasiquote = /parser/quasiquote
+
+print qqfunc
+print quasiquote
+print setquasiquote
+
 #
 # 代入できます
 # i = 0

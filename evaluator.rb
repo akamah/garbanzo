@@ -319,8 +319,7 @@ module Garbanzo
           end
         else # キャッシュに当たんなかった．仕方ないので実際に試す．
 #          $stderr.puts ["miss!", k, pos.num].inspect
-          
-          cache[pos] = {}.to_repr
+
           begin
             s.set_state(state)
             res = evaluator.evaluate(v)

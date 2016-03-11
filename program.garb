@@ -1,3 +1,73 @@
+# keyが，単なるsymbolを認識するように変更
+tmp = {"@": "datastore", "object": {"@": "choice", "children": {}}}
+tmp/children/string = parser/string
+tmp/children/symbol = parser/symbol
+parser/key = tmp
+
+##### 主にデータストア関連の命令のラッパー関数
+set = fun(obj, k, v)
+  {@: "set", object: obj, key: k, value: v}
+end
+
+get = fun(obj, k)
+  {@: "get", object: obj, key: k}
+end
+
+size = fun(obj)
+  {@: "size", object: obj}
+end
+
+remove = fun(obj, k)
+  {@: "remove", obect: obj, key: k}
+end
+
+exist = fun(obj, k)
+  {@: "exist", object: obj, key: k}
+end
+
+getprevkey = fun(obj, orig)
+  {@: "getprevkey", object: obj, origin: orig}
+end
+
+getnextkey = fun(obj, orig)
+  {@: "getnextkey", object: obj, origin: orig}
+end
+
+firstkey = fun(obj)
+  {@: "firstkey", object: obj}
+end
+
+lastkey = fun(obj)
+  {@: "lastkey", object: obj}
+end
+
+isdatastore = fun(value)
+  {@: "isdatastore", value: value}
+end
+
+
+
+# おなじみのprint関数
+print = fun(message)
+  {"@": "print", "value": message}
+end
+
+exprprec = fun(prec)
+  {@: "precrule", table: ../parser/exprtab, prec: prec}
+end
+
+parser/exprtab/andrule =
+  {prec: 200,
+   parser: block
+     left = /exprprec(199)
+     {@: "terminal", string: "&&"}
+     right = /exprprec(200)
+     {@: "datastore", object: {@: "and", left: left, right: right}}
+   end }
+
+
+
+
 parser/unquote = block
   {"@": "terminal", "string": "%(" }
   expr = %parser/expression
@@ -12,29 +82,22 @@ tmp/children/symbol = parser/symbol
 parser/symbol = tmp
 parser/symbol/children/unquote = parser/unquote
 
-# keyが，単なるsymbolを認識するように変更
-tmp = {"@": "datastore", "object": {"@": "choice", "children": {}}}
-tmp/children/string = parser/string
-tmp/children/symbol = parser/symbol
-parser/key = tmp
-
-{"@":"print", "value": 141421356}
-{"@":"print", "value": 0}
-{"@":"print", "value": true}
-{"@":"print", "value": false}
+print(isdatastore(1245));
+print(isdatastore("hoge"));
+print(isdatastore({}));
 
 # whileのテスト
 a = 1
 while a<10
-  {@: "print", value: a}
-  a = {@: "add", left: a, right: 1}
+  print(a);
+  a = a+1
 end
 
 # ifのテスト
 if a<10
-  {@: "print", value: "a != 10"}
+  print("a != 10");
 else
-  {@: "print", value: "a == 10"}
+  print("a == 10");
 end
 
 # 関数のテスト

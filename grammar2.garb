@@ -368,7 +368,6 @@ print function
 # パス ################################################
 path = 'parser/path = '{
     p = %/parser/symbol
-
     ps = [@: "many", parser: '{
         [@: "terminal", string: "/"];
         %/parser/symbol;
@@ -389,10 +388,32 @@ path = 'parser/path = '{
 
 print path
 
+rootpath = 'parser/rootpath = '{
+    [@: "terminal", string: "/"];
+
+    rest = [@: "choice", children: [
+             path: %/parser/path,
+	     none: []]]
+
+    result = []
+    result/root = "/"
+
+    "loop";
+
+    /foreach([store: rest, func: ^{
+      [@: "set", object: ../result, key: key, value: value];
+    }]);
+    result;
+}
+
+print rootpath
+
 # 変数 ################################################
 variable = '/parser/variable = '{
     [@: "terminal", string: ""];
-    name = %/parser/path
+    name = [@: "choice", children: [
+             path: %/parser/path,
+	     root: %/parser/rootpath]]
     result = [@: "datastore", object: [@: "getenv"]]
     "hoge";
    

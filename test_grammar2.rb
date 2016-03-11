@@ -155,4 +155,11 @@ END
     rule 'parser.expression', '2+3<4+5', Repr::lessthan(Repr::add(2.to_repr, 3.to_repr),
                                                         Repr::add(4.to_repr, 5.to_repr))
   end
+
+  def test_rootpath
+    rule 'parser.rootpath', '/', {"root" => "/"}.to_repr
+    rule 'parser.rootpath', '/a', {"root" => "/", "head" => "a"}.to_repr
+    rule 'parser.rootpath', '/a/b', {"root" => "/", "head" => "a", 0 => "b"}.to_repr
+    
+  end
 end

@@ -726,6 +726,19 @@ print deleteint
 print deleteds
 print deletestr
 
+
+# ここで，<式> ; という記法を文とみなすこととする．
+exprsentence = '/parser/exprsentence = '{
+  e = %/parser/expression
+  [@: "terminal", string: ";"];
+  e;
+}
+
+setexprsentence = '/parser/sentence/children/exprsentence = /parser/exprsentence
+
+print exprsentence
+print setexprsentence
+
 ### QUASIQUOTE ##################
 
 

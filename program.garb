@@ -49,9 +49,9 @@ end
 # fibonacci number
 fib = fun(n)
   if n<2
-    result = n
+    n;
   else
-    result = ../fib(n-1)+../fib(n-2)
+    ../fib(n-1)+../fib(n-2);
   end
 end
 

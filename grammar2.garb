@@ -351,18 +351,6 @@ setfunction = '/parser/expression/children/function = /parser/function
 print function
 # print setfunction
 
-# EVAL #############################################
-evaluate = '/parser/eval = '{
-    [@: "terminal", string: "%"];
-    expr = %/parser/expression
-
-    [@: "datastore", object: [@: "eval", env: [@: "quote", value: [@: "getenv"]], program: expr]];
-}
-
-setevaluate = '/parser/expression/children/eval = /parser/eval
-print evaluate
-print setevaluate
-
 # 命令 ################################################
 #command = 'parser/command = '{
 #  [@: "terminal", string: "@"];
@@ -436,6 +424,7 @@ rootvar = 'parser/rootvar = '{
 
 print rootvar
 
+# 代入 ###############################################
 assign = '/parser/assign = '{
     ws = /parser/whitespaces
     path = %/parser/variable
@@ -690,8 +679,13 @@ print lessthanrule
 
 evalrule = '/parser/exprtab/evalrule =
   [prec: 40,
-   parser: /parser/eval]
+   parser: '{
+     [@: "terminal", string: "%"];
+     expr = [@: "precrule", table: /parser/exprtab, prec: 40]
      
+     [@: "datastore", object: [@: "eval", env: [@: "quote", value: [@: "getenv"]], program: expr]];
+  }]
+  
 print evalrule
 
 stringrule = '/parser/exprtab/stringrule =
@@ -705,6 +699,9 @@ datastorerule = '/parser/exprtab/datastorerule =
    parser: /parser/datastore]
 
 print datastorerule
+
+
+
 
 
 

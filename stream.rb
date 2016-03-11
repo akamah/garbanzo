@@ -69,15 +69,13 @@ module Garbanzo
 
       def debug_log(kind)
         return
-        
-        _, i, l, c = source_vars
-
+        s, i, l, c = source_vars
         lines = self['source'].value.split("\n")
 
         if lines[l]
           printf("[%10s] %4d, %4d:%4d: %s\n", kind, i, l, c, lines[l])
           printf("[%10s] %4d, %4d:%4d:%s\n", kind, i, l, c, " " * c + "^")
-          sleep 0.0001
+          sleep 0.001
         end
       end
       
@@ -91,13 +89,6 @@ module Garbanzo
         else
           tok = s[i]
           i += 1
-          
-          if tok == "\n"
-            l += 1
-            c = 1
-          else
-            c += 1
-          end
 
           self['index']  = i.to_repr
 
@@ -168,8 +159,7 @@ module Garbanzo
 
       
       def copy_state
-        s, i, l, c = source_vars
-        return i.to_repr
+        return self.index
       end
 
       def set_state(state)

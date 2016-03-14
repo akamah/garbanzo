@@ -234,9 +234,7 @@ symbol = 'parser/symbol = '{
     result;
 }
 
-setsymbol = '/parser/expression/children/symbol = /parser/symbol
 print symbol
-# print setsymbol
 
 
 # 整数 ################################################
@@ -266,19 +264,13 @@ true = '/parser/true = '{
     [@: "equal", left: "", right: ""];
 }
 
-settrue = '/parser/expression/children/true = /parser/true
-
 false = '/parser/false = '{
     [@: "terminal", string: "false"];
     [@: "equal", left: "", right: "a"];
 }
 
-setfalse = '/parser/expression/children/false = /parser/false
-
 print true
-#print settrue
 print false
-#print setfalse
 
 # ユーティリティ #########################################
 ## 複数の文
@@ -308,7 +300,7 @@ block = '/parser/block = '{
 setblock = '/parser/sentence/children/block = /parser/block
 
 print block
-# print setblock
+print setblock
 
 # 関数 ##############################################
 function = '/parser/function = '{
@@ -349,21 +341,6 @@ function = '/parser/function = '{
 
 setfunction = '/parser/expression/children/function = /parser/function
 print function
-# print setfunction
-
-# 命令 ################################################
-#command = 'parser/command = '{
-#  [@: "terminal", string: "@"];
-#  comname = %/parser/symbol
-#  args = %/parser/datastore
-#  args/@ = comname
-#  args;
-#}
-#
-#setcommand = '/parser/sentence/children/command = /parser/command
-#
-#print command
-#print setcommand
 
 # パス ################################################
 path = 'parser/path = '{
@@ -382,12 +359,12 @@ path = 'parser/path = '{
       [@: "set", object: ../result, key: key, value: value];
     }]);
 
-
     result;
 }
 
 print path
 
+# ルートから始まるパス ############
 rootpath = 'parser/rootpath = '{
     [@: "terminal", string: "/"];
 
@@ -418,32 +395,13 @@ variable = '/parser/variable = '{
     "hoge";
    
     /foreach([store: name, func: ^{
-#        print "-----"
         ../result = [@: "datastore", object: [@: "get", object: ../result, key: value]]
     }]);
 
     result;
 }
-
-setvariable = '/parser/expression/children/variable = /parser/variable
 
 print variable
-# print setvariable
-
-rootvar = 'parser/rootvar = '{
-    name = %/parser/path
-    result = [@: "copy", object: '[@: "get", object: [@: "getenv"], key: "/"];]
-    "hoge";
-   
-    /foreach([store: name, func: ^{
-#        print "-----"
-        ../result = [@: "datastore", object: [@: "get", object: ../result, key: value]]
-    }]);
-
-    result;
-}
-
-print rootvar
 
 # 代入 ###############################################
 assign = '/parser/assign = '{
@@ -567,10 +525,8 @@ call = '/parser/call = '{
   [@: "datastore", object: [@: "call", func: f, args: args]];
 }
 
-setcall = '/parser/expression/children/call = /parser/call
-  
 print call
-#print setcall
+
 
 
 ### 優先順位付きexpression  ###############
@@ -583,42 +539,6 @@ numrule = '/parser/exprtab/numrule =
    parser: /parser/integer]
 
 print numrule
-
-# まずは，未実装である足し算と掛け算を実装してみる．
-# 足し算の優先順位は100
-plusrule = '/parser/exprtab/addrule =
-  [prec: 100,
-   parser: '{
-     left  = [@: "precrule", table: /parser/exprtab, prec: 99]
-     [@: "terminal", string: "+"];
-     right = [@: "precrule", table: /parser/exprtab, prec: 100]
-     [@: "datastore", object: [@: "add", left: left, right: right]];
-   }]
-
-#print plusrule
-
-minusrule = '/parser/exprtab/minusrule =
-  [prec: 100,
-   parser: '{
-     left  = [@: "precrule", table: /parser/exprtab, prec: 99]
-     [@: "terminal", string: "-"];
-     right = [@: "precrule", table: /parser/exprtab, prec: 100]
-     [@: "datastore", object: [@: "sub", left: left, right: right]];
-   }]
-
-#print minusrule
-
-# 掛け算の優先順位は90
-multrule = '/parser/exprtab/multrule =
-  [prec: 90,
-   parser: '{
-     left  = [@: "precrule", table: /parser/exprtab, prec: 89]
-     [@: "terminal", string: "*"];
-     right = [@: "precrule", table: /parser/exprtab, prec: 90]
-     [@: "datastore", object: [@: "mult", left: left, right: right]];
-   }]
-
-#print multrule
 
 callrule = '/parser/exprtab/callrule =
   [prec: 30,
@@ -654,30 +574,11 @@ varrule = '/parser/exprtab/varrule =
 
 print varrule
 
-
-#blockrule = '/parser/exprtab/blockrule =
-#  [prec: 20,
-#   parser: /parser/do]
-#
-#print blockrule
-#
-
 funrule = '/parser/exprtab/funrule =
   [prec: 20,
    parser: /parser/function]
 
 print funrule
-
-lessthanrule = '/parser/exprtab/lessthanrule =
-  [prec: 150,
-   parser: '{
-     left  = [@: "precrule", table: /parser/exprtab, prec: 149]
-     [@: "terminal", string: "<"];
-     right = [@: "precrule", table: /parser/exprtab, prec: 149]
-     [@: "datastore", object: [@: "lessthan", left: left, right: right]];
-   }]
-  
-# print lessthanrule
 
 evalrule = '/parser/exprtab/evalrule =
   [prec: 40,
@@ -703,11 +604,7 @@ datastorerule = '/parser/exprtab/datastorerule =
 
 print datastorerule
 
-
-
-
-
-
+# 設定する
 newexpr = '/parser/newexpr = '{
   [@: "withcache", table: /parser/exprtab];
 }
@@ -718,6 +615,7 @@ setnewexpr = '[@: "insertprev", object: /parser/expression/children,
 	  key: "newexpr", value: /parser/newexpr];
 print setnewexpr
 
+# 不要なルールを削除
 deleteint = '[@: "remove", object: /parser/expression/children, key: "integer"];
 deleteds = '[@: "remove", object: /parser/expression/children, key: "datastore"];
 deletestr = '[@: "remove", object: /parser/expression/children, key: "string"];
@@ -754,13 +652,7 @@ quasiquote = '/parser/quasiquote = '{
     result;
 }
 
-setquasiquote = '[@: "insertprev", object: /parser/expression/children,
-          origin: [@: "firstkey", object: /parser/expression/children],
-	  key: "do", value: /parser/do];
-
 print quasiquote
-# print setdo
-
 
 quasiquoterule = '/parser/exprtab/quasiquote =
   [prec: 20,
@@ -779,96 +671,3 @@ unquoterule = '/parser/exprtab/unquote =
 
 print unquoterule
 
-
-
-#qqfunc = '/quasiquote = ^{
-#  if [@: "isdatastore", value: object] {
-#    if [@: "exist", object: ../object, key: "@"] {
-#      if [@: "equal", left: [@: "get", object: ../../object, key: "@"], right: "unquote"] {
-# 
-# 
-# 
-#       } else if [@: "equal", left: [@: "get", object: ../../object, key: "@"], right: "quasiquote"] {
-#         if [@: "equal", left: ../../../level, right: 0] {
-#           ../../../../object/value
-#         } else {
-# 
-#         }
-#       }
-#     } else {
-#       result = [@: "datastore", object:[]]
-#       "traverse";
-#       /foreach([store: ../../object, func: ^{
-#         [@: "set", object: ../result, key: key,
-# 	  value: /quasiquote([@: "datastore", object: [object: value]])];
-#       }]);
-#       [@: "datastore", object: [@: "datastore", object: result]];
-#     }
-#   } else {
-#     [@: "datastore", object: [@: "quote", value: ../object]];
-#   }
-# }
-# 
-# quasiquote = '/parser/quasiquote = '{
-#   qq = %/parser/do
-#   /quasiquote([object: qq, level: 0]);
-# }
-# 
-# setquasiquote = '/parser/sentence/children/quasiquote = /parser/quasiquote
-# 
-# print qqfunc
-# print quasiquote
-# print setquasiquote
-# 
-#
-# 代入できます
-# i = 0
-# a = 0
-# b = 1
-# 
-# print "fibonacci numbers"
-# 
-# フィボナッチ数を出力する
-# while i != 10 {
-#  $i=$i+1
-#   tmp=$b
-#   $b=$a+$b
-#   $a=tmp
-#   print $a
-# }
-# 
-# print "----------"
-# 
-# 
-# if 1==2 {
-#   print "true"
-# } else {
-#   print "false"
-# }
-# 
-# store=[]
-# store/a=0
-# store/b=20
-# store/c=[]
-# store/d="hogehoge"
-# store/c/hoge=[]
-# print store
-# 
-# args = [left: 42, right: 32]
-# 
-# print /add
-# print "42 + 32 = "
-# print /add(args)
-# 
-# f=^{
-#   if a==10 {
-#     print 100
-#   } else {
-#     print $a
-#     e = []
-#     e/a = $a+1
-#     $$f(e);
-#   }
-# }
-#     
-# print f(store)

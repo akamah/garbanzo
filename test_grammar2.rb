@@ -162,4 +162,11 @@ END
     rule 'parser.rootpath', '/a/b', {"root" => "/", "head" => "a", 0 => "b"}.to_repr
     
   end
+
+  def test_qqbody
+    rule 'parser.quasiquote', <<END, {"@" => "quasiquote", "value" => Repr::scope({}.to_repr)}.to_repr
+block
+end
+END
+  end
 end

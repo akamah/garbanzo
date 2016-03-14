@@ -506,6 +506,43 @@ module Garbanzo
       store
     end
 
+    def self.quasiquote(evaluator, object, level)
+      if object.is_a? Repr::Store
+        exists = object.exist('@').value
+        
+        if exists && object['@'] == 'quasiquote'.to_repr
+          Repr::quasiquote(self.quasiquote(evaluator, object['value'], level + 1))
+        elsif exists && object['@'] == 'unquote'.to_repr
+          if level == 1
+            evaluator.evaluate(object['value'])
+          elsif level > 1
+            {"@" => "unquote",
+             "value" => self.quasiquote(evaluator, object['value'], level - 1)
+            }.to_repr
+          else
+            raise "unquote outside quasiquote"
+          end
+        else
+          result = {}.to_repr
+
+          object.each_key do |k, v|
+            result[k] = self.quasiquote(evaluator, v, level)
+          end
+
+          result
+        end
+      else
+        object # 単純にクオートする
+      end
+    end
+    
+    command("quasiquote", "value") do |object, evaluator|
+#      $stderr.puts "quasiquote: #{object.inspect}"
+      res = quasiquote(evaluator, object, 1)
+#      $stderr.puts "result: #{res.inspect}"
+      res
+    end
+    
     command("quote", "value") do |value, evaluator|
       value
     end

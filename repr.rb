@@ -502,6 +502,8 @@ EOS
 
     define_command("DataStore", "object") # データストアオブジェクトを作成。
     define_command("IsDataStore", "value") # データストアオブジェクトかどうか判定。    
+
+    define_command("QuasiQuote", "value") # いわゆる準クオート
     
     ## 制御構文
     define_command("Quote", "value");                # 評価の抑制

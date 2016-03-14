@@ -56,35 +56,62 @@ exprprec = fun(prec)
   {@: "precrule", table: ../parser/exprtab, prec: prec}
 end
 
-parser/exprtab/andrule =
+tokenize = fun(parser)
+  blk = block
+    %/parser/whitespaces;
+    result = %$parser
+    %/parser/whitespaces;
+    result;
+  end
+  
+  blk;
+end
+
+terminal = fun(string)
+  blk = block
+    {@: "terminal", string: $string}
+  end
+  blk;
+end
+
+a = 3
+foo = block
+  a = 2
+  bar = block
+    a = 1
+    /print(a);
+    /print($a);
+    /print($$a);
+  end
+end
+
+bar = block
+  a = 6
+  /print($a);
+end
+
+a = 4
+# %%foo;
+
+# %bar;
+
+
+/parser/exprtab/andrule =
   {prec: 200,
    parser: block
      left = /exprprec(199)
-     {@: "terminal", string: "&&"}
+     %/tokenize(/terminal("&&"));
      right = /exprprec(200)
      {@: "datastore", object: {@: "and", left: left, right: right}}
-   end }
+   end}
 
 
+# print(isdatastore(1245));
+# print(isdatastore("hoge"));
+# print(isdatastore({}));
 
-
-parser/unquote = block
-  {"@": "terminal", "string": "%(" }
-  expr = %parser/expression
-  {"@": "terminal", "string": ")"  }
-
-  {"@": "datastore", "object": {"@": "unquote", "value": expr }}
-end
-
-# ここで，symbolがunquoteも兼ねるようになった．
-tmp = {"@": "datastore", "object": {"@": "choice", "children": {}}}
-tmp/children/symbol = parser/symbol
-parser/symbol = tmp
-parser/symbol/children/unquote = parser/unquote
-
-print(isdatastore(1245));
-print(isdatastore("hoge"));
-print(isdatastore({}));
+# print(true&& false);
+# print(true&& true);
 
 # whileのテスト
 a = 1

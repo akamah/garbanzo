@@ -457,7 +457,7 @@ assign = '/parser/assign = '{
 setassign = '/parser/sentence/children/assign = /parser/assign
 
 print assign
-print setassign
+# print setassign
 
 loop = '/parser/while = '{
     [@: "terminal", string: "while"];
@@ -577,6 +577,10 @@ numrule = '/parser/exprtab/numrule =
 
 print numrule
 
+assignrule = '/parser/exprtab/assignrule =
+  [prec: 200,
+   parser: /parser/assign]
+   
 callrule = '/parser/exprtab/callrule =
   [prec: 30,
    parser: '{

@@ -1,8 +1,8 @@
 # keyが，単なるsymbolを認識するように変更
-tmp = {"@": "datastore", "object": {"@": "choice", "children": {}}}
-tmp/children/string = parser/string
-tmp/children/symbol = parser/symbol
-parser/key = tmp
+tmp = {"@": "datastore", "object": {"@": "choice", "children": {}}};
+tmp/children/string = parser/string;
+tmp/children/symbol = parser/symbol;
+parser/key = tmp;
 
 ##### 主にデータストア関連の命令のラッパー関数
 getenv = fun()
@@ -141,10 +141,10 @@ print(3 < 4 * 8 && 5 | 2 == 0 || 4 != 3);
 print(true && true);
 
 # whileのテスト
-a = 1
+a = 1;
 while a<10
   print(a);
-  a = a+1
+  a = a + 1;
 end
 
 # ifのテスト

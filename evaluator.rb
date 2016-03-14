@@ -204,38 +204,39 @@ module Garbanzo
       raise Rule::ParseError.new(message, line, column)
     end
 
-    def self.choice(children, evaluator)
+    
+    command("choice", "children") do |children, evaluator|
       s = evaluator.dot["/"]["source"]
       state = s.copy_state
       errors = []
 
+      result = nil
       #          puts "choice called"
       #          puts state
       
-      children.each { |v|
+      children.each_key { |k, v|
         #            p k, v
         begin
           s.set_state(state)
-          res = evaluator.evaluate(v)
+          result = evaluator.evaluate(v)
           #              puts "result : #{res}"
-          return res
+          break
         rescue Rule::ParseError => e
-          errors << e
+          errors << [e.line, e.column, "#{k.inspect} -> #{e.message}"]
         end
       }
 
-      deepest = errors.max_by {|a| [a.line, a.column]}
-      raise (deepest || Rule::ParseError.new("empty argument in choice"))
-    end
-    
-    command("choice", "children") do |children, evaluator|
-      arr = []
-      
-      children.each_key do |k, v|
-        arr << v
+      if result
+        result
+      else
+        deepest = errors.max
+
+        if deepest
+          raise Rule::ParseError.new(deepest[2], deepest[0], deepest[1])
+        else
+          raise Rule::ParseError.new("empty argument in choice")
+        end
       end
-      
-      choice(arr, evaluator)
     end
 
     operator("terminal", "string", Repr::String) do |string, evaluator|

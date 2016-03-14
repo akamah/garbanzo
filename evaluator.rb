@@ -539,6 +539,10 @@ module Garbanzo
         return analyze_non_command
       end
 
+      unless comname.is_a? Repr::String
+        raise "#{comname.inspect} is not a Repr::String, in #{self.inspect}"
+      end
+
       feature = @@commands[comname.value]
 
       if feature == nil

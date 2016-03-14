@@ -198,14 +198,14 @@ module Garbanzo
     end
 
     def show_parse_error(e)
+      puts self.evaluator.dot['/']['source']['source'].value.split("\n")[e.line - 1]
       super(e)
-      puts self.evaluator.dot['/']['source']['source'].value.split("\n")[e.line - 1]      
     end
 
     def show_general_error(e)
-      super(e)
       linum = self.evaluator.dot['/']['source'].line.num
       puts self.evaluator.dot['/']['source']['source'].value.split("\n")[linum - 1]
+      super(e)
     end
   end
 end

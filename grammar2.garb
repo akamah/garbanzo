@@ -595,7 +595,7 @@ plusrule = '/parser/exprtab/addrule =
      [@: "datastore", object: [@: "add", left: left, right: right]];
    }]
 
-print plusrule
+#print plusrule
 
 minusrule = '/parser/exprtab/minusrule =
   [prec: 100,
@@ -606,7 +606,7 @@ minusrule = '/parser/exprtab/minusrule =
      [@: "datastore", object: [@: "sub", left: left, right: right]];
    }]
 
-print minusrule
+#print minusrule
 
 # 掛け算の優先順位は90
 multrule = '/parser/exprtab/multrule =
@@ -618,7 +618,7 @@ multrule = '/parser/exprtab/multrule =
      [@: "datastore", object: [@: "mult", left: left, right: right]];
    }]
 
-print multrule
+#print multrule
 
 callrule = '/parser/exprtab/callrule =
   [prec: 30,
@@ -677,7 +677,7 @@ lessthanrule = '/parser/exprtab/lessthanrule =
      [@: "datastore", object: [@: "lessthan", left: left, right: right]];
    }]
   
-print lessthanrule
+# print lessthanrule
 
 evalrule = '/parser/exprtab/evalrule =
   [prec: 40,

@@ -93,25 +93,52 @@ end
 a = 4
 # %%foo;
 
-# %bar;
+%bar;
+
+binaryoperator = fun(name, op, prec, pleft, pright)
+  {@: "set", object: /parser/exprtab, key: name, value:
+   {prec: prec,
+    parser: block
+      left = /exprprec($pleft)
+      %/tokenize(/terminal($op));
+      right = /exprprec($pright)
+      {@: "datastore", object: {@: $name, left: left, right: right}}
+    end}}
+end
+
+rightassoc = fun(name, op, prec)
+  /binaryoperator(name, op, prec, {@: "sub", left: prec, right: 1}, prec);
+end
+
+nonassoc = fun(name, op, prec)
+  p = {@: "sub", left: prec, right: 1}
+  /binaryoperator(name, op, prec, p, p);
+end
 
 
-/parser/exprtab/andrule =
-  {prec: 200,
-   parser: block
-     left = /exprprec(199)
-     %/tokenize(/terminal("&&"));
-     right = /exprprec(200)
-     {@: "datastore", object: {@: "and", left: left, right: right}}
-   end}
+print("hoge");
+
+# 二項演算子の定義
+rightassoc("or",  "||", 250);
+rightassoc("and", "&&", 200);
+
+nonassoc("equal", "==", 150);
+nonassoc("notequal", "!=", 150);
+nonassoc("lessthan", "<", 150);
+
+rightassoc("add", "+", 100);
+rightassoc("sub", "-", 100);
+rightassoc("mult", "*", 90);
+rightassoc("div", "%", 90);
+rightassoc("mod", "|", 90);
 
 
 # print(isdatastore(1245));
 # print(isdatastore("hoge"));
 # print(isdatastore({}));
 
-# print(true&& false);
-# print(true&& true);
+print(3 < 4 * 8 && 5 | 2 == 0 || 4 != 3);
+print(true && true);
 
 # whileのテスト
 a = 1

@@ -9,6 +9,7 @@
 
 
 require 'optparse'
+require 'readline'
 require 'stackprof'
 
 
@@ -70,26 +71,32 @@ module Garbanzo
       evaluator.debug_print
     end
 
-    def prompt(pr, input, output)
-      output.print(pr)
-      output.flush
+    def with_readline
+      tty_save = `stty -g`.chomp
 
-      input.gets
+      begin
+        yield
+      rescue Interrupt
+        system('stty', tty_save)
+        exit
+      end
     end
     
-    def interactive(input = $stdin, output = $stdout)
-      while s = prompt("> ", input, output)
-        begin
-          s.chomp!
+    def interactive
+      with_readline do
+        while s = Readline.readline("> ", true)
+          begin
+            s.chomp!
 
-          result = self.execute(s)
-          output.puts result.inspect
+            result = self.execute(s)
+            $stdout.puts result.inspect
 
-        rescue Rule::ParseError => e
-          output.puts(e.inspect)
-        rescue => e
-          output.puts(e.inspect)
-          raise
+          rescue Rule::ParseError => e
+            $stdout.puts(e.inspect)
+          rescue => e
+            $stdout.puts(e.inspect)
+            raise
+          end
         end
       end
     end

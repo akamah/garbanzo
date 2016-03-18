@@ -198,7 +198,7 @@ empty = fun()
   {@: "datastore", object: {}}
 end
 
-foreach = fun(store, f)
+each = fun(store, f)
   if /size(store) == 0
     store;
   else
@@ -217,13 +217,14 @@ end
 
 map = fun(f, store)
   r = /empty()
-  
-  /foreach(store, fun(key, value)
-    set(../r, key, ../f(value));
-  end
+  "mapping";
+  /each(store, fun(key, value)
+    /set(../r, key, ../f(value));
+  end);
 
   r;
 end
 
+a = {a: 1, b: 2, c: 3}
 
-hoge = { 1, b: 2, 3}
+/print(/map(fun(v) v + 1; end, a));

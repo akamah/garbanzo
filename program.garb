@@ -45,8 +45,6 @@ isdatastore = fun(value)
   {@: "isdatastore", value: value}
 end
 
-
-
 # おなじみのprint関数
 print = fun(message)
   {"@": "print", "value": message}
@@ -193,3 +191,39 @@ end
 #{@: datastore, object: {@: hoge, b: poyo, c: foo, d: bar} }
 
 #=> {@: hoge, ... d: bar}
+
+
+### データストアを操作する関数群
+empty = fun()
+  {@: "datastore", object: {}}
+end
+
+foreach = fun(store, f)
+  if /size(store) == 0
+    store;
+  else
+    key = /firstkey(store)
+    last = /lastkey(store)
+
+    while key != last
+      f(key, /get(store, key));
+      key = /getnextkey(store, key)
+    end
+
+    f(last, /get(store, last));
+    store;
+  end
+end
+
+map = fun(f, store)
+  r = /empty()
+  
+  /foreach(store, fun(key, value)
+    set(../r, key, ../f(value));
+  end
+
+  r;
+end
+
+
+hoge = { 1, b: 2, 3}

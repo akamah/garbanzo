@@ -8,7 +8,9 @@
 =end
 
 
+require 'optparse'
 require 'stackprof'
+
 
 require './repr.rb'
 require './evaluator.rb'
@@ -33,15 +35,21 @@ module Garbanzo
 
     def show_parse_error(e)
       $stderr.puts "parse error, #{e.message}"
-      raise e
     end
 
     def show_general_error(e)
       $stderr.puts "some error, #{e.message}"
-      raise e
     end
     
     def start(args)
+      inter = false
+      
+      opt = OptionParser.new
+      opt.on('-i', '--interactive') {|v| inter = true }
+
+      opt.parse!(args)
+      
+      
       source = File.open(args[0], "rb").read
 
       begin
@@ -50,11 +58,40 @@ module Garbanzo
         end
       rescue Rule::ParseError => e
         show_parse_error(e)
+        raise
       rescue => e
         show_general_error(e)
+        raise
       end
 
+
+      self.interactive() if inter
+
       evaluator.debug_print
+    end
+
+    def prompt(pr, input, output)
+      output.print(pr)
+      output.flush
+
+      input.gets
+    end
+    
+    def interactive(input = $stdin, output = $stdout)
+      while s = prompt("> ", input, output)
+        begin
+          s.chomp!
+
+          result = self.execute(s)
+          output.puts result.inspect
+
+        rescue Rule::ParseError => e
+          output.puts(e.inspect)
+        rescue => e
+          output.puts(e.inspect)
+          raise
+        end
+      end
     end
   end
 end

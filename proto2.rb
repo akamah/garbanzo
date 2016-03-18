@@ -197,15 +197,26 @@ module Garbanzo
       root
     end
 
+    def get_current_line
+      linum = self.evaluator.dot['/']['source'].line.num
+      self.evaluator.dot['/']['source']['source'].value.split("\n")[linum - 1]
+    end
+
+    def generate_caret_mark
+      column = self.evaluator.dot['/']['source'].column.num
+      " " * (column - 1) + "^"      
+    end
+    
     def show_parse_error(e)
-      puts self.evaluator.dot['/']['source']['source'].value.split("\n")[e.line - 1]
       super(e)
+      puts get_current_line
+      puts generate_caret_mark
     end
 
     def show_general_error(e)
-      linum = self.evaluator.dot['/']['source'].line.num
-      puts self.evaluator.dot['/']['source']['source'].value.split("\n")[linum - 1]
       super(e)
+      puts get_current_line
+      puts generate_caret_mark
     end
   end
 end

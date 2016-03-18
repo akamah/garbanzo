@@ -36,10 +36,12 @@ module Garbanzo
 
     def show_parse_error(e)
       $stderr.puts "parse error, #{e.message}"
+      $stderr.puts e.backtrace.map{|x| "\tfrom #{x}" }
     end
 
     def show_general_error(e)
       $stderr.puts "some error, #{e.message}"
+      $stderr.puts e.backtrace.map{|x| "\tfrom #{x}" }
     end
     
     def start(args)
@@ -89,12 +91,12 @@ module Garbanzo
             s.chomp!
 
             result = self.execute(s)
-            $stdout.puts result.inspect
+            puts result.inspect
 
           rescue Rule::ParseError => e
-            $stdout.puts(e.inspect)
+            show_parse_error(e)
           rescue => e
-            $stdout.puts(e.inspect)
+            show_general_error(e)
             raise
           end
         end

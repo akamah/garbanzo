@@ -88,7 +88,7 @@ module Garbanzo
         self['token_called'] = (self['token_called'].num + 1).to_repr
         
         if i >= s.length
-          self.fail("there is no character left".to_repr)
+          self.fail("there is no character left".to_repr, "token")
         else
           tok = s[i]
           i += 1
@@ -101,8 +101,11 @@ module Garbanzo
         end
       end
 
-      def fail(msg)
-        raise Rule::ParseError.new(msg.value, self.line.num, self.column.num)
+      def fail(msg, trace)
+        ex = Rule::ParseError.new(msg.value, self.line.num, self.column.num)
+        ex.set_backtrace(trace)
+
+        raise ex
       end
 
       def parse_terminal(str)
@@ -110,7 +113,7 @@ module Garbanzo
           t = parse_token
 
           if t.value != str.value[k]
-            fail(str.to_repr)
+            fail(str.to_repr, "\"#{str}\"")
           end
         end
 
@@ -121,7 +124,7 @@ module Garbanzo
         t = parse_token
         s = ""
         
-        self.fail("beginning of string".to_repr) if t.value != '"'
+        self.fail("beginning of string".to_repr, "string") if t.value != '"'
 
         while true
           t = parse_token
@@ -136,7 +139,7 @@ module Garbanzo
             when 'n'
               s += "\n"
             else
-              self.fail("unknown escape sequence: #{t2.value}".to_repr)
+              self.fail("unknown escape sequence: #{t2.value}".to_repr, "string")
             end
             
           else
@@ -156,7 +159,7 @@ module Garbanzo
 #          p md.to_a
           md[0].to_repr
         else
-          self.fail(('regexp %s doesnot match' % re.to_s).to_repr)
+          self.fail(('regexp %s doesnot match' % re.to_s).to_repr, "regex")
         end
       end
 
@@ -174,24 +177,24 @@ module Garbanzo
         return self['source'].value.length == self['index'].num
       end
 
-      def satisfy?(message = "doesn't satisfy")
+      def satisfy?(message = "doesn't satisfy", trace)
         t = parse_token
 
         if yield t.value
           return t
         else
-          self.fail(message)
+          self.fail(message, trace)
         end
       end
 
       def one_of(string)
-        self.satisfy?("expected one of #{string}".to_repr) {|c|
+        self.satisfy?("expected one of #{string}".to_repr, "[#{string}]") {|c|
           string.value.index(c) != nil
         }
       end
 
       def none_of(string)
-        self.satisfy?("expected none of #{string}".to_repr) {|c|
+        self.satisfy?("expected none of #{string}".to_repr, "[^#{string}]") {|c|
           string.value.index(c) == nil
         }
       end

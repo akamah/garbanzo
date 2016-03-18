@@ -201,14 +201,29 @@ module Garbanzo
       line = s.line
       column = s.column
       
-      raise Rule::ParseError.new(message, line, column)
+      ex = Rule::ParseError.new(message, line, column)
+      ex.set_backtrace("fail")
+
+      raise ex
     end
 
+    def self.deepest_error(key_exception_table)
+      key, deepest = key_exception_table.max_by {|k, e| [e.line, e.column]}
+
+      if key
+        deepest.backtrace.push key.value
+
+        return deepest
+      else
+        return Rule::ParseError.new("empty choice")
+      end
+    end
+    
     
     command("choice", "children") do |children, evaluator|
       s = evaluator.dot["/"]["source"]
       state = s.copy_state
-      errors = []
+      errors = {}
 
       result = nil
       #          puts "choice called"
@@ -222,20 +237,14 @@ module Garbanzo
           #              puts "result : #{res}"
           break
         rescue Rule::ParseError => e
-          errors << [e.line, e.column, "#{k.inspect} -> #{e.message}"]
+          errors[k] = e
         end
       }
 
       if result
         result
       else
-        deepest = errors.max
-
-        if deepest
-          raise Rule::ParseError.new(deepest[2], deepest[0], deepest[1])
-        else
-          raise Rule::ParseError.new("empty argument in choice")
-        end
+        raise deepest_error(errors)
       end
     end
 
@@ -292,7 +301,7 @@ module Garbanzo
       s = evaluator.dot["/"]["source"]
       pos = s.index
       state = s.copy_state
-      errors = []
+      errors = {}
 
       # キャッシュのテーブル自体が作られてなかったら
       cache[pos] = {}.to_repr unless cache.exist(pos).value == true
@@ -309,7 +318,7 @@ module Garbanzo
             s.set_state(entry['next'])
             return result
           elsif entry['status'].value == 'fail' # 失敗していた場合
-            errors << entry['value']
+            errors[k] = entry['value']
             next
           else
             raise "cannot reach!"
@@ -322,22 +331,23 @@ module Garbanzo
             res = evaluator.evaluate(v)
 
             # キャッシュに貯める
-            cache[pos][k] = { "status" => "success", "value" => res, "next" => s.copy_state }.to_repr
+            cache[pos][k] = Repr::store({ "status".to_repr => "success".to_repr,
+                                          "value".to_repr => res,
+                                          "next".to_repr => s.copy_state })
+
 #            $stderr.puts "success!"
             return res
           rescue Rule::ParseError => e
-            msg = e.message.to_repr
-            errors << msg
+            errors[k] = e
 
             # 失敗情報をキャッシュに貯める
-            cache[pos][k] = { "status" => "fail", "value" => msg }.to_repr
+            cache[pos][k] = Repr::store({ "status".to_repr => "fail".to_repr, "value".to_repr => e })
 #            $stderr.puts "failure!"
           end
         end
       }
 
-      deepest = errors.sample
-      raise Rule::ParseError.new(deepest || "empty argument in cached_choice")
+      raise deepest_error(errors)
     end
     
     def self.precrule(table, prec, evaluator)

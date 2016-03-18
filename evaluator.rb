@@ -598,9 +598,11 @@ module Garbanzo
     include Repr
 
     attr_accessor :dot
+    attr_accessor :stacktrace
     
     def initialize(root = Repr::store({}))
       @dot = root
+      @stacktrace = []
     end
     
     def trace_log(feature, s)
@@ -615,7 +617,14 @@ module Garbanzo
     end
     
     def evaluate(program)
-      program.analyzed.call(self)
+      # トレース用に，どこをどういった順番で評価したかを保持しておく．
+      # 表示するときは，これらをうまく加工する．
+      @stacktrace.push program
+      begin
+        program.analyzed.call(self)
+      ensure
+        @stacktrace.pop
+      end
     end
 
     def extend_scope(newenv, parent)
@@ -637,6 +646,25 @@ module Garbanzo
       result
     end
 
+    def trace_string(prog)
+      case prog
+      when Repr::Store
+        if prog.exists?('@').value
+          prog['@'].inspect
+        else
+          "datastore"
+        end
+      else
+        prog.inspect
+      end
+    end
+    
+    def get_stack_trace_array
+      @stacktrace.map { |prog|
+        trace_string(prog)
+      }
+    end
+    
     def show(p)
       return p.inspect
     end

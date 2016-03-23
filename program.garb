@@ -124,7 +124,7 @@ nonassoc("lessthan", "<", 150);
 rightassoc("add", "+", 100);
 rightassoc("sub", "-", 100);
 rightassoc("mult", "*", 90);
-rightassoc("div", "%", 90);
+# rightassoc("div", "%", 90);
 rightassoc("mod", "|", 90);
 
 

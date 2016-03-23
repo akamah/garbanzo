@@ -273,12 +273,49 @@ print true
 print false
 
 # ユーティリティ #########################################
+# manytill: あるパーサendが成功するまで，pの結果を順々に追加してゆく．
+
+manytillbase = '/manytillbase = ^{
+  %end;
+  result;
+}
+
+manytillrec = '/manytillrec = ^{
+  x = %p
+  [@: "set", object: result, key: i, value: x];
+
+  [@: "choice", children:
+    [end: /manytillbase([end: end, result: result]),
+     next: /manytillrec([p: p, end: end, i: i+1, result: result])]];
+}
+
+manytill = '/manytill = ^{
+  result = [@: "datastore", object: []]
+  [@: "choice", children:
+    [end:  /manytillbase([end: end, result: result]),
+     next: /manytillrec([p: p, end: end, i: 0, result: result])]];
+}
+
+print manytillbase
+print manytillrec
+print manytill
+
+manytilltest = '/manytilltest = '{
+  /manytill([p: /parser/string, end: /parser/integer]);
+}
+
+print manytilltest
+
 ## 複数の文
-somesentences = '/parser/somesentences = '{
-    sts = [@: "many", parser: '{
+somesentences = '/parser/somesentences = ^{
+    endp = [@: "datastore", object: [@: "terminal", string: end]]
+    sts = /manytill([p: '{
       %/parser/whitespaces;
-      %/parser/sentence;
-    }]
+      s = %/parser/sentence
+      %/parser/whitespaces;
+      s;
+    }, end: endp])
+    
     %/parser/whitespaces;
 
     sts;
@@ -290,7 +327,7 @@ print somesentences
 # ブロック (begin) #######################################
 block = '/parser/block = '{
     [@: "terminal", string: "begin"];
-    sentences = %/parser/somesentences
+    sentences = /parser/somesentences([end: "end"])
     [@: "terminal", string: "end"];	
     result = [@: "datastore", object: [@: "begin", body: sentences]]
 
@@ -316,7 +353,7 @@ function = '/parser/function = '{
     }])
     [@: "terminal", string: ")"];
     
-    sts = %/parser/somesentences
+    sts = /parser/somesentences([end: "end"])
     [@: "terminal", string: "end"];
 
     setargs = []
@@ -427,7 +464,7 @@ loop = '/parser/while = '{
     [@: "terminal", string: "while"];
     %/parser/whitespaces;
     cond = %/parser/expression
-    sts = %/parser/somesentences
+    sts = /parser/somesentences([end: "end"])
     [@: "terminal", string: "end"];
     body = [@: "datastore", object: [@: "begin", body: sts]]
 
@@ -449,11 +486,11 @@ branch = '/parser/if = '{
     %/parser/whitespaces;
     cond = %/parser/expression
 
-    csq = %/parser/somesentences
+    csq = /parser/somesentences([end: "else"])
 
     [@: "terminal", string: "else"];
 
-    alt = %/parser/somesentences
+    alt = /parser/somesentences([end: "end"])
     [@: "terminal", string: "end"];
 
     c = [@: "datastore", object: [@: "begin", body: csq]]
@@ -507,6 +544,11 @@ sepby = '/sepby = ^{
 
 print sepbyone
 print sepby
+
+
+
+
+
 
 ### 呼び出し #####################
 call = '/parser/call = '{
@@ -643,7 +685,7 @@ print setexprsentence
 # 準クオート #####################################
 quasiquote = '/parser/quasiquote = '{
     [@: "terminal", string: "block"];
-    quoted = %/parser/somesentences
+    quoted = /parser/somesentences([end: "end"])
     [@: "terminal", string: "end"];
 
     body = [@: "datastore", object: [@: "scope", body: quoted]]

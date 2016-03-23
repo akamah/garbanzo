@@ -169,4 +169,8 @@ block
 end
 END
   end
+
+  def test_manytill
+    rule 'manytilltest', '"hoge""hige"3', { 0 => "hoge", 1 => "hige" }.to_repr
+  end
 end

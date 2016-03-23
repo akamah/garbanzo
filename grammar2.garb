@@ -309,8 +309,9 @@ print manytilltest
 ## 複数の文
 somesentences = '/parser/somesentences = ^{
     endp = [@: "datastore", object: [@: "terminal", string: end]]
+    %/parser/whitespaces;
+    
     sts = /manytill([p: '{
-      %/parser/whitespaces;
       s = %/parser/sentence
       %/parser/whitespaces;
       s;

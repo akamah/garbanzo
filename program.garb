@@ -55,32 +55,29 @@ exprprec = fun(prec)
 end
 
 tokenize = fun(parser)
-  blk = block
+  block
     %/parser/whitespaces;
     result = %$parser
     %/parser/whitespaces;
     result;
-  end
-  
-  blk;
+  end;
 end
 
 terminal = fun(string)
-  blk = block
+  block
     {@: "terminal", string: $string}
-  end
-  blk;
+  end;
 end
 
 a = 3
 foo = block
   a = 2
-  bar = block
+  block
     a = 1
     /print(a);
     /print($a);
     /print($$a);
-  end
+  end;
 end
 
 bar = block

@@ -328,7 +328,6 @@ print somesentences
 block = '/parser/block = '{
     [@: "terminal", string: "begin"];
     sentences = /parser/somesentences([end: "end"])
-    [@: "terminal", string: "end"];	
     result = [@: "datastore", object: [@: "begin", body: sentences]]
 
     result;
@@ -354,7 +353,6 @@ function = '/parser/function = '{
     [@: "terminal", string: ")"];
     
     sts = /parser/somesentences([end: "end"])
-    [@: "terminal", string: "end"];
 
     setargs = []
 
@@ -465,7 +463,6 @@ loop = '/parser/while = '{
     %/parser/whitespaces;
     cond = %/parser/expression
     sts = /parser/somesentences([end: "end"])
-    [@: "terminal", string: "end"];
     body = [@: "datastore", object: [@: "begin", body: sts]]
 
     result = [@: "datastore", object: [@: "while", condition: cond, body: body]]
@@ -488,10 +485,7 @@ branch = '/parser/if = '{
 
     csq = /parser/somesentences([end: "else"])
 
-    [@: "terminal", string: "else"];
-
     alt = /parser/somesentences([end: "end"])
-    [@: "terminal", string: "end"];
 
     c = [@: "datastore", object: [@: "begin", body: csq]]
     a = [@: "datastore", object: [@: "begin", body: alt]]
@@ -686,7 +680,6 @@ print setexprsentence
 quasiquote = '/parser/quasiquote = '{
     [@: "terminal", string: "block"];
     quoted = /parser/somesentences([end: "end"])
-    [@: "terminal", string: "end"];
 
     body = [@: "datastore", object: [@: "scope", body: quoted]]
     result = [@: "datastore", object: [@: "quasiquote", value: body]]

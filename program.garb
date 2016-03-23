@@ -5,6 +5,11 @@ tmp/children/symbol = parser/symbol
 parser/key = tmp
 
 ##### 主にデータストア関連の命令のラッパー関数
+getenv = fun()
+  {@: "getenv"}
+end
+
+
 set = fun(obj, k, v)
   {@: "set", object: obj, key: k, value: v}
 end
@@ -225,3 +230,77 @@ end
 a = {a: 1, b: 2, c: 3}
 
 /print(/map(fun(v) v + 1; end, a));
+
+### パターンマッチ式の構文拡張用記法
+
+# シンボルのパターン
+sympat = block
+  s = %/parser/symbol
+  #
+  %/terminal("@");
+end
+
+# define 
+
+/print("defined sympat one");
+
+parser/sympat = block
+  s = %/parser/symbol
+  %/terminal("@");
+  d = %/parser/integer
+  %/parser/whitespaces;
+
+  f = fun(obj)
+    e = /exprprec(../d)
+    "hoge";
+    /set(obj, ../s, e);
+  end
+
+  f;
+end
+
+"hoge";
+
+/print("defined sympat");
+
+# 文字列パターン
+parser/strpat = block
+  s = %/parser/string
+  %/parser/whitespaces;
+
+  fun(obj)
+    %/terminal(../s);
+  end;
+end
+
+parser/patternlist = block
+  {@: "many", parser: block
+    {@: "choice", children:
+      {str: /parser/strpat,
+       sym: /parser/sympat}}
+  end}
+end
+
+
+parser/patternmatch = block
+  %/tokenize(/terminal("let"));
+  %/tokenize(/terminal("@"));
+  d = %/tokenize(/parser/integer)
+
+  xs = %/parser/pattenlist
+  %/tokenize(/terminal(":="));
+
+  body = %/parser/expression
+
+  psr = block
+    env = /getenv()
+    /each($xs, fun(f)
+      f(../env);
+    end);
+    $body;
+  end
+
+  entry = {prec: d, parser: psr}
+
+  set(/parser/exprtab, d, entry);
+end

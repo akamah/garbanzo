@@ -693,13 +693,28 @@ quasiquote = '/parser/quasiquote = '{
     result;
 }
 
+quote = '/parser/quote = '{
+    [@: "terminal", string: "quote"];
+    quoted = /parser/somesentences([end: "end"])
+    body = [@: "datastore", object: [@: "begin", body: quoted]]
+    result = [@: "datastore", object: [@: "quasiquote", value: body]]
+    
+    result;
+}
+
 print quasiquote
+print quote
 
 quasiquoterule = '/parser/exprtab/quasiquote =
   [prec: 20,
    parser: /parser/quasiquote]
 
+quoterule = '/parser/exprtab/quote =
+  [prec: 20,
+   parser: /parser/quote]
+   
 print quasiquoterule
+print quoterule
 
 unquoterule = '/parser/exprtab/unquote =
   [prec: 40,

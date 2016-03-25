@@ -1,119 +1,116 @@
 # keyが，単なるsymbolを認識するように変更
+# {"@": "print", "value": /parser/exprtab}
+
 tmp = {"@": "datastore", "object": {"@": "choice", "children": {}}};
 tmp/children/string = parser/string;
 tmp/children/symbol = parser/symbol;
 parser/key = tmp;
 
+/parser/key/children/integer = /parser/integer;
+
 ##### 主にデータストア関連の命令のラッパー関数
-getenv = fun()
-  {@: "getenv"}
-end
-
-
 set = fun(obj, k, v)
   {@: "set", object: obj, key: k, value: v}
-end
+end;
 
 get = fun(obj, k)
   {@: "get", object: obj, key: k}
-end
+end;
 
 size = fun(obj)
   {@: "size", object: obj}
-end
+end;
 
 remove = fun(obj, k)
   {@: "remove", obect: obj, key: k}
-end
+end;
 
 exist = fun(obj, k)
   {@: "exist", object: obj, key: k}
-end
+end;
 
 getprevkey = fun(obj, orig)
   {@: "getprevkey", object: obj, origin: orig}
-end
+end;
 
 getnextkey = fun(obj, orig)
   {@: "getnextkey", object: obj, origin: orig}
-end
+end;
 
 firstkey = fun(obj)
   {@: "firstkey", object: obj}
-end
+end;
 
 lastkey = fun(obj)
   {@: "lastkey", object: obj}
-end
+end;
 
 isdatastore = fun(value)
   {@: "isdatastore", value: value}
-end
+end;
 
 # おなじみのprint関数
 print = fun(message)
   {"@": "print", "value": message}
-end
+end;
 
 exprprec = fun(prec)
   {@: "precrule", table: ../parser/exprtab, prec: prec}
-end
+end;
 
 tokenize = fun(parser)
   block
     %/parser/whitespaces;
-    result = %$parser
+    result = %$parser;
     %/parser/whitespaces;
     result;
   end;
-end
+end;
 
 terminal = fun(string)
   block
     {@: "terminal", string: $string}
   end;
-end
+end;
 
-a = 3
+a = 3;
 foo = block
-  a = 2
+  a = 2;
   block
-    a = 1
+    a = 1;
     /print(a);
     /print($a);
     /print($$a);
   end;
-end
+end;
 
 bar = block
-  a = 6
+  a = 6;
   /print($a);
-end
+end;
 
-a = 4
-# %%foo;
-
+a = 4;
 %bar;
 
 binaryoperator = fun(name, op, prec, pleft, pright)
   {@: "set", object: /parser/exprtab, key: name, value:
    {prec: prec,
     parser: block
-      left = /exprprec($pleft)
+      left = /exprprec($pleft);
       %/tokenize(/terminal($op));
-      right = /exprprec($pright)
+      right = /exprprec($pright);
       {@: "datastore", object: {@: $name, left: left, right: right}}
     end}}
-end
+end;
 
 rightassoc = fun(name, op, prec)
   /binaryoperator(name, op, prec, {@: "sub", left: prec, right: 1}, prec);
-end
+end;
 
 nonassoc = fun(name, op, prec)
-  p = {@: "sub", left: prec, right: 1}
+  p = {@: "sub", left: prec, right: 1};
   /binaryoperator(name, op, prec, p, p);
-end
+end;
 
 
 print("hoge");
@@ -158,19 +155,19 @@ end
 hoge = fun()
   {@: "print", value: "abc"}
   {@: "print", value: "def"}
-end
+end;
 
 {@: "print", value: hoge()}
 
 
 # fibonacci number
 fib = fun(n)
-  if n<2
+  if n < 2
     n;
   else
-    ../fib(n-1)+../fib(n-2);
+    ../fib(n - 1) + ../fib(n - 2);
   end
-end
+end;
 
 
 {@: "print", value: fib(7)}
@@ -198,36 +195,36 @@ end
 ### データストアを操作する関数群
 empty = fun()
   {@: "datastore", object: {}}
-end
+end;
 
 each = fun(store, f)
   if /size(store) == 0
     store;
   else
-    key = /firstkey(store)
-    last = /lastkey(store)
+    key = /firstkey(store);
+    last = /lastkey(store);
 
     while key != last
       f(key, /get(store, key));
-      key = /getnextkey(store, key)
+      key = /getnextkey(store, key);
     end
 
     f(last, /get(store, last));
     store;
   end
-end
+end;
 
 map = fun(f, store)
-  r = /empty()
+  r = /empty();
   "mapping";
   /each(store, fun(key, value)
     /set(../r, key, ../f(value));
   end);
 
   r;
-end
+end;
 
-a = {a: 1, b: 2, c: 3}
+a = {a: 1, b: 2, c: 3};
 
 /print(/map(fun(v) v + 1; end, a));
 

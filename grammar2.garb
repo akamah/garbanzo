@@ -439,26 +439,6 @@ variable = '/parser/variable = '{
 
 print variable
 
-# 代入 ###############################################
-assign = '/parser/assign = '{
-    ws = /parser/whitespaces
-    path = %/parser/variable
-    %ws;
-    [@: "terminal", string: "="];
-    %ws;
-    rhe = %/parser/expression
-
-    path/@ = "set"
-    path/value = rhe
-
-    path;
-}
-
-setassign = '/parser/sentence/children/assign = /parser/assign
-
-print assign
-# print setassign
-
 loop = '/parser/while = '{
     [@: "terminal", string: "while"];
     %/parser/whitespaces;
@@ -577,10 +557,6 @@ numrule = '/parser/exprtab/numrule =
 
 print numrule
 
-assignrule = '/parser/exprtab/assignrule =
-  [prec: 200,
-   parser: /parser/assign]
-   
 callrule = '/parser/exprtab/callrule =
   [prec: 30,
    parser: '{
@@ -644,6 +620,31 @@ datastorerule = '/parser/exprtab/datastorerule =
    parser: /parser/datastore]
 
 print datastorerule
+
+
+# 代入 ###############################################
+assignrule = '/parser/exprtab/assignrule =
+  [prec: 300,
+   parser: '{
+    ws = /parser/whitespaces
+    path = %/parser/variable
+
+    %ws;
+    [@: "terminal", string: "="];
+
+    %ws;
+    rhe = [@: "precrule", table: /parser/exprtab, prec: 300]
+
+    path/@ = "set"
+    path/value = rhe
+
+    path;
+  }]
+   
+print assignrule
+
+
+
 
 # 設定する
 newexpr = '/parser/newexpr = '{

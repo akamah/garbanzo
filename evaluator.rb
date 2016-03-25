@@ -354,12 +354,12 @@ module Garbanzo
       rules = []
       # まず，tableから優先度がprec以下のルールを抽出
       table.each_key {|k, v|
-        if k.value.start_with?("@") # 特殊エントリーなので飛ばす
+        if k.is_a?(Repr::String) && k.value.start_with?("@") # 特殊エントリーなので飛ばす
           next
         end
         
         unless v.is_a?(Repr::Store) && v.exist('prec').value && v.exist('parser').value
-          raise "precrule: invalid table entry: #{v}"
+          raise "precrule: invalid table entry: #{v.inspect}"
         end
 
         p = v.get_raw('prec').num

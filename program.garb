@@ -126,7 +126,7 @@ nonassoc("lessthan", "<", 150);
 rightassoc("add", "+", 100);
 rightassoc("sub", "-", 100);
 rightassoc("mult", "*", 90);
-# rightassoc("div", "%", 90);
+rightassoc("div", "%", 90);
 rightassoc("mod", "|", 90);
 
 
@@ -232,72 +232,95 @@ a = {a: 1, b: 2, c: 3};
 
 # シンボルのパターン
 sympat = block
-  s = %/parser/symbol
-  #
+  s = %/parser/symbol;
   %/terminal("@");
-end
+end;
 
 # define 
 
 /print("defined sympat one");
 
 parser/sympat = block
-  s = %/parser/symbol
-  %/terminal("@");
-  d = %/parser/integer
-  %/parser/whitespaces;
-
-  f = fun(obj)
-    e = /exprprec(../d)
-    "hoge";
-    /set(obj, ../s, e);
-  end
-
-  f;
-end
-
-"hoge";
-
-/print("defined sympat");
-
-# 文字列パターン
-parser/strpat = block
-  s = %/parser/string
+  s = %/parser/symbol;
+  %/terminal(":");
+  d = %/parser/integer;
   %/parser/whitespaces;
 
   fun(obj)
-    %/terminal(../s);
+    e = /exprprec(../d);
+    %/parser/whitespaces;
+    /set(obj, ../s, e);
   end;
-end
+end;
+
+# 文字列パターン
+parser/strpat = block
+  s = %/parser/string;
+  %/parser/whitespaces;
+
+  fun(obj)
+    %/tokenize(/terminal(../s));
+  end;
+end;
 
 parser/patternlist = block
   {@: "many", parser: block
     {@: "choice", children:
-      {str: /parser/strpat,
-       sym: /parser/sympat}}
+      {str: %/parser/strpat,
+       sym: %/parser/sympat}}
   end}
-end
+end;
 
 
 parser/patternmatch = block
   %/tokenize(/terminal("let"));
-  %/tokenize(/terminal("@"));
-  d = %/tokenize(/parser/integer)
+  %/tokenize(/terminal(":"));
+  d = %/tokenize(/parser/integer);
 
-  xs = %/parser/pattenlist
+  xs = %/parser/patternlist;
   %/tokenize(/terminal(":="));
 
-  body = %/parser/expression
+  body = %/parser/expression;
+  %/tokenize(/terminal(";"));
 
+  
   psr = block
-    env = /getenv()
-    /each($xs, fun(f)
-      f(../env);
+    vars = /empty();
+    /each($xs, fun(k, f)
+      f(../vars);
     end);
-    $body;
-  end
 
-  entry = {prec: d, parser: psr}
+    quote
+      /each($vars, fun(k, v)
+        /set(.., k, v);
+      end);
 
-  set(/parser/exprtab, d, entry);
-end
+      ${@: "quote", value: $body};
+    end;
+  end;
+
+  key = /size(/parser/exprtab);
+
+  entry = {prec: d, parser: psr};
+  /set(/parser/exprtab, key, entry);
+
+  true;
+end;
+
+
+/parser/sentence/children/patternmatch = /parser/patternmatch;
+
+let:0 "(" inner:1000 ")" := inner;
+let:15 store:14 "[" key:1000 "]" := /get(store, key);
+
+let:20 "'" val:20 := {@: "quote", value: val};
+
+/print(3 * (4 + 2));
+/print((5 + 8) * 2);
+
+x = {0: 10, 1: 100, 2: 200};
+
+/print(x[1]);
+/print('hoge);
+
+/print((12345 % 100) | 10);

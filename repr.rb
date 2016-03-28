@@ -88,25 +88,25 @@ EOS
     class String < GarbObject
       attr_accessor :value
 
-      @@creation = 0
-      @@created_in = Hash.new { 0 }
+      # @@creation = 0
+      # @@created_in = Hash.new { 0 }
       
-      at_exit {
-        $stderr.puts "string is created #{@@creation} times"
+      # at_exit {
+      #   $stderr.puts "string is created #{@@creation} times"
 
-        locations = @@created_in.keys.sort { |a, b|
-          @@created_in[a] <=> @@created_in[b]
-        }
+      #   locations = @@created_in.keys.sort { |a, b|
+      #     @@created_in[a] <=> @@created_in[b]
+      #   }
         
-        locations.each do |k|
-          $stderr.puts "#{@@created_in[k]} => #{k}"
-        end
-      }
+      #   locations.each do |k|
+      #     $stderr.puts "#{@@created_in[k]} => #{k}"
+      #   end
+      # }
       
       def initialize(value)
         @value = value
 
-        @@creation += 1
+#        @@creation += 1
 
 #        if @@creation % 113 == 0        
 #          @@created_in[caller(1..5)] += 1

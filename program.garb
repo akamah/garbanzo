@@ -1,6 +1,6 @@
-# keyが，単なるsymbolを認識するように変更
-# {"@": "print", "value": /parser/exprtab}
+{"@": "print", "value": "[done] define initial grammar set"}
 
+# keyが，単なるsymbolを認識するように変更
 tmp = {"@": "datastore", "object": {"@": "choice", "children": {}}};
 tmp/children/string = parser/string;
 tmp/children/symbol = parser/symbol;
@@ -73,24 +73,24 @@ terminal = fun(string)
   end;
 end;
 
-a = 3;
-foo = block
-  a = 2;
-  block
-    a = 1;
-    /print(a);
-    /print($a);
-    /print($$a);
-  end;
-end;
+#a = 3;
+#foo = block
+#  a = 2;
+#  block
+#    a = 1;
+#    /print(a);
+#    /print($a);
+#    /print($$a);
+#  end;
+#end;
 
-bar = block
-  a = 6;
-  /print($a);
-end;
+#bar = block
+#  a = 6;
+#  /print($a);
+#end;
 
-a = 4;
-%bar;
+#a = 4;
+#%bar;
 
 binaryoperator = fun(name, op, prec, pleft, pright)
   {@: "set", object: /parser/exprtab, key: name, value:
@@ -113,8 +113,6 @@ nonassoc = fun(name, op, prec)
 end;
 
 
-print("hoge");
-
 # 二項演算子の定義
 rightassoc("or",  "||", 250);
 rightassoc("and", "&&", 200);
@@ -134,30 +132,30 @@ rightassoc("mod", "|", 90);
 # print(isdatastore("hoge"));
 # print(isdatastore({}));
 
-print(3 < 4 * 8 && 5 | 2 == 0 || 4 != 3);
-print(true && true);
+#print(3 < 4 * 8 && 5 | 2 == 0 || 4 != 3);
+#print(true && true);
 
-# whileのテスト
-a = 1;
-while a<10
-  print(a);
-  a = a + 1;
-end
-
-# ifのテスト
-if a<10
-  print("a != 10");
-else
-  print("a == 10");
-end
-
-# 関数のテスト
-hoge = fun()
-  {@: "print", value: "abc"}
-  {@: "print", value: "def"}
-end;
-
-{@: "print", value: hoge()}
+## whileのテスト
+#a = 1;
+#while a<10
+#  print(a);
+#  a = a + 1;
+#end
+#
+## ifのテスト
+#if a<10
+#  print("a != 10");
+#else
+#  print("a == 10");
+#end
+#
+## 関数のテスト
+#hoge = fun()
+#  {@: "print", value: "abc"}
+#  {@: "print", value: "def"}
+#end;
+#
+#{@: "print", value: hoge()}
 
 
 # fibonacci number
@@ -170,7 +168,7 @@ fib = fun(n)
 end;
 
 
-{@: "print", value: fib(7)}
+#{@: "print", value: fib(7)}
 
 
 #funca = function(arguments)
@@ -224,9 +222,9 @@ map = fun(f, store)
   r;
 end;
 
-a = {a: 1, b: 2, c: 3};
+#a = {a: 1, b: 2, c: 3};
 
-/print(/map(fun(v) v + 1; end, a));
+#/print(/map(fun(v) v + 1; end, a));
 
 ### パターンマッチ式の構文拡張用記法
 
@@ -237,8 +235,6 @@ sympat = block
 end;
 
 # define 
-
-/print("defined sympat one");
 
 parser/sympat = block
   s = %/parser/symbol;
@@ -315,12 +311,15 @@ let:15 store:14 "[" key:1000 "]" := /get(store, key);
 
 let:20 "'" val:20 := {@: "quote", value: val};
 
-/print(3 * (4 + 2));
-/print((5 + 8) * 2);
+#/print(3 * (4 + 2));
+#/print((5 + 8) * 2);
 
-x = {0: 10, 1: 100, 2: 200};
+#x = {0: 10, 1: 100, 2: 200};
 
-/print(x[1]);
-/print('hoge);
+#/print(x[1]);
+#/print('hoge);
 
-/print((12345 % 100) | 10);
+#/print((12345 % 100) | 10);
+
+
+/print("[done] define additional grammar set");

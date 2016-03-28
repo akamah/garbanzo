@@ -106,7 +106,7 @@ module Garbanzo
       Repr::bool(left.value || right.value)
     end
     
-    operator("not", "left", Repr::Bool, "right", Repr::Bool) do |value|
+    operator("not", "value", Repr::Bool) do |value|
       Repr::bool(!value.value)
     end
 

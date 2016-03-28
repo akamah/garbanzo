@@ -168,7 +168,7 @@ fib = fun(n)
 end;
 
 
-#{@: "print", value: fib(7)}
+# /print(fib(7));
 
 
 #funca = function(arguments)

@@ -211,7 +211,7 @@ module Garbanzo
       key, deepest = key_exception_table.max_by {|k, e| [e.line, e.column]}
 
       if key
-        deepest.backtrace.push key.value
+        deepest.backtrace.push key.inspect
 
         return deepest
       else

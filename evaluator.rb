@@ -563,7 +563,13 @@ module Garbanzo
     end
     
     def evaluate_sub_expr(key, env)
-      expr = self.get_raw(key).analyzed.call(env)
+      prog = self.get_raw(key)
+
+      if prog == nil
+        raise "the value for key was nil: #{key}"
+      end
+      
+      expr = prog.analyzed.call(env)
       expr
     end
 

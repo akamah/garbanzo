@@ -68,9 +68,11 @@ module Garbanzo
       end
 
 
-      self.interactive() if inter
-
-      evaluator.debug_print
+      if inter
+        self.interactive()
+      else
+        evaluator.debug_print
+      end
     end
 
     def with_readline
@@ -97,7 +99,6 @@ module Garbanzo
             show_parse_error(e)
           rescue => e
             show_general_error(e)
-            raise
           end
         end
       end

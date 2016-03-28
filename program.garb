@@ -22,7 +22,7 @@ size = fun(obj)
 end;
 
 remove = fun(obj, k)
-  {@: "remove", obect: obj, key: k}
+  {@: "remove", object: obj, key: k}
 end;
 
 exist = fun(obj, k)

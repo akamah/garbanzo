@@ -306,13 +306,24 @@ end;
 
 /parser/sentence/children/patternmatch = /parser/patternmatch;
 
+paren = block
+  %/tokenize(/terminal("("));
+  inner = %/parser/expression;
+  %/tokenize(/terminal(")"));
+
+  inner;
+end;
+
+# /parser/expression/children/paren = paren;
+
+
 let:0 "(" inner:1000 ")" := inner;
 let:15 store:14 "[" key:1000 "]" := /get(store, key);
 
 let:20 "'" val:20 := {@: "quote", value: val};
 
-#/print(3 * (4 + 2));
-#/print((5 + 8) * 2);
+# /print(4 + 2);
+# /print((5 + 8) * 2);
 
 #x = {0: 10, 1: 100, 2: 200};
 
@@ -323,3 +334,4 @@ let:20 "'" val:20 := {@: "quote", value: val};
 
 
 /print("[done] define additional grammar set");
+
